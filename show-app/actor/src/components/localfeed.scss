@@ -1,0 +1,15 @@
+.localfeed-component {
+}
+
+.local-stream {
+  transition: filter 0.5s;
+  filter: none;
+}
+
+.filter-canvas {
+  visibility: hidden;
+  pointer-events: none;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+}

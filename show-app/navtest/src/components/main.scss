@@ -1,0 +1,35 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+* {
+  box-sizing: border-box;
+}
+
+.stats-container {
+  position: fixed;
+  display: flex;
+  pointer-events: none;
+  left: 0;
+  right: 0;
+  top: 0;
+  justify-content: center;
+  z-index: 2;
+
+  &.hide-stats {
+    display: none;
+  }
+}
+
+.main-component {
+  border: 1px dashed #f00;
+}
+
+
+.navigation-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}

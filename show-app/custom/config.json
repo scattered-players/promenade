@@ -1,0 +1,15 @@
+{
+  "SHOW_TITLE": "Test Show",
+  "COMPANY_EMAIL": "WOULDNT.YOU.LIKE.TO.KNOW@gmail.com",
+  "DOMAIN": "mirrors.show",
+  "USER_AVATAR": "/media/star-jockey-insignia.png",
+  "INTRO_VIDEO": "https://cdn.chrisuehlinger.com/yknow.mp4",
+  "ENDING_VIDEO_CHOICES": [
+    "https://cdn.chrisuehlinger.com/show-videos/galadriel-biome.mp4",
+    "https://cdn.chrisuehlinger.com/show-videos/biome-intro.mp4"
+  ],
+  "NAV_OVERLAY_VIDEO": null,
+  "NAV_ARRIVAL_SOUND": null,
+  "NAV_DEPARTURE_SOUND": null,
+  "NAV_BACKGROUND_MUSIC": null
+}

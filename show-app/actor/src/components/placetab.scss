@@ -1,0 +1,16 @@
+.placetab-component {
+  max-height: 100%;
+
+  .tab-panel-list {
+    max-height: calc(100vh - 40px);
+    overflow: auto;
+  }
+}
+
+
+.headless-tab .placetab-component {
+  .tab-panel-list {
+    max-height: 100vh;
+    overflow: auto;
+  } 
+}

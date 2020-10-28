@@ -1,0 +1,9 @@
+.filtertab-component {
+  div.settings-dropdown {
+    display: flex;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+

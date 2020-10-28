@@ -1,0 +1,51 @@
+.create-guide-dialog{
+  display: flex;
+  flex-direction: column;
+}
+
+.guide-headline {
+  display: flex;
+  width: 100%;
+  white-space: nowrap;
+}
+
+li.guide-list-item {
+  display: block;
+}
+
+.guide-list-item-text {
+  max-width: 200px;
+  p, span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.guide-status-indicator {
+  /* display: inline-block; */
+  width: 10px;
+  height: 10px;
+  margin: 10px;
+  border-radius: 100px;
+  vertical-align: middle;
+}
+
+.guide-status-indicator.ready {
+  background-color: green;
+  box-shadow: 0px 0px 10px green;
+}
+
+.guide-status-indicator.not-ready {
+  background-color: yellow;
+  box-shadow: 0px 0px 10px yellow;
+}
+
+.guide-status-indicator.not-online {
+  background-color: red;
+  box-shadow: 0px 0px 10px red;
+}
+
+.guide-status-indicator.no-guide {
+  background-color: gray;
+  box-shadow: 0px 0px 10px gray;
+}

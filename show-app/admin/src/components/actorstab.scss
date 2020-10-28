@@ -1,0 +1,48 @@
+.create-actor-dialog{
+  display: flex;
+  flex-direction: column;
+}
+
+
+.actor-headline {
+  display: flex;
+  width: 100%;
+  white-space: nowrap;
+}
+
+li.actor-list-item {
+  display: block;
+}
+
+.actor-list-item-text {
+  max-width: 200px;
+  p, span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.actor-status-indicator {
+  /* display: inline-block; */
+  width: 10px;
+  height: 10px;
+  margin: 10px;
+  border-radius: 100px;
+  vertical-align: middle;
+}
+
+.actor-status-indicator.ready {
+  background-color: green;
+  box-shadow: 0px 0px 10px green;
+}
+
+.actor-status-indicator.not-ready {
+  background-color: yellow;
+  box-shadow: 0px 0px 10px yellow;
+}
+
+.actor-status-indicator.not-online {
+  background-color: red;
+  box-shadow: 0px 0px 10px red;
+}
+

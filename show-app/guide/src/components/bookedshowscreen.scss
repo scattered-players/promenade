@@ -1,0 +1,22 @@
+.bookedshowscreen-component {
+  h1 {
+    margin: 30px auto;
+    font-family: 'Glass Houses', Helvetica, Arial, sans-serif;
+    font-size: 96px;
+    letter-spacing: 10px;
+    text-align: center;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 500px), (max-height: 500px){
+  .bookedshowscreen-component {
+    h1 {
+      margin: 10px auto;
+      font-size: 48px;
+      letter-spacing: 1px;
+      text-align: center;
+      white-space: normal;
+    }
+  }
+}

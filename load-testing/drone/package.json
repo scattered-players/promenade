@@ -1,0 +1,18 @@
+{
+  "name": "@scatteredplayers/drone",
+  "version": "0.0.1",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@sitespeed.io/throttle": "^1.0.3",
+    "node-fetch": "^2.6.0",
+    "puppeteer": "^3.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.3"
+  }
+}

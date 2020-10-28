@@ -1,0 +1,12 @@
+.adminstab-component {
+  border: 1px dashed #f00;
+}
+
+
+.admin-list-item-text {
+  max-width: 200px;
+  p, span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

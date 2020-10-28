@@ -1,0 +1,9 @@
+.loginentry-component {
+  .login-info {
+    white-space: nowrap;
+    span, p {
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}

@@ -1,0 +1,68 @@
+.preshowscreen-component {
+  max-height: 100%;
+  overflow: auto;
+  max-width: 100vw;
+
+  h1 {
+    font-size: 96px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .video-feed-wrapper {
+    margin: 20px auto;
+    position: relative;
+    width: 20vw;
+    // border: 1px dashed dodgerblue;
+    min-height: 240px;
+
+
+    .nametag {
+      margin: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      z-index: 2;
+      background: rgba(0,0,0,0.3);
+    }
+
+    video {
+      max-width: 100%;
+    }
+    
+    .mute-toggle {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      z-index:3;
+    }
+
+    .camera-toggle {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      z-index:3;
+    }
+  }
+
+  .local-feed-wrapper {
+
+    video {
+      transform: rotateY(180deg);
+    }
+  }
+}
+
+
+@media (max-width: 500px), (max-height: 500px) {
+  .preshowscreen-component {
+    h1 {
+      font-size: 48px;
+      letter-spacing: normal;
+    }
+  }
+}

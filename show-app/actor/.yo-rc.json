@@ -1,0 +1,9 @@
+{
+    "generator-react-webpack": {
+      "appName": "actor",
+      "style": "scss",
+      "cssmodules": false,
+      "postcss": false,
+      "generatedWithVersion": 4
+    }
+  }

@@ -1,0 +1,53 @@
+.actor-app {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: stretch;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  height: 100vh;
+}
+
+.stats-container {
+  position: fixed;
+  display: flex;
+  pointer-events: none;
+  left: 0;
+  right: 0;
+  top: 0;
+  justify-content: center;
+  z-index: 5;
+
+  &.hide-stats {
+    display: none;
+  }
+}
+
+.preview-banner {
+  position: fixed;
+  display: flex;
+  pointer-events: none;
+  left: 0;
+  right: 0;
+  top: 0;
+  justify-content: center;
+  z-index: 2;
+  background: linear-gradient(to right, transparent 25%, red 50%, transparent 75%);
+  color: white;
+  animation: preview-pulse 2s infinite;
+  padding: 5px;
+}
+
+@keyframes preview-pulse {
+  0%, 100% {
+    background: linear-gradient(to right, transparent 25%, red 50%, transparent 75%);
+    color: white;
+  }
+  50% {
+    background: linear-gradient(to right, transparent 25%, white 50%, transparent 75%);
+    color: red;
+  }
+}

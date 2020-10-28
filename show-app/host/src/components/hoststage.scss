@@ -1,0 +1,22 @@
+.hoststage-component {
+  border: 1px dashed #f00;
+}
+
+.stage-canvas {
+  position:fixed;
+  top: 0;
+  left:0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 3;
+  transition: opacity 3s;
+}
+
+.outro-video {
+  position:fixed;
+  top: 0;
+  left:0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+}

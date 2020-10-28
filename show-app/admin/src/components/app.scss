@@ -1,0 +1,42 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  background: #303030;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+.show-heading {
+  display: flex;
+  align-items: center;
+}
+
+.running-indicator {
+  /* display: inline-block; */
+  width: 10px;
+  height: 10px;
+  margin: 10px;
+  border-radius: 100px;
+  vertical-align: middle;
+}
+
+.running-indicator.running {
+  background-color: green;
+  box-shadow: 0px 0px 10px green;
+}
+
+.running-indicator.not-running {
+  background-color: red;
+  box-shadow: 0px 0px 10px red;
+}
+
+.show-state {
+  font-weight: 700;
+  margin: 5px;
+}
+
+.party-queue-wrapper {
+  display: block;
+}

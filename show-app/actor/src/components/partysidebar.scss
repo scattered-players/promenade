@@ -1,0 +1,27 @@
+.partysidebar-component {
+  flex: 0 0 300px;
+  display: flex;
+  flex-direction: column;
+
+  .tab {
+    min-width: 0;
+  }
+
+  .tab-panel {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    flex-wrap: nowrap;
+    max-height: calc(100% - 50px);
+
+    .tab-panel-list {
+      flex: 1 1 100%;
+      overflow: auto;
+    }
+
+    .tab-panel-field {
+      flex: 0 0 auto;
+    }
+  }
+}

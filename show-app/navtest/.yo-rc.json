@@ -1,0 +1,9 @@
+{
+    "generator-react-webpack": {
+      "appName": "attendee",
+      "style": "scss",
+      "cssmodules": false,
+      "postcss": false,
+      "generatedWithVersion": 4
+    }
+  }

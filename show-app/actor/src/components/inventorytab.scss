@@ -1,0 +1,16 @@
+.inventorytab-component {
+  max-height: 100%;
+
+  .tab-panel-list {
+    max-height: calc(100% - 70px);
+  }
+}
+
+
+.headless-tab .inventorytab-component {
+
+  .tab-panel-list {
+    max-height: calc(100vh - 70px);
+    overflow: auto;
+  } 
+}

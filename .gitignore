@@ -1,0 +1,13 @@
+.vscode
+.DS_Store
+node_modules
+custom-rebuild.sh
+shattered.pem
+show-app/dist
+show-app/root/media/3d
+show-app/root/media/audio
+show-app/root/media/video
+show-app/root/headshots
+devops/scratch
+backups
+certs

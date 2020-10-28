@@ -1,0 +1,23 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.stats-container {
+  position: fixed;
+  display: flex;
+  pointer-events: none;
+  left: 0;
+  right: 0;
+  top: 0;
+  justify-content: center;
+  z-index: 2;
+
+  &.hide-stats {
+    display: none;
+  }
+}

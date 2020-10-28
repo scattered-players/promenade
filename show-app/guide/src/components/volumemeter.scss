@@ -1,0 +1,21 @@
+.volumemeter-component {
+  // border: 1px dashed #f00;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 2;
+  pointer-events: none;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  overflow: hidden;
+
+  canvas { 
+    width: 100%;
+    height: 100px;
+    opacity: 50%;
+  }
+  .no-audio-warning {
+    background: rgba(0,0,0,0.25);
+  }
+}
