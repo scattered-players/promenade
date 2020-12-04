@@ -10,6 +10,7 @@
   .video-feed-wrapper {
     position: relative;
     width: calc(16.6vw - 9px);
+    max-height: 240px;
 
     .nametag-wrapper-wrapper {
       margin: 0;
