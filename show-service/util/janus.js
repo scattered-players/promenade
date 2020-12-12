@@ -1,7 +1,8 @@
 const fetch = require('node-fetch');
-const { v4:uuid } = require('uuid');
-const { JANUS_ADMIN_KEY } = require('../secrets/credentials')
-const { SHOW_DOMAIN_NAME, JANUS_MODE } = require('../secrets/promenade-config.json')
+const { JANUS_ADMIN_KEY } = require('../secrets/credentials');
+const { SHOW_DOMAIN_NAME, JANUS_SERVER_COUNT, DEFAULT_PARTIES } = require('../secrets/promenade-config.json');
+
+const janusCoefficient = JANUS_SERVER_COUNT / DEFAULT_PARTIES.length;
 
 async function janusInit(subdomain){
   let response = await fetch(`https://${subdomain}.${SHOW_DOMAIN_NAME}:8089/janus`, {
@@ -30,7 +31,8 @@ async function janusAttach(subdomain, sessionId, pluginName){
   return result.data.id
 }
 
-async function createVideoRoom(subdomain, roomId){
+async function createVideoRoom(janusIndex, roomId){
+  const subdomain = 'janus' + Math.floor(janusIndex*janusCoefficient);
   let sessionId = await janusInit(subdomain);
   let pluginHandle = await janusAttach(subdomain, sessionId, 'janus.plugin.videoroom');
 
@@ -54,7 +56,8 @@ async function createVideoRoom(subdomain, roomId){
   console.log('CREATE ROOM RESULT', result);
 }
 
-async function destroyVideoRoom(subdomain, roomId){
+async function destroyVideoRoom(janusIndex, roomId){
+  const subdomain = 'janus' + Math.floor(janusIndex*janusCoefficient);
   let sessionId = await janusInit(subdomain);
   let pluginHandle = await janusAttach(subdomain, sessionId, 'janus.plugin.videoroom');
 
@@ -75,7 +78,8 @@ async function destroyVideoRoom(subdomain, roomId){
   console.log('DESTROY ROOM RESULT', result);
 }
 
-async function listUsers(subdomain, roomId){
+async function listUsers(janusIndex, roomId){
+  const subdomain = 'janus' + Math.floor(janusIndex*janusCoefficient);
   let sessionId = await janusInit(subdomain);
   let pluginHandle = await janusAttach(subdomain, sessionId, 'janus.plugin.videoroom');
 
@@ -96,7 +100,8 @@ async function listUsers(subdomain, roomId){
   return result;
 }
 
-async function kickUser(subdomain, roomId, janusUserId){
+async function kickUser(janusIndex, roomId, janusUserId){
+  const subdomain = 'janus' + Math.floor(janusIndex*janusCoefficient);
   let sessionId = await janusInit(subdomain);
   let pluginHandle = await janusAttach(subdomain, sessionId, 'janus.plugin.videoroom');
 
@@ -220,26 +225,17 @@ async function destroyStream(subdomain, streamId){
 async function startShow(show){
   await Promise.all([
     createStream('janus', show._id)
-  ].concat(show.parties.map(async party => {
-    if(JANUS_MODE !== 'SINGLE'){
-      await createVideoRoom(party.janusId, party._id)
-    }
-    await createVideoRoom('janus', party._id)
-  })))
+  ].concat(show.parties.map(party => createVideoRoom(party.janusIndex, party._id))))
 }
 
 async function stopShow(show){
   await Promise.all([
     destroyStream('janus', show._id)
-  ].concat(show.parties.map(async party => {
-    if(JANUS_MODE !== 'SINGLE'){
-      await destroyVideoRoom(party.janusId, party._id)
-    }
-    await destroyVideoRoom('janus', party._id)
-  })))
+  ].concat(show.parties.map(party => destroyVideoRoom(party.janusIndex, party._id))))
 }
 
 module.exports = {
+  janusCoefficient,
   createVideoRoom,
   createAudioBridge,
   createStream,

@@ -21,6 +21,7 @@ const {
 } = require('../ws/servers');
 
 const {
+  janusCoefficient,
   kickUser,
   listUsers
 } = require('./janus');
@@ -121,60 +122,6 @@ async function broadcastSlowlink(body) {
   });
 }
 
-// const refreshSystemState = _.debounce(async function() {
-//   let startTime = Date.now();
-//   let [
-//     shows,
-//     actors,
-//     admins
-//   ] = await Promise.all([
-//     Show.getTotalState(),
-//     Actor.find().populate({
-//       path: 'place',
-//       populate: [
-//         {
-//           path: 'currentParty'
-//         },
-//         {
-//           path: 'partyQueue'
-//         }
-//       ]
-//     }).lean(),
-//     Admin.find().lean()
-//   ]);
-//   broadcastAdmin({
-//     type:'RECEIVE_SYSTEM_STATE',
-//     body: {
-//       shows,
-//       actors,
-//       admins,
-//       pullTime: (Date.now() - startTime) / 1000,
-//       adminSockets: wssAdmin.clients.size,
-//       actorSockets: wssActor.clients.size,
-//       attendeeSockets: wssAttendee.clients.size
-//     }
-//   });
-// },100);
-
-// const refreshCurrentShowState = _.debounce(async function () {
-//   let startTime = Date.now();
-//   let [
-//     currentShow,
-//     places
-//   ] = await Promise.all([
-//     Show.getCurrentShowState(),
-//     Place.getCurrentPlaceState()
-//   ]);
-//   broadcastAll({
-//     type:'RECEIVE_CURRENT_SHOW_STATE',
-//     body: {
-//       currentShow,
-//       places,
-//       pullTime: (Date.now() - startTime) / 1000
-//     }
-//   });
-// }, 100);
-
 let hasQueuedRefreshingSystemState = false;
 let isCurrentlyRefreshingSystemState = false;
 const refreshSystemState = _.debounce(async function() {
@@ -233,7 +180,8 @@ const refreshSystemState = _.debounce(async function() {
         adminSockets: wssAdmin.clients.size,
         actorSockets: wssActor.clients.size,
         attendeeSockets: wssAttendee.clients.size,
-        guideSockets: wssGuide.clients.size
+        guideSockets: wssGuide.clients.size,
+        janusCoefficient
       }
     });
     isCurrentlyRefreshingSystemState = false;
@@ -270,6 +218,7 @@ const refreshCurrentShowState = _.debounce(async function () {
     broadcastAll({
       type:'RECEIVE_CURRENT_SHOW_STATE',
       body: {
+        janusCoefficient,
         currentShow,
         places,
         pullTime: (Date.now() - startTime) / 1000
@@ -444,10 +393,10 @@ async function blockUser(userId) {
   if(show) {
     let matchingParties = show.parties.filter(party => party.attendances.reduce((acc,attendance) => acc || attendance.attendee._id.toString() === userId, false));
     if(matchingParties.length){
-      let listUserResult = await listUsers(matchingParties[0].janusId, matchingParties[0]._id);
+      let listUserResult = await listUsers(matchingParties[0].janusIndex, matchingParties[0]._id);
       let matchingUsers = listUserResult.plugindata.data.participants.filter(participant => participant.display === `attendee:${userId}`);
       if(matchingUsers.length) {
-        await kickUser(matchingParties[0].janusId, matchingParties[0]._id, matchingUsers[0].id);
+        await kickUser(matchingParties[0].janusIndex, matchingParties[0]._id, matchingUsers[0].id);
       }
     }
   }

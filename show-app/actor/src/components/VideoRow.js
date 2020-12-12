@@ -2,10 +2,6 @@ import React from 'react';
 import config from 'config';
 
 import {
-  JANUS_MODE
-} from 'custom/config.json';
-
-import {
   Typography
 } from '@material-ui/core';
 
@@ -25,10 +21,11 @@ class VideoRow extends React.Component {
         currentParty,
         audioMute,
         videoMute,
-        localOutputStream
+        localOutputStream,
+        janusCoefficient
       }
     } = this.props;
-    const janusSubdomain = (JANUS_MODE === 'SINGLE') ? 'janus' : currentParty.janusId;
+    const janusSubdomain = 'janus' + Math.floor(currentParty.janusIndex * janusCoefficient);
     joinVideoRoom(`wss://${janusSubdomain}.${config.JANUS_DOMAIN}:8989/`, currentParty._id, myPlace._id, audioMute, videoMute, localOutputStream);
   }
 

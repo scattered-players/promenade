@@ -37,6 +37,7 @@ const initialState = {
   adminSockets: null,
   actorSockets: null,
   attendeeSockets: null,
+  janusCoefficient: 0,
   wantsNotifications: (localStorage.getItem('wantsNotifications') === 'true'),
 };
 
@@ -223,7 +224,8 @@ function reducer(state = initialState, action) {
         adminSockets,
         actorSockets,
         attendeeSockets,
-        guideSockets
+        guideSockets,
+        janusCoefficient
       } = action.body;
       nextState.shows = shows;
       nextState.actors = actors;
@@ -236,6 +238,7 @@ function reducer(state = initialState, action) {
       nextState.actorSockets = actorSockets;
       nextState.attendeeSockets = attendeeSockets;
       nextState.guideSockets = guideSockets;
+      nextState.janusCoefficient = janusCoefficient;
       calcDervivedProperties(state, nextState);
       return nextState;
     }

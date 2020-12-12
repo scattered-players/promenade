@@ -47,14 +47,15 @@ class VideoRow extends React.Component {
       system: {
         user,
         myParty,
-        localStream
+        localStream,
+        janusCoefficient
       }
     } = this.props;
     const {
       isAudioMuted,
       isVideoMuted
     } = user;
-    const janusSubdomain = (JANUS_MODE === 'SINGLE') ? 'janus' : myParty.janusId;
+    const janusSubdomain = 'janus' + Math.floor(currentParty.janusIndex * janusCoefficient);
     joinVideoRoom(`wss://${janusSubdomain}.${config.JANUS_DOMAIN}:8989/`, myParty._id, user._id, isAudioMuted, isVideoMuted, localStream);
   }
 

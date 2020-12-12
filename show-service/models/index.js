@@ -38,7 +38,7 @@ showSchema.statics.scheduleShow = async function(showDate, numParties, isEventbr
       chat:[],
       guide: null,
       guideIsDeciding: false,
-      janusId: `janus${i}`,
+      janusIndex: i,
       history: [],
       decider: null,
       decisionDeadline: null,

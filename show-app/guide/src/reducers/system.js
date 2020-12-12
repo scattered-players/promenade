@@ -90,7 +90,8 @@ const initialState = {
   muteNavMusic:false,
   activeLiteFilter: null,
   activeLiteFilterName: null,
-  shouldShowVisualCues: (localStorage.getItem('shouldShowVisualCues') !== 'false')
+  shouldShowVisualCues: (localStorage.getItem('shouldShowVisualCues') !== 'false'),
+  janusCoefficient: 0
 };
 
 function calcDervivedProperties(nextState) {
@@ -347,9 +348,11 @@ function reducer(state = initialState, action) {
 
     case RECEIVE_CURRENT_SHOW_STATE: {
       let {
+        janusCoefficient,
         currentShow,
-        places
+        places,
       } = action.body;
+      nextState.janusCoefficient = janusCoefficient;
       nextState.isSettingMutes = false;
       nextState.currentShow = currentShow;
       nextState.places = places;

@@ -75,6 +75,7 @@ const initialState = {
   videoMute: false,
   chatMessages: [],
   activeFilter: 'none',
+  janusCoefficient: 0,
   isNerdy: (localStorage.getItem('isNerdy') === 'true') || (urlParams.get('isNerdy') === 'true'),
   wantsNotifications: (localStorage.getItem('wantsNotifications') === 'true'),
   isMonitorOn: (localStorage.getItem('isMonitorOn') === 'true'),
@@ -388,9 +389,11 @@ function reducer(state = initialState, action) {
     
     case RECEIVE_CURRENT_SHOW_STATE: {
       let {
+        janusCoefficient,
         currentShow,
         places
       } = action.body;
+      nextState.janusCoefficient = janusCoefficient;
       nextState.isSettingMutes = false;
       nextState.currentShow = currentShow;
       nextState.places = places;

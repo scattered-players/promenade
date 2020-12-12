@@ -12,7 +12,7 @@ var partySchema = new Schema({
   guideIsDeciding: Boolean,
   guide: { type: Schema.Types.ObjectId, ref: 'Guide' },
   decisionDeadline: Date,
-  janusId: String,
+  janusIndex: Number,
   color: String,
   name: String,
   history: [{ type: Schema.Types.ObjectId, ref: 'Place' }],
