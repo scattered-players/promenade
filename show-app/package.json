@@ -1,6 +1,6 @@
 {
   "name": "@scatteredplayers/promenade",
-  "version": "1.1.0-alpha.1",
+  "version": "1.1.0-alpha.2",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -55,7 +55,7 @@
     "exports-loader": "^0.7.0",
     "file-loader": "^2.0.0",
     "html-webpack-plugin": "^4.2.0",
-    "janus-gateway": "git://github.com/meetecho/janus-gateway.git",
+    "janus-gateway": "https://github.com/meetecho/janus-gateway.git",
     "node-sass": "^4.0.0",
     "null-loader": "^0.1.1",
     "postcss": "^8.0.9",

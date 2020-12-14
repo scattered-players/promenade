@@ -15,6 +15,7 @@ RUN npm install --only=production
 
 COPY . .
 
+EXPOSE 1935
 EXPOSE 9000
 EXPOSE 9001
 EXPOSE 5000
