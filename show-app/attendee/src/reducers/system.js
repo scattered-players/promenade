@@ -360,8 +360,10 @@ function reducer(state = initialState, action) {
     case RECEIVE_CURRENT_SHOW_STATE: {
       let {
         currentShow,
-        places
+        places,
+        janusCoefficient
       } = action.body;
+      nextState.janusCoefficient = janusCoefficient;
       nextState.isSettingMutes = false;
       nextState.currentShow = currentShow;
       nextState.places = places;

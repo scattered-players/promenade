@@ -2,10 +2,6 @@ import React from 'react';
 import config from 'config';
 
 import {
-  JANUS_MODE
-} from 'custom/config.json'
-
-import {
   Badge,
   IconButton,
   Tooltip,
@@ -55,7 +51,7 @@ class VideoRow extends React.Component {
       isAudioMuted,
       isVideoMuted
     } = user;
-    const janusSubdomain = 'janus' + Math.floor(currentParty.janusIndex * janusCoefficient);
+    const janusSubdomain = 'janus' + Math.floor(myParty.janusIndex * janusCoefficient);
     joinVideoRoom(`wss://${janusSubdomain}.${config.JANUS_DOMAIN}:8989/`, myParty._id, user._id, isAudioMuted, isVideoMuted, localStream);
   }
 

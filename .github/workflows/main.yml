@@ -2,7 +2,9 @@ name: main
 
 on:
   push:
-    branches: main
+    branches:
+      - main
+      - livestream
 
 jobs:
   services:
@@ -35,7 +37,7 @@ jobs:
           file: ./show-service/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: scatteredplayers/show:multiplatform
+          tags: scatteredplayers/show:${GITHUB_REF##*/}
   #     - name: Build and push Load Test Maestro
   #       id: maestro_docker_build
   #       uses: docker/build-push-action@v2
