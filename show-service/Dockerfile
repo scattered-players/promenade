@@ -1,6 +1,6 @@
 FROM node:14-buster-slim
 
-RUN snap install -y ffmpeg
+RUN apt-get update && apt-get install -y ffmpeg
 
 # Create app directory
 WORKDIR /usr/src/show-service
