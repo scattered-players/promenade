@@ -79,7 +79,7 @@ class WebpackIoCDistConfig extends WebpackBaseConfig {
           templateParameters: {
           },
           chunks: ['streamtest'],
-          filename: 'navtest/index.html'
+          filename: 'streamtest/index.html'
         }),
         // new BundleAnalyzerPlugin()
       ]
