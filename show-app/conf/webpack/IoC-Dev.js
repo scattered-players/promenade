@@ -50,6 +50,12 @@ class WebpackIoCDevConfig extends WebpackBaseConfig {
         'react-hot-loader/patch',
         path.resolve(__dirname, '../../navtest/src/client.js')
       ],
+      streamtest:[
+        'webpack-dev-server/client?http://0.0.0.0:8000/',
+        'webpack/hot/only-dev-server',
+        'react-hot-loader/patch',
+        path.resolve(__dirname, '../../streamtest/src/client.js')
+      ],
     };
 
     workers.map(worker => {
@@ -119,6 +125,13 @@ class WebpackIoCDevConfig extends WebpackBaseConfig {
           },
           chunks: ['navtest'],
           filename: 'navtest/index.html'
+        }),
+        new HtmlWebpackPlugin({
+          template: path.resolve(__dirname, '../../streamtest/src/index.html'),
+          templateParameters: {
+          },
+          chunks: ['streamtest'],
+          filename: 'streamtest/index.html'
         }),
       ]
     };

@@ -74,6 +74,13 @@ class WebpackIoCDistConfig extends WebpackBaseConfig {
           chunks: ['navtest'],
           filename: 'navtest/index.html'
         }),
+        new HtmlWebpackPlugin({
+          template: path.resolve(__dirname, '../../streamtest/src/index.html'),
+          templateParameters: {
+          },
+          chunks: ['streamtest'],
+          filename: 'navtest/index.html'
+        }),
         // new BundleAnalyzerPlugin()
       ]
     };

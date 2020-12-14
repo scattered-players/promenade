@@ -133,7 +133,7 @@ async function createServer(){
 (async () => {
   try {
     await startup();
-    await syncWithEventbrite();
+    // await syncWithEventbrite();
     const server = await createServer();
     startWebsockets(server);
     server.listen(process.env.PORT || 5000, () => {
@@ -167,5 +167,9 @@ async function defaultAdmin() {
 // if (app.get('env') === 'development') {
   defaultAdmin();
 // }
+
+
+const nms = require('./util/stream')(app);
+nms.run();
 
 module.exports = app;

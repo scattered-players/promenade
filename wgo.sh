@@ -6,7 +6,7 @@ cd show-service
 ./win-db.sh &
 npm run dev &
 
-cd ../show-app
-npm start &
+# cd ../show-app
+# npm start &
 
 wait

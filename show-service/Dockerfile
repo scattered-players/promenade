@@ -1,4 +1,6 @@
-FROM node:12
+FROM node:14
+
+RUN apt-get update && apt-get install -y ffmpeg
 
 # Create app directory
 WORKDIR /usr/src/show-service
@@ -13,6 +15,8 @@ RUN npm install --only=production
 
 COPY . .
 
+EXPOSE 9000
+EXPOSE 9001
 EXPOSE 5000
 EXPOSE 80
 EXPOSE 443

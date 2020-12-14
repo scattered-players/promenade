@@ -92,6 +92,7 @@ class WebpackBaseConfig {
       guide: ['./guide/src/client.js'],
       host: ['./host/src/client.js'],
       navtest: ['./navtest/src/client.js'],
+      streamtest: ['./streamtest/src/client.js'],
     };
 
     this.workers.map(worker => {
@@ -133,6 +134,7 @@ class WebpackBaseConfig {
               `${this.srcPathAbsolute}/guide/src/`,
               `${this.srcPathAbsolute}/host/src/`,
               `${this.srcPathAbsolute}/navtest/src/`,
+              `${this.srcPathAbsolute}/streamtest/src/`,
             ],
             loader: 'babel-loader',
             query: {
@@ -209,6 +211,7 @@ class WebpackBaseConfig {
               `${this.srcPathAbsolute}/guide/src/`,
               `${this.srcPathAbsolute}/host/src/`,
               `${this.srcPathAbsolute}/navtest/src/`,
+              `${this.srcPathAbsolute}/streamtest/src/`,
             ],
             loaders: [
               // Note: Moved this to .babelrc

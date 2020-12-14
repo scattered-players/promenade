@@ -52,6 +52,12 @@ class WebpackDevConfig extends WebpackBaseConfig {
           'react-hot-loader/patch',
           './navtest/src/client.js'
         ],
+        streamtest:[
+          'webpack-dev-server/client?https://0.0.0.0:443/',
+          'webpack/hot/only-dev-server',
+          'react-hot-loader/patch',
+          './streamtest/src/client.js'
+        ],
       },
       output: {
         path: path.resolve('./dist'),
@@ -109,6 +115,13 @@ class WebpackDevConfig extends WebpackBaseConfig {
           },
           chunks: ['navtest'],
           filename: 'navtest/index.html'
+        }),
+        new HtmlWebpackPlugin({
+          template: path.resolve(__dirname, '../../streamtest/src/index.html'),
+          templateParameters: {
+          },
+          chunks: ['streamtest'],
+          filename: 'streamtest/index.html'
         }),
       ]
     };
