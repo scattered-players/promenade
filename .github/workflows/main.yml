@@ -42,23 +42,23 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: scatteredplayers/show:${{ steps.extract_branch.outputs.branch }}
-  #     - name: Build and push Load Test Maestro
-  #       id: maestro_docker_build
-  #       uses: docker/build-push-action@v2
-  #       with:
-  #         builder: ${{ steps.maestro_builder.outputs.name }}
-  #         context: ./load-testing/maestro
-  #         file: ./load-testing/maestro/Dockerfile
-  #         platforms: linux/amd64,linux/arm64
-  #         push: true
-  #         tags: scatteredplayers/maestro:${{ steps.extract_branch.outputs.branch }}
-  #     - name: Build and push Load Test Drone
-  #       id: drone_docker_build
-  #       uses: docker/build-push-action@v2
-  #       with:
-  #         builder: ${{ steps.drone_builder.outputs.name }}
-  #         context: ./load-testing/drone
-  #         file: ./load-testing/drone/Dockerfile
-  #         platforms: linux/amd64
-  #         push: true
-  #         tags: scatteredplayers/drone:${{ steps.extract_branch.outputs.branch }}
+      - name: Build and push Load Test Maestro
+        id: maestro_docker_build
+        uses: docker/build-push-action@v2
+        with:
+          builder: ${{ steps.maestro_builder.outputs.name }}
+          context: ./load-testing/maestro
+          file: ./load-testing/maestro/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: scatteredplayers/maestro:${{ steps.extract_branch.outputs.branch }}
+      - name: Build and push Load Test Drone
+        id: drone_docker_build
+        uses: docker/build-push-action@v2
+        with:
+          builder: ${{ steps.drone_builder.outputs.name }}
+          context: ./load-testing/drone
+          file: ./load-testing/drone/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: scatteredplayers/drone:${{ steps.extract_branch.outputs.branch }}
