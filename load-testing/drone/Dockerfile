@@ -16,8 +16,8 @@ RUN apt-get update \
       libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 \
       lsb-release xdg-utils google-chrome-unstable fonts-ipafont-gothic fonts-wqy-zenhei \
       fonts-thai-tlwg fonts-kacst fonts-freefont-ttf x11vnc xvfb fluxbox wmctrl x11-utils \
-      ffmpeg sudo net-tools \
-    && wget  --no-check-certificate https://yt-dl.org/latest/youtube-dl -O /usr/local/bin/youtube-dl \
+      ffmpeg sudo net-tools
+RUN wget  --no-check-certificate https://yt-dl.org/latest/youtube-dl -O /usr/local/bin/youtube-dl \
     && chmod a+x /usr/local/bin/youtube-dl
 
 # RUN LC_ALL=en_US.UTF-8 /usr/local/bin/youtube-dl \
