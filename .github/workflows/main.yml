@@ -59,6 +59,6 @@ jobs:
           builder: ${{ steps.drone_builder.outputs.name }}
           context: ./load-testing/drone
           file: ./load-testing/drone/Dockerfile
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: scatteredplayers/drone:${{ steps.extract_branch.outputs.branch }}
