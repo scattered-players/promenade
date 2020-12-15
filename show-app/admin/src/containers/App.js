@@ -68,7 +68,8 @@ import {
   sendCue,
   toggleNotifications,
   deleteHistoryEntry,
-  deleteScene
+  deleteScene,
+  getStreamKey
 } from '../actions/';
 import Main from '../components/App';
 /* Populated by react-webpack-redux:reducer */
@@ -151,7 +152,8 @@ App.propTypes = {
     sendCue: PropTypes.func.isRequired,
     toggleNotifications: PropTypes.func.isRequired,
     deleteHistoryEntry: PropTypes.func.isRequired,
-    deleteScene: PropTypes.func.isRequired
+    deleteScene: PropTypes.func.isRequired,
+    getStreamKey: PropTypes.func.isRequired
   }),
   stuff: PropTypes.shape({}),
   system: PropTypes.shape({}),
@@ -231,7 +233,8 @@ function mapDispatchToProps(dispatch) {
     sendCue,
     toggleNotifications,
     deleteHistoryEntry,
-    deleteScene
+    deleteScene,
+    getStreamKey
   };
   const actionMap = { actions: bindActionCreators(actions, dispatch) };
   return actionMap;

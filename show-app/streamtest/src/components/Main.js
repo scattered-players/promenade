@@ -11,6 +11,9 @@ import {
 import 'video.js/dist/video-js.css';
 import './main.scss';
 
+const urlParams = new URLSearchParams(window.location.search);
+const streamId = urlParams.get('streamId') || 'heyo';
+
 class Main extends React.Component {
   constructor(props){
     super(props);
@@ -24,7 +27,7 @@ class Main extends React.Component {
       controls: true,
       muted: true,
       sources: [{
-        src: `${config.STREAM_HOST}/live/heyo/index.m3u8`,
+        src: `${config.STREAM_HOST}/live/${streamId}/index.m3u8`,
         type: 'application/x-mpegURL'
       }]
     }, function onPlayerReady() {

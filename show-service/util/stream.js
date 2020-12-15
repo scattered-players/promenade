@@ -1,8 +1,6 @@
 const path = require('path');
-const fs = require('fs').promises;
 const NodeMediaServer = require('node-media-server');
-
-const { SHOW_DOMAIN_NAME } = require('../secrets/promenade-config.json');
+const { SHOW_DOMAIN_NAME, STREAM_SECRET } = require('../secrets/promenade-config.json');
 
 module.exports = app => {
   const config = {
@@ -26,10 +24,17 @@ module.exports = app => {
           app: 'live',
           hls: true,
           hlsFlags: '[hls_time=2:hls_list_size=3:hls_flags=delete_segments:hls_segment_type=fmp4]',
-          dash: true,
-          dashFlags: '[f=dash:seg_duration=2:window_size=3:extra_window_size=5]'
+          dash: false,
+          dashFlags: '[f=dash:seg_duration=2:window_size=3:extra_window_size=5]',
+          mp4: true,
+          mp4Flags: '[movflags=frag_keyframe+empty_moov]',
         }
       ]
+    },
+    auth: {
+      play: false,
+      publish: true,
+      secret: STREAM_SECRET
     }
   };
 

@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 const router = express.Router();
@@ -23,6 +24,9 @@ const {
 const {
   SITE_BASE_URL
 } = require('../secrets/credentials');
+const {
+  STREAM_SECRET
+} = require('../secrets/promenade-config');
 
 /* GET shows listing. */
 router.get('/', asyncHandler(async (req, res, next) => {
@@ -143,6 +147,26 @@ router.get('/loginEmailCsv/:showId', asyncHandler(async (req, res, next) => {
     loginurl: `${SITE_BASE_URL}/attendee/?token=${createExpiringToken(attendee, '120h')}`
   })));
   res.json(emailInfo);
+}));
+
+/* GET stream key*/
+router.get('/streamkey/:showId', asyncHandler(async (req, res, next) => {
+  if(req.userKind !== 'Admin') {
+    return res.sendStatus(403);
+  }
+
+  let { showId } = req.params;
+  let show = await Show.findById(showId);
+  if(!show) {
+    return res.sendStatus(404);
+  }
+  
+  const streamName = show._id
+  const exptime = Math.round(Date.now()/1000) + 86400;
+  let hash = crypto.createHash('md5').update(`/live/${streamName}-${exptime}-${STREAM_SECRET}`).digest("hex");
+  let sign = `${exptime}-${hash}`;
+  let streamKey = `${streamName}?sign=${sign}`;
+  res.json({streamKey});
 }));
 
 /* POST send emails to all attendees */
