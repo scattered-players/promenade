@@ -39,7 +39,7 @@ jobs:
           builder: ${{ steps.show_builder.outputs.name }}
           context: ./show-service
           file: ./show-service/Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/ppc64le,linux/s390x
           push: true
           tags: scatteredplayers/show:${{ steps.extract_branch.outputs.branch }}
       - name: Build and push Load Test Maestro
@@ -49,7 +49,7 @@ jobs:
           builder: ${{ steps.maestro_builder.outputs.name }}
           context: ./load-testing/maestro
           file: ./load-testing/maestro/Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/ppc64le,linux/s390x
           push: true
           tags: scatteredplayers/maestro:${{ steps.extract_branch.outputs.branch }}
       # - name: Build and push Load Test Drone
