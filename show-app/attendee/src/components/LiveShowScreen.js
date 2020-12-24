@@ -29,16 +29,14 @@ class LiveShowScreen extends React.Component {
     const CurrentScreen = screenDict[system.currentShow.state];
     return (
       <div className="liveshowscreen-component">
-        <div className="upper-region">
-          <div className="main-area">
-            {
-              !config.IS_MOBILE && (
-                <CurrentScreen actions={actions} system={system} navWorker={navWorker}/>
-              )
-            }
-          </div>
-          <PartySidebar system={system} actions={actions} />
+        <div className="main-area">
+          {
+            !config.IS_MOBILE && (
+              <CurrentScreen actions={actions} system={system} navWorker={navWorker}/>
+            )
+          }
         </div>
+        <PartySidebar system={system} actions={actions} />
         { !config.IS_MOBILE && localStream && <VideoRow system={system} actions={actions} /> }
       </div>
     );

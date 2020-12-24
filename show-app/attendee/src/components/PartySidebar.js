@@ -122,8 +122,8 @@ class PartySidebar extends React.Component {
     const CurrentScreen = screenDict[system.currentShow.state];
     return (
       <div className="partysidebar-component">
-        { config.IS_MOBILE && system.currentShow.state === showStatusEnum.INTRO && <IntroScreen /> }
-        { config.IS_MOBILE && system.currentShow.state === showStatusEnum.ENDING && <EndingScreen /> }
+        { config.IS_MOBILE && system.currentShow.state === showStatusEnum.INTRO && <IntroScreen actions={actions} system={system}/> }
+        { config.IS_MOBILE && system.currentShow.state === showStatusEnum.ENDING && <EndingScreen actions={actions} system={system}/> }
         <Tabs
           className="tabs"
           value={currentTab}

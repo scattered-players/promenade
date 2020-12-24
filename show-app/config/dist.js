@@ -4,7 +4,7 @@ import { DOMAIN } from 'custom/config.json';
 const config = {
   appEnv: 'dist',
   JANUS_DOMAIN: DOMAIN,
-  STREAM_HOST:  `https://services.${DOMAIN}:9000`,
+  STREAM_HOST:  `https://${DOMAIN}/live`,
   SERVICE_HOST: `https://services.${DOMAIN}`,
   SOCKET_ADDRESS: `wss://services.${DOMAIN}`,
   ADMIN_URL: `https://${DOMAIN}/admin/`,

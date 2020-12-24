@@ -164,7 +164,7 @@ class Show extends React.Component {
                 {/* <Button onClick={ () => sendShowEmail(show._id)}>Send Login Emails</Button> */}
                 <Button onClick={ () => fetchShowEmailCsv(show._id, show.date)}>Fetch Email CSV</Button>
                 <Button onClick={ () => getStreamKey(show._id)}>Get Stream Key</Button>
-                <a href={`${location.protocol}//${location.host}/streamtest?streamId=${show._id}`} target="_blank">Test Stream</a>
+                <Button href={`${location.protocol}//${location.host}/streamtest/?streamId=${show._id}`} target="_blank">Test Stream</Button>
               </div>
               {/* <div>
                 <FormControlLabel control={<Switch checked={!!show.hasIntroAlert} onChange={ e => sendIntroAlert(show._id, e.target.checked) } />} label="Intro Alert"/>

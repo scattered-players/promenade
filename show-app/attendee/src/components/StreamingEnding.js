@@ -1,70 +1,44 @@
 import React from 'react';
+import config from 'config';
+import videojs from 'video.js';
+
+import 'video.js/dist/video-js.css';
 import './streamingending.scss';
 
 class StreamingEnding extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      needsUserClick: false
     };
-
-    this.playEnding = this.playEnding.bind(this);
   }
 
   componentDidMount() {
-    const { actions: { joinStream }, system: { currentShow } } = this.props;
-    joinStream(`wss://janus.${config.JANUS_DOMAIN}:8989/`, currentShow._id);
-  }
-
-  componentDidUpdate(){
-    let { system: { streamingFeed } } = this.props;
-    const theVideo = this.refs.videofeed;
-    if(streamingFeed && streamingFeed.stream && theVideo && theVideo.srcObject !== streamingFeed.stream){
-      theVideo.addEventListener('playing', () => {
-        console.log('ENDING PLAYING');
-        // this.setState({ needsUserClick: false });
-      });
-      Janus.attachMediaStream(theVideo, streamingFeed.stream);
-      this.playEnding();
-    }
-  }
-
-  async playEnding() {
-    console.log('ATTEMPTING TO PLAY ENDING');
-    const theVideo = this.refs.videofeed;
-    try {
-      await theVideo.play();
-      console.log('YAY ENDING');
-    } catch(e) {
-      console.error('UHOH ENDING:', e);
-      this.setState({needsUserClick: true})
-    }
+    let { system: { currentShow: { _id:showId} } } = this.props;
+    this.player = videojs(this.videoNode, {
+      autoplay: true,
+      controls: true,
+      muted: false,
+      sources: [{
+        src: `${config.STREAM_HOST}/${showId}/index.m3u8`,
+        type: 'application/x-mpegURL'
+      }]
+    }, function onPlayerReady() {
+      console.log('onPlayerReady', this)
+    });
   }
 
   componentWillUnmount(){
-    const { actions: { leaveStream } } = this.props;
-    leaveStream()
+    if(this.player) {
+      this.player.dispose();
+    }
   }
 
-
   render() {
-    let { system: { streamingFeed } } = this.props;
-    let { needsUserClick } = this.state;
     return (
       <div className="streamingending-component">
-      {
-        streamingFeed && streamingFeed.stream && <video className="ending-video" ref="videofeed" playsInline/>
-      }
-      <Dialog onClose={() => this.setState({needsUserClick: false}, this.playEnding)} open={needsUserClick}>
-        <DialogContent>
-          <Typography variant="body1">Click continue to view the ending</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => this.setState({needsUserClick: false}, this.playEnding)}>
-            Continue
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <div data-vjs-player>
+          <video ref={ node => this.videoNode = node } className="video-js"></video>
+        </div>
       </div>
     );
   }

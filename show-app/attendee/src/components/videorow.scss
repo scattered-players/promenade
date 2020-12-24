@@ -1,5 +1,5 @@
 .video-row {
-  flex: 0 0 auto;
+  grid-area: video-row;
   display: flex;
   justify-content: flex-start;
   min-height: 50px;
