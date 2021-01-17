@@ -137,7 +137,7 @@ class WebpackBaseConfig {
               `${this.srcPathAbsolute}/streamtest/src/`,
             ],
             loader: 'babel-loader',
-            query: {
+            options: {
               presets: [
                 [
                   "@babel/preset-env",
@@ -151,7 +151,7 @@ class WebpackBaseConfig {
           },
           {
             test: /^.((?!cssmodule).)*\.css$/,
-            loaders: [
+            use: [
               { loader: 'style-loader' },
               { loader: 'css-loader' }
             ]
@@ -162,7 +162,7 @@ class WebpackBaseConfig {
           },
           {
             test: /^.((?!cssmodule).)*\.(sass|scss)$/,
-            loaders: [
+            use: [
               { loader: 'style-loader' },
               { loader: 'css-loader' },
               {
@@ -185,7 +185,7 @@ class WebpackBaseConfig {
           },
           {
             test: /^.((?!cssmodule).)*\.less$/,
-            loaders: [
+            use: [
               { loader: 'style-loader' },
               { loader: 'css-loader' },
               { loader: 'less-loader' }
@@ -193,7 +193,7 @@ class WebpackBaseConfig {
           },
           {
             test: /^.((?!cssmodule).)*\.styl$/,
-            loaders: [
+            use: [
               { loader: 'style-loader' },
               { loader: 'css-loader' },
               { loader: 'stylus-loader' }
@@ -213,54 +213,54 @@ class WebpackBaseConfig {
               `${this.srcPathAbsolute}/navtest/src/`,
               `${this.srcPathAbsolute}/streamtest/src/`,
             ],
-            loaders: [
+            use: [
               // Note: Moved this to .babelrc
               { loader: 'babel-loader' }
             ]
           },
-          {
-            test: /\.cssmodule\.(sass|scss)$/,
-            loaders: [
-              { loader: 'style-loader' },
-              {
-                loader: 'css-loader',
-                query: cssModulesQuery
-              },
-              { loader: 'sass-loader' }
-            ]
-          },
-          {
-            test: /\.cssmodule\.css$/,
-            loaders: [
-              { loader: 'style-loader' },
-              {
-                loader: 'css-loader',
-                query: cssModulesQuery
-              }
-            ]
-          },
-          {
-            test: /\.cssmodule\.less$/,
-            loaders: [
-              { loader: 'style-loader' },
-              {
-                loader: 'css-loader',
-                query: cssModulesQuery
-              },
-              { loader: 'less-loader' }
-            ]
-          },
-          {
-            test: /\.cssmodule\.styl$/,
-            loaders: [
-              { loader: 'style-loader' },
-              {
-                loader: 'css-loader',
-                query: cssModulesQuery
-              },
-              { loader: 'stylus-loader' }
-            ]
-          },
+          // {
+          //   test: /\.cssmodule\.(sass|scss)$/,
+          //   use: [
+          //     { loader: 'style-loader' },
+          //     {
+          //       loader: 'css-loader',
+          //       query: cssModulesQuery
+          //     },
+          //     { loader: 'sass-loader' }
+          //   ]
+          // },
+          // {
+          //   test: /\.cssmodule\.css$/,
+          //   use: [
+          //     { loader: 'style-loader' },
+          //     {
+          //       loader: 'css-loader',
+          //       query: cssModulesQuery
+          //     }
+          //   ]
+          // },
+          // {
+          //   test: /\.cssmodule\.less$/,
+          //   use: [
+          //     { loader: 'style-loader' },
+          //     {
+          //       loader: 'css-loader',
+          //       query: cssModulesQuery
+          //     },
+          //     { loader: 'less-loader' }
+          //   ]
+          // },
+          // {
+          //   test: /\.cssmodule\.styl$/,
+          //   use: [
+          //     { loader: 'style-loader' },
+          //     {
+          //       loader: 'css-loader',
+          //       query: cssModulesQuery
+          //     },
+          //     { loader: 'stylus-loader' }
+          //   ]
+          // },
           {
             test: require.resolve('janus-gateway'),
             use: 'exports-loader?Janus=Janus'

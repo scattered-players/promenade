@@ -71,7 +71,7 @@ class WebpackIoCDevConfig extends WebpackBaseConfig {
       mode: 'development',
       output: {
         path: path.resolve('./dist'),
-        filename: 'assets/[name].[hash].js',
+        filename: 'assets/[name].[contenthash].js',
         publicPath: '/',
         globalObject: 'this'
       },

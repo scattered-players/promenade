@@ -17,6 +17,7 @@ class WebpackIoCDistConfig extends WebpackBaseConfig {
   constructor(workers) {
     super(workers);
     this.config = {
+      mode:'production',
       cache: false,
       devtool: 'source-map',
       plugins: [

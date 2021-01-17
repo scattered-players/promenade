@@ -47,10 +47,11 @@ if(requestedConfig === 'iocdist'){
   webpack(loadedInstance.config, (err, stats) => { // Stats Object
     if (err || stats.hasErrors()) {
       // Handle errors here
-      console.log('OHNO!', err, stats.toString({
-        // Add console colors
-        colors: true
-      }));
+      console.log('OHNO!',err);
+      // console.log('OHNO!', err, stats.toString({
+      //   // Add console colors
+      //   colors: true
+      // }));
     }
     console.log('DONE!')
     // Done processing

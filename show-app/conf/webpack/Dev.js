@@ -14,6 +14,7 @@ class WebpackDevConfig extends WebpackBaseConfig {
   constructor() {
     super();
     this.config = {
+      mode:'development',
       devtool: 'cheap-module-source-map',
       entry: {
         attendee:[
@@ -61,7 +62,7 @@ class WebpackDevConfig extends WebpackBaseConfig {
       },
       output: {
         path: path.resolve('./dist'),
-        filename: 'assets/[name].[hash].js',
+        filename: 'assets/[name].[contenthash].js',
         publicPath: '/',
         globalObject: 'this'
       },
