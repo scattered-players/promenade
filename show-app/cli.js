@@ -10,7 +10,7 @@ const { argv } = require('yargs')
   .demandOption(['env'], 'Please provide an environment')
   .array('workers')
   .default('workers', []);
-
+console.log('HEYO')
 console.log('YAR', argv);
 const webpack = require('webpack');
 const webpackConfigs = require('./conf/webpack');
