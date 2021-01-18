@@ -20,6 +20,7 @@ import StaffTab from './StaffTab';
 import ErrorsTab from './ErrorsTab';
 import SlowlinkTab from './SlowlinkTab';
 import ScenesTab from './ScenesTab';
+import PhasesTab from './PhasesTab';
 
 import './main.scss';
 
@@ -48,7 +49,7 @@ class Main extends React.Component {
     super(props);
 
     this.state = {
-      currentTab: 0
+      currentTab: 6
     };
 
     this.init = this.init.bind(this);
@@ -117,6 +118,7 @@ class Main extends React.Component {
             <Tab label="Logs" />
             <Tab label="Connectivity" />
             <Tab label="Scenes" />
+            <Tab label="Phases" />
           </Tabs>
         </AppBar>
         <TabPanel value={currentTab} index={0} className="tab-panel">
@@ -136,6 +138,9 @@ class Main extends React.Component {
         </TabPanel>
         <TabPanel value={currentTab} index={5} className="tab-panel">
           <ScenesTab system={system} actions={actions} />
+        </TabPanel>
+        <TabPanel value={currentTab} index={6} className="tab-panel">
+          <PhasesTab system={system} actions={actions} />
         </TabPanel>
       </>
     )

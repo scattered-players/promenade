@@ -26,6 +26,7 @@ const initialState = {
   attendees: [],
   guides: [],
   shows: [],
+  phases: [],
   currentShow: null,
   logins: [],
   errors: [],
@@ -219,6 +220,7 @@ function reducer(state = initialState, action) {
         admins,
         attendees,
         guides,
+        phases,
         scenes,
         pullTime,
         adminSockets,
@@ -232,6 +234,7 @@ function reducer(state = initialState, action) {
       nextState.admins = admins;
       nextState.attendees = attendees;
       nextState.guides = guides;
+      nextState.phases = phases;
       nextState.scenes = scenes;
       nextState.pullTime = pullTime;
       nextState.adminSockets = adminSockets;

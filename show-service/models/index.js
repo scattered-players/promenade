@@ -11,6 +11,7 @@ const itemSchema = require('../schemas/item');
 const messageSchema = require('../schemas/message');
 const partySchema = require('../schemas/party');
 const placeSchema = require('../schemas/place');
+const phaseSchema = require('../schemas/phase');
 const showSchema = require('../schemas/show');
 const sceneSchema = require('../schemas/scene');
 
@@ -25,6 +26,8 @@ const { DEFAULT_PARTIES, ENDING_TYPE } = require('../secrets/promenade-config.js
 
 showSchema.statics.scheduleShow = async function(showDate, numParties, isEventbrite=false,
     eventBriteId) {
+
+  let startPhase = await Phase.findOne();
   let parties = [];
   for(let i = 0; i < numParties; i++){
     let newParty = new Party({
@@ -60,9 +63,8 @@ showSchema.statics.scheduleShow = async function(showDate, numParties, isEventbr
     date: showDate,
     isEventbrite,
     parties: parties.map(party => party._id),
-    state: 'PRESHOW',
+    currentPhase: startPhase,
     isRunning: false,
-    places: [],
     eventBriteId: eventBriteId,
     endingType: ENDING_TYPE
   });
@@ -446,6 +448,8 @@ var Place = mongoose.model('Place', placeSchema);
 var Show = mongoose.model('Show', showSchema);
 var Scene = mongoose.model('Scene', sceneSchema);
 
+var Phase = mongoose.model('Phase', phaseSchema);
+
 module.exports = {
   User,
   Actor,
@@ -456,6 +460,7 @@ module.exports = {
   Item,
   Message,
   Party,
+  Phase,
   Place,
   Show,
   Scene

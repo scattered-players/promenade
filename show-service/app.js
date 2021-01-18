@@ -22,6 +22,7 @@ const routes = require('./routes/index');
 const users = require('./routes/user');
 const shows = require('./routes/show');
 const parties = require('./routes/party');
+const phases = require('./routes/phase');
 const navigation = require('./routes/navigation');
 const sync = require('./routes/sync');
 
@@ -74,6 +75,7 @@ app.use('/', routes);
 app.use('/users', users);
 app.use('/shows', shows);
 app.use('/parties', parties);
+app.use('/phases', phases);
 app.use('/navigation', navigation);
 app.use('/sync', sync);
 
@@ -133,7 +135,6 @@ async function createServer(){
 (async () => {
   try {
     await startup();
-    // await syncWithEventbrite();
     const server = await createServer();
     startWebsockets(server);
     server.listen(process.env.PORT || 5000, () => {
@@ -164,10 +165,7 @@ async function defaultAdmin() {
   }
 }
 
-// if (app.get('env') === 'development') {
-  defaultAdmin();
-// }
-
+defaultAdmin();
 
 const nms = require('./util/stream')(app);
 nms.run();

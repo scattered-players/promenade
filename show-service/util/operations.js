@@ -7,6 +7,7 @@ const {
   Attendance,
   Guide,
   Show,
+  Phase,
   Place,
   Party,
   User,
@@ -38,6 +39,7 @@ const {
   broadcastGuide,
   sendMessageToUser
 } = require('../ws/broadcast');
+
 
 const env = process.env.NODE_ENV || 'development';
 
@@ -144,7 +146,8 @@ const refreshSystemState = _.debounce(async function() {
       admins,
       attendees,
       guides,
-      scenes
+      scenes,
+      phases
     ] = await Promise.all([
       Show.getTotalState(),
       Actor.find().populate({
@@ -165,7 +168,8 @@ const refreshSystemState = _.debounce(async function() {
         path: 'place'
       },{
         path: 'party'
-      }]).lean()
+      }]).lean(),
+      Phase.find().lean()
     ]);
     broadcastAdmin({
       type:'RECEIVE_SYSTEM_STATE',
@@ -176,6 +180,7 @@ const refreshSystemState = _.debounce(async function() {
         attendees,
         guides,
         scenes,
+        phases,
         pullTime: (Date.now() - startTime) / 1000,
         adminSockets: wssAdmin.clients.size,
         actorSockets: wssActor.clients.size,
@@ -409,8 +414,23 @@ async function blockUser(userId) {
   }, 1000);
 }
 
+async function defaultPhases() {
+  let phases = await Phase.find({}).lean();
+  if(!phases.length) {
+    await Phase.create({
+      name:"End",
+      kind:"KICK"
+    });
+    console.log('DEFAULT PHASE CREATED');
+  }
+}
+
 async function startup() {
   let promises = [];
+  promises.push((async () => {
+    await defaultPhases();
+    // await syncWithEventbrite();
+  })());
   promises.push(User.updateMany({}, { $set: { isOnline: false }}));
   promises.push(Party.updateMany({}, { $set: { decider: null, decisionDeadline: null, decisionTimeoutId: null, currentPlace: null, nextPlace: null, selectedPlace: null }}));
   promises.push(Place.updateMany({}, { $set: { currentParty: null, partyQueue: [] }}));
