@@ -263,7 +263,10 @@ class WebpackBaseConfig {
           // },
           {
             test: require.resolve('janus-gateway'),
-            use: 'exports-loader?Janus=Janus'
+            loader: 'exports-loader',
+            options: {
+              exports: 'Janus'
+            }
           },
           {
             test: /\.glsl$/i,

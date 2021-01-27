@@ -26,8 +26,7 @@ class WebpackIoCDistConfig extends WebpackBaseConfig {
           'process.env.NODE_ENV': '"production"',
         }),
         new webpack.optimize.AggressiveMergingPlugin(),
-        new webpack.NoEmitOnErrorsPlugin(),
-        new webpack.ProvidePlugin({ adapter: 'webrtc-adapter' }),
+        new webpack.ProvidePlugin({ adapter: ['webrtc-adapter', 'default'] }),
         new HtmlWebpackPlugin({
           template: path.resolve(__dirname, '../../attendee/src/index.html'),
           templateParameters: {

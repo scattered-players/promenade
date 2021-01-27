@@ -52,7 +52,7 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^2.2.0",
     "eslint-plugin-react": "^6.0.0",
-    "exports-loader": "^0.7.0",
+    "exports-loader": "^2.0.0",
     "file-loader": "^6.0.0",
     "html-webpack-plugin": "next",
     "janus-gateway": "https://github.com/meetecho/janus-gateway.git",
