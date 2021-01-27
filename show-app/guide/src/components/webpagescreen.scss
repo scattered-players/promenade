@@ -1,0 +1,11 @@
+.webpagescreen-component {
+  height: 100%;
+  overflow: auto;
+  max-width: 100vw;
+
+  iframe {
+    border: 0;
+    height: 100%;
+    width: 100%;
+  }
+}

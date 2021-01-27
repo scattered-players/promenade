@@ -1,8 +1,8 @@
 import React from 'react';
 import config from 'config';
 
-import showStatusEnum from '../enum/showStatus';
-import PreshowScreen from './PreshowScreen';
+import phaseKindsEnum from '../enum/phasesKinds';
+import WebpageScreen from './WebpageScreen';
 import IntroScreen from './IntroScreen';
 import FreeplayScreen from './FreeplayScreen';
 import EndingScreen from './EndingScreen';
@@ -20,13 +20,13 @@ class LiveShowScreen extends React.Component {
       localStream
     } = system;
     const screenDict = {
-      [showStatusEnum.PRESHOW]: PreshowScreen,
-      [showStatusEnum.INTRO]: IntroScreen,
-      [showStatusEnum.FREEPLAY]: FreeplayScreen,
-      [showStatusEnum.ENDING]: EndingScreen,
-      [showStatusEnum.HAS_ENDED]: PostshowScreen,
+      [phaseKindsEnum.WEB_PAGE]: WebpageScreen,
+      // [showStatusEnum.INTRO]: IntroScreen,
+      // [showStatusEnum.FREEPLAY]: FreeplayScreen,
+      // [showStatusEnum.ENDING]: EndingScreen,
+      // [showStatusEnum.HAS_ENDED]: PostshowScreen,
     };
-    const CurrentScreen = screenDict[system.currentShow.state];
+    const CurrentScreen = screenDict[system.currentShow.currentPhase.kind];
     return (
       <div className="liveshowscreen-component">
         <div className="main-area">

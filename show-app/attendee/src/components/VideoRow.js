@@ -17,7 +17,7 @@ import VideocamIcon from '@material-ui/icons/Videocam';
 import VideocamOffIcon from '@material-ui/icons/VideocamOff';
 import SettingsIcon from '@material-ui/icons/Settings';
 
-import showStatusEnum from '../enum/showStatus';
+import phaseKindsEnum from '../enum/phasesKinds';
 
 import VideoFeed from './VideoFeed';
 import Settings from './Settings';
@@ -75,7 +75,7 @@ class VideoRow extends React.Component {
       localFeed,
       currentShow: {
         hasEndingAlert,
-        state: showState
+        currentPhase
       },
       videoInputs,
       audioInputs,
@@ -117,7 +117,7 @@ class VideoRow extends React.Component {
                     isLocalVideoMuted={false}
                     isLocalAudioMuted={false}
                     isNerdy={isNerdy}
-                    shouldMute={showState === showStatusEnum.INTRO || showState ===  showStatusEnum.ENDING}
+                    shouldMute={currentPhase.kind === phaseKindsEnum.STATIC_VIDEO || currentPhase.kind === phaseKindsEnum.VIDEO_CHOICE}
                   /> 
                 )
               }
@@ -132,7 +132,7 @@ class VideoRow extends React.Component {
                   <Typography variant="body1" className="nametag">{user.username}</Typography>
                 </div>
               </div>
-              { !(showState === showStatusEnum.INTRO || showState ===  showStatusEnum.ENDING) &&
+              { !(currentPhase.kind === phaseKindsEnum.STATIC_VIDEO || currentPhase.kind === phaseKindsEnum.VIDEO_CHOICE) &&
                 <div className="local-button-row">
                   <div className="button-row-backdrop"></div>
                   <IconButton className="settings-toggle" color="inherit" onClick={() =>  this.setState({isSettingsDisplayed: true}) }>
@@ -201,7 +201,7 @@ class VideoRow extends React.Component {
                   isLocalVideoMuted={isVideoMuted}
                   isLocalAudioMuted={isAudioMuted}
                   isNerdy={isNerdy}
-                  shouldMute={showState === showStatusEnum.INTRO || showState ===  showStatusEnum.ENDING}
+                  shouldMute={currentPhase.kind === phaseKindsEnum.STATIC_VIDEO || currentPhase.kind === phaseKindsEnum.VIDEO_CHOICE}
                   />
               }
             </div>
@@ -228,7 +228,7 @@ class VideoRow extends React.Component {
                     isLocalVideoMuted={false}
                     isLocalAudioMuted={false}
                     isNerdy={isNerdy}
-                    shouldMute={showState === showStatusEnum.INTRO || showState ===  showStatusEnum.ENDING}
+                    shouldMute={currentPhase.kind === phaseKindsEnum.STATIC_VIDEO || currentPhase.kind === phaseKindsEnum.VIDEO_CHOICE}
                   /> 
                 )
               }
