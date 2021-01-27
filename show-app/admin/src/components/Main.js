@@ -49,7 +49,7 @@ class Main extends React.Component {
     super(props);
 
     this.state = {
-      currentTab: 6
+      currentTab: 0
     };
 
     this.init = this.init.bind(this);

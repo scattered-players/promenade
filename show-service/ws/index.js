@@ -195,7 +195,7 @@ wssAttendee.on('connection', async function connection(ws, request, client) {
         await User.updateOne({ _id: userId }, { $set: { isOnline: false } });
 
         let currentShow = await Show.getCurrentShowState();
-        if(currentShow && currentShow.state === 'FREEPLAY'){
+        if(currentShow && currentShow.currentPhase.kind === 'FREEPLAY'){
           let matchingParties = currentShow.parties.filter(party => party.attendances.reduce((acc,attendance) => acc || attendance.attendee._id === userId, false));
           if(matchingParties[0]){
             await validateDecider(matchingParties[0]);
@@ -209,7 +209,7 @@ wssAttendee.on('connection', async function connection(ws, request, client) {
   });
   await User.updateOne({ _id: userId }, { $set: { isOnline: true, currentBrowser: ws.browser } });
   let currentShow = await Show.getCurrentShowState();
-  if(currentShow && currentShow.state === 'FREEPLAY'){
+  if(currentShow && currentShow.currentPhase.kind === 'FREEPLAY'){
     let matchingParties = currentShow.parties.filter(party => party.attendances.reduce((acc,attendance) => acc || attendance.attendee._id === userId, false));
     if(matchingParties[0]){
       await validateDecider(matchingParties[0]);
@@ -260,7 +260,7 @@ wssGuide.on('connection', async function connection(ws, request, client) {
         await User.updateOne({ _id: userId }, { $set: { isOnline: false } });
 
         let currentShow = await Show.getCurrentShowState();
-        if(currentShow && currentShow.state === 'FREEPLAY') {
+        if(currentShow && currentShow.currentPhase.kind === 'FREEPLAY') {
           let matchingParties = currentShow.parties.filter(party => party.guide._id === userId);
           if(matchingParties[0]){
             await validateDecider(matchingParties[0]);
@@ -274,7 +274,7 @@ wssGuide.on('connection', async function connection(ws, request, client) {
   });
   await User.updateOne({ _id: userId }, { $set: { isOnline: true, currentBrowser: ws.browser } });
   let currentShow = await Show.getCurrentShowState();
-  if(currentShow && currentShow.state === 'FREEPLAY') {
+  if(currentShow && currentShow.currentPhase.kind === 'FREEPLAY') {
     let matchingParties = currentShow.parties.filter(party => party.guide._id === userId);
     if(matchingParties[0]){
       await validateDecider(matchingParties[0]);

@@ -110,7 +110,7 @@ class Show extends React.Component {
   }
 
   render() {
-    const { actions, show, guides } = this.props;
+    const { actions, show, guides, phases } = this.props;
     const {
       changeShowStatus,
       changeShowRunning,
@@ -130,14 +130,13 @@ class Show extends React.Component {
     }, ...CUE_LIST].map(cue => cue.id);
     const dateString = format(new Date(show.date), 'M/d/yy h:mm a');
     let availableGuides = guides.filter(guide => !show.parties.reduce((acc, party) => acc || (party.guide && party.guide._id === guide._id), false));
-    console.log('AVAILABLE GUIDES', availableGuides);
     return (
       <Accordion expanded={isExpanded} onChange={(e, isExpanded) => this.setState({isExpanded})}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <div className="show-heading">
             <div className={ 'running-indicator ' + (show.isRunning ? 'running' : 'not-running')}></div>
             <Typography>{dateString}</Typography>
-            <div className="show-state">{show.state.replace('_', ' ')}</div>
+            <div className="show-state">{show.currentPhase.name.replace('_', ' ')}</div>
           </div>
         </AccordionSummary>
         <AccordionDetails className="show-details">
@@ -152,10 +151,10 @@ class Show extends React.Component {
                 <InputLabel id={`${show._id}-state-select`}>Status</InputLabel>
                 <Select
                   labelId={`${show._id}-state-select`}
-                  value={show.state}
+                  value={show.currentPhase._id}
                   onChange={e => changeShowStatus(show._id, e.target.value)}
                 >
-                  {Object.keys(showStatusEnum).map(status => <MenuItem key={status} value={status}>{status}</MenuItem>)}
+                  {phases.map(phase => <MenuItem key={phase._id} value={phase._id}>{phase.name}</MenuItem>)}
                 </Select>
               </FormControl>
               <FormControlLabel control={<Switch checked={!!show.isEventbrite} onChange={ e => updateShowInfo(show._id, show.date, e.target.checked) } />} label="Is Eventbrite Show"/>

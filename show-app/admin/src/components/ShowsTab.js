@@ -40,7 +40,7 @@ class ShowsTab extends React.Component {
   render() {
     const { actions, system } = this.props;
     const { scheduleShow, refreshEventbrite } = actions;
-    const { guides } = system;
+    const { guides, phases } = system;
     const shows = sortBy(system.shows, show => show.date);
     const { newShowDate, newShowParties } = this.state;
     return (
@@ -86,7 +86,7 @@ class ShowsTab extends React.Component {
         </div>
         <div>
           <Typography variant="h3">Shows</Typography>
-          { shows.map(show => <Show actions={actions} guides={guides} show={show} key={show._id}/>) }
+          { shows.map(show => <Show actions={actions} guides={guides} show={show} phases={phases} key={show._id}/>) }
         </div>
       </Container>
     );
