@@ -31,12 +31,14 @@ class PhasesTab extends React.Component {
 
     this.state = {
       newPhaseName: '',
-      newPhaseKind: phaseKindsEnum.GUIDE_INTERACTION,
+      newPhaseKind: phaseKindsEnum.WEB_PAGE,
       newPhaseAttributes: {},
       isShowingCreateDialog: false
     };
 
     this.createPhase = this.createPhase.bind(this);
+    this.movePhaseDown = this.movePhaseDown.bind(this);
+    this.movePhaseUp = this.movePhaseUp.bind(this);
   }
 
   createPhase() {
@@ -53,11 +55,39 @@ class PhasesTab extends React.Component {
     if(newPhaseName !== '') {
       this.setState({
         newPhaseName: '',
-        newPhaseKind: phaseKindsEnum.GUIDE_INTERACTION,
+        newPhaseKind: phaseKindsEnum.WEB_PAGE,
         newPhaseAttributes: {}
       }, () => {
         createPhase(newPhaseName, newPhaseKind,newPhaseAttributes);
       });
+    }
+  }
+
+  movePhaseDown(index) {
+    const {
+      actions: {
+        swapPhases
+      },
+      system: {
+        phases
+      }
+    } = this.props;
+    if (index < phases.length-1){
+      swapPhases(phases[index], phases[index+1]);
+    }
+  }
+
+  movePhaseUp(index) {
+    const {
+      actions: {
+        swapPhases
+      },
+      system: {
+        phases
+      }
+    } = this.props;
+    if (index > 0){
+      swapPhases(phases[index], phases[index-1]);
     }
   }
 
@@ -129,7 +159,7 @@ class PhasesTab extends React.Component {
         </div>
         <div className="phase-list">
           {
-            phases.map(phase => <Phase phase={phase} actions={actions} key={phase._id} />)
+            phases.map(phase => <Phase phase={phase} actions={actions} key={phase._id} movePhaseDown={this.movePhaseDown} movePhaseUp={this.movePhaseUp} />)
           }
         </div>
       </div>

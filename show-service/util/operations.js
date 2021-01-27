@@ -169,7 +169,7 @@ const refreshSystemState = _.debounce(async function() {
       },{
         path: 'party'
       }]).lean(),
-      Phase.find().lean()
+      Phase.find().sort({ index: 'asc' }).lean()
     ]);
     broadcastAdmin({
       type:'RECEIVE_SYSTEM_STATE',
@@ -215,10 +215,12 @@ const refreshCurrentShowState = _.debounce(async function () {
     let startTime = Date.now();
     let [
       currentShow,
-      places
+      places,
+      phases
     ] = await Promise.all([
       Show.getCurrentShowState(),
-      Place.getCurrentPlaceState()
+      Place.getCurrentPlaceState(),
+      Phase.find().sort({ index: 'asc' }).lean()
     ]);
     broadcastAll({
       type:'RECEIVE_CURRENT_SHOW_STATE',
@@ -226,6 +228,7 @@ const refreshCurrentShowState = _.debounce(async function () {
         janusCoefficient,
         currentShow,
         places,
+        phases,
         pullTime: (Date.now() - startTime) / 1000
       }
     });
@@ -418,10 +421,30 @@ async function defaultPhases() {
   let phases = await Phase.find({}).lean();
   if(!phases.length) {
     await Phase.create({
-      name:"End",
-      kind:"KICK"
+      name:"Start",
+      kind:"WEB_PAGE",
+      attributes: {
+        url: 'https://www.example.com'
+      },
+      index: 0,
+      isDefault: true
     });
-    console.log('DEFAULT PHASE CREATED');
+    await Phase.create({
+      name:"Intro",
+      kind:"STATIC_VIDEO",
+      attributes: {
+        url: 'https://cdn.chrisuehlinger.com/yknow.mp4'
+      },
+      index: 1,
+      isDefault: false
+    });
+    await Phase.create({
+      name:"End",
+      kind:"KICK",
+      index: 2,
+      isDefault: false
+    });
+    console.log('DEFAULT PHASES CREATED');
   }
 }
 

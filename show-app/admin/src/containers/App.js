@@ -72,7 +72,9 @@ import {
   getStreamKey,
   createPhase,
   updatePhase,
-  deletePhase
+  deletePhase,
+  swapPhases,
+  setDefaultPhase
 } from '../actions/';
 import Main from '../components/App';
 /* Populated by react-webpack-redux:reducer */
@@ -159,7 +161,9 @@ App.propTypes = {
     getStreamKey: PropTypes.func.isRequired,
     createPhase: PropTypes.func.isRequired,
     updatePhase: PropTypes.func.isRequired,
-    deletePhase: PropTypes.func.isRequired
+    deletePhase: PropTypes.func.isRequired,
+    swapPhases: PropTypes.func.isRequired,
+    setDefaultPhase: PropTypes.func.isRequired
   }),
   stuff: PropTypes.shape({}),
   system: PropTypes.shape({}),
@@ -243,7 +247,9 @@ function mapDispatchToProps(dispatch) {
     getStreamKey,
     createPhase,
     updatePhase,
-    deletePhase
+    deletePhase,
+    swapPhases,
+    setDefaultPhase
   };
   const actionMap = { actions: bindActionCreators(actions, dispatch) };
   return actionMap;

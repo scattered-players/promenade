@@ -27,7 +27,7 @@ const { DEFAULT_PARTIES, ENDING_TYPE } = require('../secrets/promenade-config.js
 showSchema.statics.scheduleShow = async function(showDate, numParties, isEventbrite=false,
     eventBriteId) {
 
-  let startPhase = await Phase.findOne();
+  let startPhase = await Phase.findOne({ isDefault: true });
   let parties = [];
   for(let i = 0; i < numParties; i++){
     let newParty = new Party({
@@ -117,44 +117,49 @@ attendanceSchema.statics.deleteTicket = async function(attendeeEmail, showId) {
 
 showSchema.statics.getTotalState = async function(){
   let shows = await this.find()
-  .populate({
-    path: 'parties',
-    populate: [
-      {
-        path:'attendances',
-        populate: {
-          path: 'attendee'
+  .populate([
+    {
+      path: 'currentPhase'
+    },
+    {
+      path: 'parties',
+      populate: [
+        {
+          path:'attendances',
+          populate: {
+            path: 'attendee'
+          }
+        },
+        {
+          path:'decider',
+          populate: {
+            path: 'attendee'
+          }
+        },
+        {
+          path:'guide'
+        },
+        {
+          path:'currentPlace'
+        },
+        {
+          path:'nextPlace'
+        },
+        {
+          path:'selectedPlace'
+        },
+        {
+          path:'history'
+        },
+        {
+          path: 'inventory'
+        },
+        {
+          path: 'chat'
         }
-      },
-      {
-        path:'decider',
-        populate: {
-          path: 'attendee'
-        }
-      },
-      {
-        path:'guide'
-      },
-      {
-        path:'currentPlace'
-      },
-      {
-        path:'nextPlace'
-      },
-      {
-        path:'selectedPlace'
-      },
-      {
-        path:'history'
-      },
-      {
-        path: 'inventory'
-      },
-      {
-        path: 'chat'
-      }
-    ]
-  })
+      ]
+    }
+  ])
   .lean();
   shows.map(show => {
     show.parties.map(party => {
@@ -197,46 +202,51 @@ showSchema.statics.deleteShow = async function(showId){
 
 showSchema.statics.getCurrentShowState = async function() {
   let show = await this.findOne({ isRunning: true })
-    .populate({
-      path: 'parties',
-      populate: [
-        {
-          path:'attendances',
-          populate: {
-            path: 'attendee',
-            select: '-email'
+    .populate([
+      {
+        path: 'currentPhase'
+      },
+      {
+        path: 'parties',
+        populate: [
+          {
+            path:'attendances',
+            populate: {
+              path: 'attendee',
+              select: '-email'
+            }
+          },
+          {
+            path:'decider',
+            populate: {
+              path: 'attendee',
+              select: '-email'
+            }
+          },
+          {
+            path:'guide'
+          },
+          {
+            path:'currentPlace'
+          },
+          {
+            path:'nextPlace'
+          },
+          {
+            path:'selectedPlace'
+          },
+          {
+            path:'history'
+          },
+          {
+            path: 'inventory'
+          },
+          {
+            path: 'chat'
           }
-        },
-        {
-          path:'decider',
-          populate: {
-            path: 'attendee',
-            select: '-email'
-          }
-        },
-        {
-          path:'guide'
-        },
-        {
-          path:'currentPlace'
-        },
-        {
-          path:'nextPlace'
-        },
-        {
-          path:'selectedPlace'
-        },
-        {
-          path:'history'
-        },
-        {
-          path: 'inventory'
-        },
-        {
-          path: 'chat'
-        }
-      ]
-    })
+        ]
+      }
+    ])
     .lean();
 
   if(show){
@@ -327,46 +337,51 @@ attendeeSchema.methods.getShows = async function() {
 
 showSchema.methods.getCurrentState = async function(scrubEmails=true) {
   let show = await this
-    .populate({
-      path: 'parties',
-      populate: [
-        {
-          path:'attendances',
-          populate: {
-            path: 'attendee',
-            select: scrubEmails ? undefined : '-email'
+    .populate([
+      {
+        path: 'currentPhase'
+      },
+      {
+        path: 'parties',
+        populate: [
+          {
+            path:'attendances',
+            populate: {
+              path: 'attendee',
+              select: scrubEmails ? undefined : '-email'
+            }
+          },
+          {
+            path:'decider',
+            populate: {
+              path: 'attendee',
+              select: scrubEmails ? undefined : '-email'
+            }
+          },
+          {
+            path:'guide'
+          },
+          {
+            path:'currentPlace'
+          },
+          {
+            path:'nextPlace'
+          },
+          {
+            path:'selectedPlace'
+          },
+          {
+            path:'history'
+          },
+          {
+            path: 'inventory'
+          },
+          {
+            path: 'chat'
           }
-        },
-        {
-          path:'decider',
-          populate: {
-            path: 'attendee',
-            select: scrubEmails ? undefined : '-email'
-          }
-        },
-        {
-          path:'guide'
-        },
-        {
-          path:'currentPlace'
-        },
-        {
-          path:'nextPlace'
-        },
-        {
-          path:'selectedPlace'
-        },
-        {
-          path:'history'
-        },
-        {
-          path: 'inventory'
-        },
-        {
-          path: 'chat'
-        }
-      ]
-    })
+        ]
+      }
+    ])
     .execPopulate();
   
   show.parties.map(party => {

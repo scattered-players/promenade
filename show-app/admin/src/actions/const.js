@@ -64,3 +64,5 @@ export const GET_STREAM_KEY = 'GET_STREAM_KEY';
 export const CREATE_PHASE = 'CREATE_PHASE';
 export const UPDATE_PHASE = 'UPDATE_PHASE';
 export const DELETE_PHASE = 'DELETE_PHASE';
+export const SWAP_PHASES = 'SWAP_PHASES';
+export const SET_DEFAULT_PHASE = 'SET_DEFAULT_PHASE';
