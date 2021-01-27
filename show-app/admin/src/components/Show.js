@@ -30,8 +30,6 @@ import {
 
 import Party from './Party';
 
-import showStatusEnum from '../enum/showStatus';
-
 import './show.scss';
 
 class Show extends React.Component {
