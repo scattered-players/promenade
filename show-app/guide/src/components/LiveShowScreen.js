@@ -6,7 +6,7 @@ import WebpageScreen from './WebpageScreen';
 import IntroScreen from './IntroScreen';
 import FreeplayScreen from './FreeplayScreen';
 import EndingScreen from './EndingScreen';
-import PostshowScreen from './PostshowScreen';
+import KickScreen from './KickScreen';
 
 import PartySidebar from './PartySidebar';
 import VideoRow from './VideoRow';
@@ -24,7 +24,7 @@ class LiveShowScreen extends React.Component {
       // [showStatusEnum.INTRO]: IntroScreen,
       // [showStatusEnum.FREEPLAY]: FreeplayScreen,
       // [showStatusEnum.ENDING]: EndingScreen,
-      // [showStatusEnum.HAS_ENDED]: PostshowScreen,
+      [phaseKindsEnum.KICK]: KickScreen,
     };
     const CurrentScreen = screenDict[system.currentShow.currentPhase.kind];
     return (

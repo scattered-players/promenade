@@ -4,9 +4,8 @@ import {
   Typography
 } from '@material-ui/core';
 
-import './postshowscreen.scss';
 
-class PostshowScreen extends React.Component {
+class KickScreen extends React.Component {
 
   render() {
     return (
@@ -18,8 +17,8 @@ class PostshowScreen extends React.Component {
   }
 }
 
-PostshowScreen.displayName = 'PostshowScreen';
-PostshowScreen.propTypes = {};
-PostshowScreen.defaultProps = {};
+KickScreen.displayName = 'KickScreen';
+KickScreen.propTypes = {};
+KickScreen.defaultProps = {};
 
-export default PostshowScreen;
+export default KickScreen;

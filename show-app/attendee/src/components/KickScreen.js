@@ -1,13 +1,10 @@
 import React from 'react';
-import config from 'config'
 
 import {
   Typography
 } from '@material-ui/core';
 
-import './postshowscreen.scss';
-
-class PostshowScreen extends React.Component {
+class KickScreen extends React.Component {
 
   componentDidMount() {
     location.href = '/program.html';
@@ -15,7 +12,7 @@ class PostshowScreen extends React.Component {
 
   render() {
     return (
-      <div className="postshowscreen-component">
+      <div>
         <Typography variant="h1">The End!</Typography>
         <Typography variant="h2">Thanks for coming!</Typography>
       </div>
@@ -23,8 +20,8 @@ class PostshowScreen extends React.Component {
   }
 }
 
-PostshowScreen.displayName = 'PostshowScreen';
-PostshowScreen.propTypes = {};
-PostshowScreen.defaultProps = {};
+KickScreen.displayName = 'KickScreen';
+KickScreen.propTypes = {};
+KickScreen.defaultProps = {};
 
-export default PostshowScreen;
+export default KickScreen;

@@ -21,7 +21,7 @@ import NotesTab from './NotesTab';
 import VideoRow from './VideoRow';
 import Settings from './Settings';
 import EndingScreen from './EndingScreen';
-import PostshowScreen from './PostshowScreen';
+import KickScreen from './KickScreen';
 
 
 import './partysidebar.scss';
@@ -117,7 +117,7 @@ class PartySidebar extends React.Component {
       // [showStatusEnum.INTRO]: IntroScreen,
       // [showStatusEnum.FREEPLAY]: myParty.currentPlace  ? InteractionScreen : NavigationScreen,
       // [showStatusEnum.ENDING]: EndingScreen,
-      // [showStatusEnum.HAS_ENDED]: PostshowScreen,
+      [phaseKindsEnum.KICK]: KickScreen,
     };
     const CurrentScreen = screenDict[system.currentShow.currentPhase.kind];
     return (
