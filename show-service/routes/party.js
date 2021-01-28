@@ -64,14 +64,20 @@ router.put('/:partyId/guide/:guideId', asyncHandler(async (req, res, next) => {
   refreshSystemState();
 }));
 
-/* PUT set the ending URL for a party  */
-router.put('/:partyId/ending', asyncHandler(async (req, res, next) => {
+/* PUT set the video choice URL for a party  */
+router.put('/:partyId/videochoice', asyncHandler(async (req, res, next) => {
   if(req.userKind !== 'Actor' && req.userKind !== 'Admin' && req.userKind !== 'Guide') {
     return res.sendStatus(403);
   }
   let { partyId } = req.params;
-  let { endingUrl } = req.body;
-  await Party.updateOne({ _id: partyId }, {chosenEndingURL: endingUrl });
+  let { phaseId, videoChoice } = req.body;
+  let party = await Party.findById(partyId);
+  party.videoChoices.map(choice => {
+    if(choice.phase == phaseId){
+      choice.choiceURL = videoChoice;
+    }
+  });
+  await party.save();
   
   res.sendStatus(200);
 

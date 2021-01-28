@@ -5,7 +5,7 @@ import phaseKindsEnum from '../enum/phasesKinds';
 import WebpageScreen from './WebpageScreen';
 import StaticVideoScreen from './StaticVideoScreen';
 import FreeplayScreen from './FreeplayScreen';
-import EndingScreen from './EndingScreen';
+import VideoChoiceScreen from './VideoChoiceScreen';
 import KickScreen from './KickScreen';
 
 import PartySidebar from './PartySidebar';
@@ -23,7 +23,7 @@ class LiveShowScreen extends React.Component {
       [phaseKindsEnum.WEB_PAGE]: WebpageScreen,
       [phaseKindsEnum.STATIC_VIDEO]: StaticVideoScreen,
       // [showStatusEnum.FREEPLAY]: FreeplayScreen,
-      // [showStatusEnum.ENDING]: EndingScreen,
+      [phaseKindsEnum.VIDEO_CHOICE]: VideoChoiceScreen,
       [phaseKindsEnum.KICK]: KickScreen,
     };
     const CurrentScreen = screenDict[system.currentShow.currentPhase.kind];

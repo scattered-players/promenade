@@ -5,18 +5,18 @@ import { CHOOSE_ENDING } from './const';
 
 import showSnackbar from './showSnackbar';
 
-function action(partyId, endingUrl) {
+function action(partyId, phaseId, videoChoice) {
   return [
-    { type: CHOOSE_ENDING, partyId, endingUrl },
+    { type: CHOOSE_ENDING, partyId, phaseId, videoChoice },
     async dispatch => {
       try{
-        let response = await fetch(`${ config.SERVICE_HOST }/parties/${partyId}/ending`, {
+        let response = await fetch(`${ config.SERVICE_HOST }/parties/${partyId}/videochoice`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            endingUrl
+            phaseId, videoChoice
           }),
           credentials: 'include'
         });
@@ -24,9 +24,9 @@ function action(partyId, endingUrl) {
           throw response;
         }
 
-        dispatch(showSnackbar(<React.Fragment>Ending Chosen!</React.Fragment>));
+        dispatch(showSnackbar(<React.Fragment>Video Chosen!</React.Fragment>));
       } catch(e) {
-        dispatch(showSnackbar(`Error choosing ending: ${e.statusText || e.message}`));
+        dispatch(showSnackbar(`Error choosing video: ${e.statusText || e.message}`));
       }
     }
   ]

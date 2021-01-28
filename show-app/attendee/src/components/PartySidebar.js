@@ -20,7 +20,7 @@ import HistoryTab from './HistoryTab';
 import NotesTab from './NotesTab';
 import VideoRow from './VideoRow';
 import Settings from './Settings';
-import EndingScreen from './EndingScreen';
+import VideoChoiceScreen from './VideoChoiceScreen';
 import KickScreen from './KickScreen';
 
 
@@ -116,14 +116,14 @@ class PartySidebar extends React.Component {
       [phaseKindsEnum.WEB_PAGE]: WebpageScreen,
       [phaseKindsEnum.STATIC_VIDEO]: StaticVideoScreen,
       // [showStatusEnum.FREEPLAY]: myParty.currentPlace  ? InteractionScreen : NavigationScreen,
-      // [showStatusEnum.ENDING]: EndingScreen,
+      [phaseKindsEnum.VIDEO_CHOICE]: VideoChoiceScreen,
       [phaseKindsEnum.KICK]: KickScreen,
     };
     const CurrentScreen = screenDict[system.currentShow.currentPhase.kind];
     return (
       <div className="partysidebar-component">
         { config.IS_MOBILE && system.currentShow.currentPhase.kind === phaseKindsEnum.STATIC_VIDEO && <StaticVideoScreen actions={actions} system={system}/> }
-        { config.IS_MOBILE && system.currentShow.currentPhase.kind === phaseKindsEnum.VIDEO_CHOICE && <EndingScreen actions={actions} system={system}/> }
+        { config.IS_MOBILE && system.currentShow.currentPhase.kind === phaseKindsEnum.VIDEO_CHOICE && <VideoChoiceScreen actions={actions} system={system}/> }
         <Tabs
           className="tabs"
           value={currentTab}

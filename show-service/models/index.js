@@ -28,6 +28,7 @@ showSchema.statics.scheduleShow = async function(showDate, numParties, isEventbr
     eventBriteId) {
 
   let startPhase = await Phase.findOne({ isDefault: true });
+  let videoChoicePhases = await Phase.find({ kind: 'VIDEO_CHOICE'});
   let parties = [];
   for(let i = 0; i < numParties; i++){
     let newParty = new Party({
@@ -47,7 +48,7 @@ showSchema.statics.scheduleShow = async function(showDate, numParties, isEventbr
       decisionDeadline: null,
       decisionTimeoutId: null,
       notes: '',
-      chosenEndingURL: null
+      videoChoices: videoChoicePhases.map(phase => ({ phase: phase._id, choiceURL: phase.attributes.videoList[0]}))
     });
     parties.push(newParty);
     await Promise.all(DEFAULT_PARTIES[i].items.map(async name => {
@@ -156,6 +157,12 @@ showSchema.statics.getTotalState = async function(){
         },
         {
           path: 'chat'
+        },
+        {
+          path:'videoChoices',
+          populate: {
+            path: 'phase'
+          }
         }
       ]
     }
@@ -243,6 +250,12 @@ showSchema.statics.getCurrentShowState = async function() {
           },
           {
             path: 'chat'
+          },
+          {
+            path:'videoChoices',
+            populate: {
+              path: 'phase'
+            }
           }
         ]
       }
@@ -378,6 +391,12 @@ showSchema.methods.getCurrentState = async function(scrubEmails=true) {
           },
           {
             path: 'chat'
+          },
+          {
+            path:'videoChoices',
+            populate: {
+              path: 'phase'
+            }
           }
         ]
       }
