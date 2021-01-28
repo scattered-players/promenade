@@ -1,9 +1,18 @@
-.introscreen-component {
+.staticvideoscreen-component {
   height: 100%;
   background: black;
+
+  .static-video {
+    flex-basis: 100%;
+    max-width: 100%;
+    max-height: 100%;
+  
+    min-width: 0;
+    object-fit: cover;
+  }
 }
 
-.canvas-wrapper {
+.static-video-wrapper {
   height: 100%;
   display: flex;
   justify-content: center;
@@ -11,16 +20,8 @@
   z-index:0;
 }
 
-.intro-canvas {
-  flex-basis: 100%;
-  max-width: 100%;
-
-  min-width: 0;
-  object-fit: cover;
-}
-
 @media (max-width: 500px), (max-height: 500px) {
-  .canvas-wrapper {
+  .static-video-wrapper {
     position: fixed;
     top: 0;
     left: 0;
@@ -30,5 +31,3 @@
     z-index: 10;
   }
 }
-
-

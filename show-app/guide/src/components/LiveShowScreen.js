@@ -3,7 +3,7 @@ import config from 'config';
 
 import phaseKindsEnum from '../enum/phasesKinds';
 import WebpageScreen from './WebpageScreen';
-import IntroScreen from './IntroScreen';
+import StaticVideoScreen from './StaticVideoScreen';
 import FreeplayScreen from './FreeplayScreen';
 import EndingScreen from './EndingScreen';
 import KickScreen from './KickScreen';
@@ -21,7 +21,7 @@ class LiveShowScreen extends React.Component {
     } = system;
     const screenDict = {
       [phaseKindsEnum.WEB_PAGE]: WebpageScreen,
-      // [showStatusEnum.INTRO]: IntroScreen,
+      [phaseKindsEnum.STATIC_VIDEO]: StaticVideoScreen,
       // [showStatusEnum.FREEPLAY]: FreeplayScreen,
       // [showStatusEnum.ENDING]: EndingScreen,
       [phaseKindsEnum.KICK]: KickScreen,

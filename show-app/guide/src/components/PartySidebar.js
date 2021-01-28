@@ -13,7 +13,7 @@ import {
 import phaseKindsEnum from '../enum/phasesKinds';
 
 import WebpageScreen from './WebpageScreen';
-import IntroScreen from './IntroScreen';
+import StaticVideoScreen from './StaticVideoScreen';
 import NavigationScreen from './NavigationScreen';
 import InteractionScreen from './InteractionScreen';
 import HistoryTab from './HistoryTab';
@@ -114,7 +114,7 @@ class PartySidebar extends React.Component {
     } = this.state;
     const screenDict = {
       [phaseKindsEnum.WEB_PAGE]: WebpageScreen,
-      // [showStatusEnum.INTRO]: IntroScreen,
+      [phaseKindsEnum.STATIC_VIDEO]: StaticVideoScreen,
       // [showStatusEnum.FREEPLAY]: myParty.currentPlace  ? InteractionScreen : NavigationScreen,
       // [showStatusEnum.ENDING]: EndingScreen,
       [phaseKindsEnum.KICK]: KickScreen,
@@ -122,7 +122,7 @@ class PartySidebar extends React.Component {
     const CurrentScreen = screenDict[system.currentShow.currentPhase.kind];
     return (
       <div className="partysidebar-component">
-        { config.IS_MOBILE && system.currentShow.currentPhase.kind === phaseKindsEnum.STATIC_VIDEO && <IntroScreen /> }
+        { config.IS_MOBILE && system.currentShow.currentPhase.kind === phaseKindsEnum.STATIC_VIDEO && <StaticVideoScreen /> }
         { config.IS_MOBILE && system.currentShow.currentPhase.kind === phaseKindsEnum.VIDEO_CHOICE && <EndingScreen /> }
         <Tabs
           className="tabs"
