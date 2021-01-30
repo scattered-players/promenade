@@ -24,9 +24,6 @@ const {
 const {
   SITE_BASE_URL
 } = require('../secrets/credentials');
-const {
-  STREAM_SECRET
-} = require('../secrets/promenade-config');
 
 /* GET shows listing. */
 router.get('/', asyncHandler(async (req, res, next) => {

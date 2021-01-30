@@ -158,16 +158,9 @@ class Show extends React.Component {
               <FormControlLabel control={<Switch checked={!!show.isEventbrite} onChange={ e => updateShowInfo(show._id, show.date, e.target.checked) } />} label="Is Eventbrite Show"/>
               { !show.isEventbrite && <Button style={{backgroundColor: 'red'}} onClick={() => this.setState({showDeleteDialog: true})}>DELETE SHOW</Button> }
               <div>
-                {/* <Button onClick={ () => sendShowEmail(show._id)}>Send Login Emails</Button> */}
                 <Button onClick={ () => fetchShowEmailCsv(show._id, show.date)}>Fetch Email CSV</Button>
-                <Button onClick={ () => getStreamKey(show._id)}>Get Stream Key</Button>
                 <Button href={`${location.protocol}//${location.host}/streamtest/?streamId=${show._id}`} target="_blank">Test Stream</Button>
               </div>
-              {/* <div>
-                <FormControlLabel control={<Switch checked={!!show.hasIntroAlert} onChange={ e => sendIntroAlert(show._id, e.target.checked) } />} label="Intro Alert"/>
-                <FormControlLabel control={<Switch checked={!!show.hasEndingAlert} onChange={ e => sendEndingAlert(show._id, e.target.checked) } />} label="Ending Alert"/>
-                <Button onClick={ () => cencelAlerts(show._id)}>Cancel Alerts</Button>
-              </div> */}
             </div>
             <div>
               <TextField
@@ -178,15 +171,6 @@ class Show extends React.Component {
               />
               <Button onClick={ this.bookTicket }>Book Ticket</Button>
             </div>
-            {/* <div>
-              <TextField
-                label="Audio Cue Path"
-                value={audioPath}
-                onChange={ e => this.setState({ audioPath: e.target.value }) }
-                onKeyPress={e => (e.key === 'Enter') && this.sendAudioCue()}
-              />
-              <Button onClick={ this.sendAudioCue }>Send Audio Cue</Button>
-            </div> */}
             <div>
               <FormControl >
                 <InputLabel id={`${show._id}-cue-select`}>Cue</InputLabel>

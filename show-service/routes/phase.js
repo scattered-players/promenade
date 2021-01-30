@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const express = require('express');
 const router = express.Router();
 const asyncHandler = require('express-async-handler');
@@ -11,6 +12,10 @@ const {
 const {
   refreshSystemState
 } = require('../util/operations');
+
+const {
+  STREAM_SECRET
+} = require('../secrets/promenade-config');
 
 /* POST a new phase */
 router.post('/', asyncHandler(async (req, res, next) => {
@@ -98,6 +103,25 @@ router.put('/:id/default', asyncHandler(async (req, res, next) => {
   ]);
   res.sendStatus(200);
   refreshSystemState();
+}));
+
+/* GET a stream key for a phase*/
+router.get('/:id/streamkey', asyncHandler(async (req, res, next) => {
+  if (req.userKind !== 'Admin') {
+    return res.sendStatus(403);
+  }
+
+  let phase = await Phase.findById(req.params.id);
+  if(!phase || phase.kind !== 'LIVESTREAM') {
+    return res.sendStatus(400);
+  }
+  
+  const streamName = phase._id
+  const exptime = Math.round(Date.now()/1000) + 86400;
+  let hash = crypto.createHash('md5').update(`/${streamName}-${exptime}-${STREAM_SECRET}`).digest("hex");
+  let sign = `${exptime}-${hash}`;
+  let streamKey = `${streamName}?sign=${sign}`;
+  res.json({streamKey});
 }));
 
 /* DELETE a phase */

@@ -3,9 +3,9 @@ import config from 'config';
 import videojs from 'video.js';
 
 import 'video.js/dist/video-js.css';
-import './streamingending.scss';
+import './livestreamscreen.scss';
 
-class StreamingEnding extends React.Component {
+class LivestreamScreen extends React.Component {
   constructor(props){
     super(props);
     this.state = {
@@ -13,13 +13,20 @@ class StreamingEnding extends React.Component {
   }
 
   componentDidMount() {
-    let { system: { currentShow: { _id:showId} } } = this.props;
+    let {
+      system: {
+        currentShow: {
+          _id:showId,
+          currentPhase
+        }
+      }
+    } = this.props;
     this.player = videojs(this.videoNode, {
       autoplay: true,
       controls: true,
       muted: false,
       sources: [{
-        src: `${config.STREAM_HOST}/${showId}/index.m3u8`,
+        src: `${config.STREAM_HOST}/live/${currentPhase._id}/index.m3u8`,
         type: 'application/x-mpegURL'
       }]
     }, function onPlayerReady() {
@@ -35,7 +42,7 @@ class StreamingEnding extends React.Component {
 
   render() {
     return (
-      <div className="streamingending-component">
+      <div className="livestreamscreen-component">
         <div data-vjs-player>
           <video ref={ node => this.videoNode = node } className="video-js"></video>
         </div>
@@ -44,8 +51,8 @@ class StreamingEnding extends React.Component {
   }
 }
 
-StreamingEnding.displayName = 'StreamingEnding';
-StreamingEnding.propTypes = {};
-StreamingEnding.defaultProps = {};
+LivestreamScreen.displayName = 'LivestreamScreen';
+LivestreamScreen.propTypes = {};
+LivestreamScreen.defaultProps = {};
 
-export default StreamingEnding;
+export default LivestreamScreen;

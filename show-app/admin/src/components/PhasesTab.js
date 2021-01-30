@@ -122,7 +122,7 @@ class PhasesTab extends React.Component {
                 </Select>
               </FormControl>
               {
-                (newPhaseKind === phaseKindsEnum.WEB_PAGE || newPhaseKind === phaseKindsEnum.STATIC_VIDEO || newPhaseKind === phaseKindsEnum.LIVESTREAM) &&
+                (newPhaseKind === phaseKindsEnum.WEB_PAGE || newPhaseKind === phaseKindsEnum.STATIC_VIDEO) &&
                 <div>
                   <TextField label="Url" value={newPhaseAttributes.url || ''} onChange={ e => this.setState({ newPhaseAttributes: { url: e.target.value } }) }/>
                 </div>

@@ -173,7 +173,7 @@ class VideoRow extends React.Component {
                   isLocalVideoMuted={isVideoMuted}
                   isLocalAudioMuted={isAudioMuted}
                   isNerdy={isNerdy}
-                  shouldMute={currentPhase.kind === phaseKindsEnum.STATIC_VIDEO || currentPhase.kind === phaseKindsEnum.VIDEO_CHOICE}
+                  shouldMute={currentPhase.kind === phaseKindsEnum.STATIC_VIDEO || currentPhase.kind === phaseKindsEnum.VIDEO_CHOICE || currentPhase.kind === phaseKindsEnum.LIVESTREAM}
                   />
               }
             </div>
@@ -188,7 +188,7 @@ class VideoRow extends React.Component {
                     <Typography variant="body1" className="nametag">{attendee.username}</Typography>
                   </div>
                 </div>
-                { attendee.feed && <AttendeeVideoFeed actions={actions} attendee={attendee} feed={attendee.feed} isNerdy={isNerdy} isGuide={false} shouldMute={currentPhase.kind === phaseKindsEnum.STATIC_VIDEO || currentPhase.kind === phaseKindsEnum.VIDEO_CHOICE} /> }
+                { attendee.feed && <AttendeeVideoFeed actions={actions} attendee={attendee} feed={attendee.feed} isNerdy={isNerdy} isGuide={false} shouldMute={currentPhase.kind === phaseKindsEnum.STATIC_VIDEO || currentPhase.kind === phaseKindsEnum.VIDEO_CHOICE || currentPhase.kind === phaseKindsEnum.LIVESTREAM} /> }
               </div>
             ))
         }

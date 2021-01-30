@@ -5,6 +5,7 @@ import phaseKindsEnum from '../enum/phasesKinds';
 import WebpageScreen from './WebpageScreen';
 import StaticVideoScreen from './StaticVideoScreen';
 import FreeplayScreen from './FreeplayScreen';
+import LivestreamScreen from './LivestreamScreen';
 import VideoChoiceScreen from './VideoChoiceScreen';
 import KickScreen from './KickScreen';
 
@@ -23,6 +24,7 @@ class LiveShowScreen extends React.Component {
       [phaseKindsEnum.WEB_PAGE]: WebpageScreen,
       [phaseKindsEnum.STATIC_VIDEO]: StaticVideoScreen,
       // [showStatusEnum.FREEPLAY]: FreeplayScreen,
+      [phaseKindsEnum.LIVESTREAM]: LivestreamScreen,
       [phaseKindsEnum.VIDEO_CHOICE]: VideoChoiceScreen,
       [phaseKindsEnum.KICK]: KickScreen,
     };

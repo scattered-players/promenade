@@ -4,12 +4,12 @@ import { GET_STREAM_KEY } from './const';
 
 import showSnackbar from './showSnackbar';
 
-function action(showId) {
+function action(phaseId) {
   return [
-    { type: GET_STREAM_KEY, showId },
+    { type: GET_STREAM_KEY, phaseId },
     async dispatch => {
       try{
-        let response = await fetch(`${ config.SERVICE_HOST }/shows/streamkey/${showId}`, {
+        let response = await fetch(`${ config.SERVICE_HOST }/phases/${phaseId}/streamkey`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

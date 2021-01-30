@@ -41,6 +41,7 @@ class Phase extends React.Component {
     const {
       phase,
       actions: {
+        getStreamKey,
         deletePhase
       },
       movePhaseDown,
@@ -51,7 +52,6 @@ class Phase extends React.Component {
     switch(phase.kind) {
       case phaseKindsEnum.WEB_PAGE:
       case phaseKindsEnum.STATIC_VIDEO:
-      case phaseKindsEnum.LIVESTREAM:
         phaseComponent = (<div><strong>URL:</strong> {phase.attributes.url}</div>);
         break;
       case phaseKindsEnum.VIDEO_CHOICE:
@@ -62,6 +62,9 @@ class Phase extends React.Component {
             }
           </div>
         );
+        break;
+      case phaseKindsEnum.LIVESTREAM:
+        phaseComponent = (<Button onClick={ () => getStreamKey(phase._id)}>Get Stream Key</Button>)
         break;
     }
 

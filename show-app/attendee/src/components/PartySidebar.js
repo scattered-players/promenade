@@ -20,6 +20,7 @@ import HistoryTab from './HistoryTab';
 import NotesTab from './NotesTab';
 import VideoRow from './VideoRow';
 import Settings from './Settings';
+import LivestreamScreen from './LivestreamScreen';
 import VideoChoiceScreen from './VideoChoiceScreen';
 import KickScreen from './KickScreen';
 
@@ -116,6 +117,7 @@ class PartySidebar extends React.Component {
       [phaseKindsEnum.WEB_PAGE]: WebpageScreen,
       [phaseKindsEnum.STATIC_VIDEO]: StaticVideoScreen,
       // [showStatusEnum.FREEPLAY]: myParty.currentPlace  ? InteractionScreen : NavigationScreen,
+      [phaseKindsEnum.LIVESTREAM]: LivestreamScreen,
       [phaseKindsEnum.VIDEO_CHOICE]: VideoChoiceScreen,
       [phaseKindsEnum.KICK]: KickScreen,
     };
@@ -124,6 +126,7 @@ class PartySidebar extends React.Component {
       <div className="partysidebar-component">
         { config.IS_MOBILE && system.currentShow.currentPhase.kind === phaseKindsEnum.STATIC_VIDEO && <StaticVideoScreen actions={actions} system={system}/> }
         { config.IS_MOBILE && system.currentShow.currentPhase.kind === phaseKindsEnum.VIDEO_CHOICE && <VideoChoiceScreen actions={actions} system={system}/> }
+        { config.IS_MOBILE && system.currentShow.currentPhase.kind === phaseKindsEnum.LIVESTREAM && <LivestreamScreen actions={actions} system={system}/> }
         <Tabs
           className="tabs"
           value={currentTab}
@@ -141,7 +144,10 @@ class PartySidebar extends React.Component {
           config.IS_MOBILE &&
             <TabPanel value={currentTab} index={0} className="tab-panel">
               {
-                system.currentShow.currentPhase.kind !== phaseKindsEnum.STATIC_VIDEO && system.currentShow.currentPhase.kind !== phaseKindsEnum.VIDEO_CHOICE && <CurrentScreen actions={actions} system={system}/>
+                system.currentShow.currentPhase.kind !== phaseKindsEnum.STATIC_VIDEO &&
+                system.currentShow.currentPhase.kind !== phaseKindsEnum.VIDEO_CHOICE && 
+                system.currentShow.currentPhase.kind !== phaseKindsEnum.LIVESTREAM &&
+                <CurrentScreen actions={actions} system={system}/>
               }
             </TabPanel>
         }

@@ -117,7 +117,7 @@ class VideoRow extends React.Component {
                     isLocalVideoMuted={false}
                     isLocalAudioMuted={false}
                     isNerdy={isNerdy}
-                    shouldMute={currentPhase.kind === phaseKindsEnum.STATIC_VIDEO || currentPhase.kind === phaseKindsEnum.VIDEO_CHOICE}
+                    shouldMute={currentPhase.kind === phaseKindsEnum.STATIC_VIDEO || currentPhase.kind === phaseKindsEnum.VIDEO_CHOICE || currentPhase.kind === phaseKindsEnum.LIVESTREAM}
                   /> 
                 )
               }
@@ -132,7 +132,7 @@ class VideoRow extends React.Component {
                   <Typography variant="body1" className="nametag">{user.username}</Typography>
                 </div>
               </div>
-              { !(currentPhase.kind === phaseKindsEnum.STATIC_VIDEO || currentPhase.kind === phaseKindsEnum.VIDEO_CHOICE) &&
+              { !(currentPhase.kind === phaseKindsEnum.STATIC_VIDEO || currentPhase.kind === phaseKindsEnum.VIDEO_CHOICE || currentPhase.kind === phaseKindsEnum.LIVESTREAM) &&
                 <div className="local-button-row">
                   <div className="button-row-backdrop"></div>
                   <IconButton className="settings-toggle" color="inherit" onClick={() =>  this.setState({isSettingsDisplayed: true}) }>
@@ -201,7 +201,7 @@ class VideoRow extends React.Component {
                   isLocalVideoMuted={isVideoMuted}
                   isLocalAudioMuted={isAudioMuted}
                   isNerdy={isNerdy}
-                  shouldMute={currentPhase.kind === phaseKindsEnum.STATIC_VIDEO || currentPhase.kind === phaseKindsEnum.VIDEO_CHOICE}
+                  shouldMute={currentPhase.kind === phaseKindsEnum.STATIC_VIDEO || currentPhase.kind === phaseKindsEnum.VIDEO_CHOICE || currentPhase.kind === phaseKindsEnum.LIVESTREAM}
                   />
               }
             </div>
@@ -228,7 +228,7 @@ class VideoRow extends React.Component {
                     isLocalVideoMuted={false}
                     isLocalAudioMuted={false}
                     isNerdy={isNerdy}
-                    shouldMute={currentPhase.kind === phaseKindsEnum.STATIC_VIDEO || currentPhase.kind === phaseKindsEnum.VIDEO_CHOICE}
+                    shouldMute={currentPhase.kind === phaseKindsEnum.STATIC_VIDEO || currentPhase.kind === phaseKindsEnum.VIDEO_CHOICE || currentPhase.kind === phaseKindsEnum.LIVESTREAM}
                   /> 
                 )
               }

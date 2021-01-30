@@ -10,6 +10,10 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+const {
+  Phase
+} = require('./models');
+
 const { SHOW_DOMAIN_NAME } = require('./secrets/promenade-config.json');
 
 const { createToken, validateToken } = require('./util/auth');
@@ -113,7 +117,11 @@ app.use((err, req, res, next) => {
   });
 });
 
-async function createServer(){
+async function createServer() {
+  const livestreamPhases = await Phase.find({ kind: 'LIVESTREAM'});
+  const nms = require('./util/stream')(app, livestreamPhases);
+  nms.run();
+
   if(app.locals.ENV_DEVELOPMENT){
     console.log('DEVELOPMENT');
     return http.createServer(app);
@@ -166,8 +174,5 @@ async function defaultAdmin() {
 }
 
 defaultAdmin();
-
-const nms = require('./util/stream')(app);
-nms.run();
 
 module.exports = app;
