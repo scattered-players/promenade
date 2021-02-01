@@ -6,7 +6,6 @@ import {
   Checkbox,
   Chip,
   FormControlLabel,
-  IconButton,
   Paper
 } from '@material-ui/core';
 
@@ -71,12 +70,12 @@ class Phase extends React.Component {
     return (
       <Paper className="phase-component">
         <ButtonGroup orientation="vertical" className="swap-buttons">
-          <IconButton onClick={ () => movePhaseUp(phase.index)}>
+          <Button onClick={ () => movePhaseUp(phase.index)}>
             <ArrowUpwardIcon />
-          </IconButton>
-          <IconButton onClick={ () => movePhaseDown(phase.index)}>
+          </Button>
+          <Button onClick={ () => movePhaseDown(phase.index)}>
             <ArrowDownwardIcon />
-          </IconButton>
+          </Button>
         </ButtonGroup>
         <div className="main-phase-area">
           <h3>#{phase.index+1} {phase.name} <Chip label={phase.kind} /> <Button onClick={ () => deletePhase(phase._id)}>Delete</Button></h3>

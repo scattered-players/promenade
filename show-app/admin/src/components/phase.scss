@@ -3,6 +3,14 @@
   margin: 5px;
   display: flex;
   align-items: flex-start;
+  
+  .swap-buttons {
+    margin: 5px;
+    button {
+      border: none;
+    }
+  }
+  
   h3 {
     margin: 0;
   }

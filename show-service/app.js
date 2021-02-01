@@ -118,8 +118,7 @@ app.use((err, req, res, next) => {
 });
 
 async function createServer() {
-  const livestreamPhases = await Phase.find({ kind: 'LIVESTREAM'});
-  const nms = require('./util/stream')(app, livestreamPhases);
+  const nms = require('./util/stream')(app);
   nms.run();
 
   if(app.locals.ENV_DEVELOPMENT){

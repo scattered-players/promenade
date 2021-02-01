@@ -2,8 +2,7 @@ const path = require('path');
 const NodeMediaServer = require('node-media-server');
 const { SHOW_DOMAIN_NAME, STREAM_SECRET } = require('../secrets/promenade-config.json');
 
-module.exports = (app, phases) => {
-  console.log('HEYO STREAM!', app.locals.ENV_DEVELOPMENT, path.resolve(__dirname, '../media'), phases)
+module.exports = (app) => {
   const config = {
     logType: 3,
     rtmp: {
