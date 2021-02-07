@@ -7,9 +7,9 @@ import { CREATE_ACTOR } from './const';
 import createActorFailure from './createActorFailure';
 import createActorSuccess from './createActorSuccess';
 import showSnackbar from './showSnackbar';
-function action(email, username, characterName, placeName, flavorText, audioPath, audioVolume, assetKey) {
+function action(email, username) {
   return [
-    { type: CREATE_ACTOR, email, username, characterName, placeName, flavorText, audioPath, audioVolume, assetKey },
+    { type: CREATE_ACTOR, email, username },
     async dispatch => {
       try{
         let response = await fetch(`${ config.SERVICE_HOST }/users/actor`, {
@@ -17,7 +17,7 @@ function action(email, username, characterName, placeName, flavorText, audioPath
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ email, username, characterName, placeName, flavorText, audioPath, audioVolume, assetKey }),
+          body: JSON.stringify({ email, username }),
           credentials: 'include'
         });
         if (!response.ok) {

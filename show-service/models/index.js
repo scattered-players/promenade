@@ -274,7 +274,7 @@ showSchema.statics.getCurrentShowState = async function() {
 
 placeSchema.statics.getCurrentPlaceState = async function() {
   let actors = await Actor.find({ isOnline: true }).populate({
-    path: 'place',
+    path: 'places',
     populate: [
       {
         path: 'currentParty',
@@ -326,7 +326,7 @@ placeSchema.statics.getCurrentPlaceState = async function() {
       }
     ]
   }).lean();
-  let places = actors.map(actor => actor.place);
+  let places = _.flatMap(actors, actor => actor.places);
   places.map(place => {
     if(place.currentParty){
       place.currentParty.attendees = place.currentParty.attendances.map(attendance => attendance.attendee);

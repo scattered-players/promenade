@@ -74,7 +74,8 @@ import {
   updatePhase,
   deletePhase,
   swapPhases,
-  setDefaultPhase
+  setDefaultPhase,
+  createPlace
 } from '../actions/';
 import Main from '../components/App';
 /* Populated by react-webpack-redux:reducer */
@@ -163,7 +164,8 @@ App.propTypes = {
     updatePhase: PropTypes.func.isRequired,
     deletePhase: PropTypes.func.isRequired,
     swapPhases: PropTypes.func.isRequired,
-    setDefaultPhase: PropTypes.func.isRequired
+    setDefaultPhase: PropTypes.func.isRequired,
+    createPlace: PropTypes.func.isRequired
   }),
   stuff: PropTypes.shape({}),
   system: PropTypes.shape({}),
@@ -249,7 +251,8 @@ function mapDispatchToProps(dispatch) {
     updatePhase,
     deletePhase,
     swapPhases,
-    setDefaultPhase
+    setDefaultPhase,
+    createPlace
   };
   const actionMap = { actions: bindActionCreators(actions, dispatch) };
   return actionMap;

@@ -70,6 +70,7 @@ router.post('/accept', asyncHandler(async (req, res, next) => {
   let promises = [];
   promises.push(Party.updateOne({ _id: partyId }, { $set: { currentPlace: placeId, nextPlace: null, selectedPlace: null }, $push: { history: placeId } }));
   promises.push(Place.updateOne({ _id: placeId }, { $set:{ currentParty: partyId, isAvailable: false }, $pull: { partyQueue: partyId } }));
+  promises.push(Actor.updateMany({ places: { $elemMatch: { $eq: placeId } } }, { isAvailable: false }))
   promises.push(Scene.create({ place: placeId, party: partyId, startTime: new Date() }));
   await Promise.all(promises);
   

@@ -10,8 +10,8 @@ var placeSchema = new Schema({
   audioPath: String,
   audioVolume: Number,
   assetKey: String,
-  isAvailable: Boolean,
-  currentFilter: String
+  currentFilter: String,
+  phases: { type: Schema.Types.ObjectId, ref: 'Phase' }
 });
 
 module.exports = placeSchema;

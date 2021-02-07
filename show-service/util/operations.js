@@ -151,13 +151,16 @@ const refreshSystemState = _.debounce(async function() {
     ] = await Promise.all([
       Show.getTotalState(),
       Actor.find().populate({
-        path: 'place',
+        path: 'places',
         populate: [
           {
             path: 'currentParty'
           },
           {
             path: 'partyQueue'
+          },
+          {
+            path: 'phase'
           }
         ]
       }).lean(),
@@ -204,7 +207,7 @@ const refreshCurrentShowState = _.debounce(async function () {
     return;
   } else if(isCurrentlyRefreshingCurrentShowState && !hasQueuedRefreshingCurrentShowState) {
     hasQueuedRefreshingCurrentShowState = true;
-    while(isCurrentlyRefreshingCurrentShowState){
+    while(isCurrentlyRefreshingCurrentShowState) {
       console.log('QUEUEING FOR CURRENT SHOW STATE');
       await delay(500);
     }
@@ -420,30 +423,67 @@ async function blockUser(userId) {
 async function defaultPhases() {
   let phases = await Phase.find({}).lean();
   if(!phases.length) {
-    await Phase.create({
-      name:"Start",
-      kind:"WEB_PAGE",
-      attributes: {
-        url: 'https://www.example.com'
-      },
-      index: 0,
-      isDefault: true
-    });
-    await Phase.create({
-      name:"Intro",
-      kind:"STATIC_VIDEO",
-      attributes: {
-        url: 'https://cdn.chrisuehlinger.com/yknow.mp4'
-      },
-      index: 1,
-      isDefault: false
-    });
-    await Phase.create({
-      name:"End",
-      kind:"KICK",
-      index: 2,
-      isDefault: false
-    });
+    await Promise.all([
+      Phase.create({
+        name:"Start",
+        kind:"WEB_PAGE",
+        attributes: {
+          url: 'https://www.example.com'
+        },
+        index: 0,
+        isDefault: true
+      }),
+      Phase.create({
+        name:"Intro",
+        kind:"STATIC_VIDEO",
+        attributes: {
+          url: 'https://cdn.chrisuehlinger.com/yknow.mp4'
+        },
+        index: 1,
+        isDefault: false
+      }),
+      Phase.create({
+        name:"Freeplay 1",
+        kind:"FREEPLAY",
+        attributes: {
+        },
+        index: 2,
+        isDefault: false
+      }),
+      Phase.create({
+        name:"Global Event",
+        kind:"LIVESTREAM",
+        attributes: {
+        },
+        index: 3,
+        isDefault: false
+      }),
+      Phase.create({
+        name:"Freeplay 2",
+        kind:"FREEPLAY",
+        attributes: {
+        },
+        index: 4,
+        isDefault: false
+      }),
+      Phase.create({
+        name:"Ending",
+        kind:"VIDEO_CHOICE",
+        attributes: {
+          videoList: [
+            'https://cdn.chrisuehlinger.com/yknow.mp4'
+          ]
+        },
+        index: 5,
+        isDefault: false
+      }),
+      Phase.create({
+        name:"End",
+        kind:"KICK",
+        index: 6,
+        isDefault: false
+      })
+    ]);
     console.log('DEFAULT PHASES CREATED');
   }
 }
@@ -474,8 +514,8 @@ async function startup() {
       actors
         .filter(actor => actor.username.startsWith('actor'))
         .map(async actor => {
-          await Place.deleteOne({ _id: actor.place });
-          await Actor.deleteOne({ _id: actor._id });
+          await Place.deleteMany({ _id: { $in:actor.places } });
+          await Actor.findByIdAndDelete(actor);
         })
     );
   })());

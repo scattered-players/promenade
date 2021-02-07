@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const asyncHandler = require('express-async-handler');
 const router = express.Router();
 const {
@@ -207,34 +208,17 @@ router.post('/actor', asyncHandler(async (req, res, next) => {
   }
   let {
     email,
-    username,
-    placeName,
-    characterName,
-    flavorText,
-    audioPath,
-    audioVolume,
-    assetKey
+    username
   } = req.body;
-  let place = await Place.create({
-    placeName,
-    characterName,
-    currentParty: null,
-    partyQueue: [],
-    flavorText,
-    audioPath,
-    audioVolume,
-    assetKey,
-    isAvailable: false
-  });
   let actor = await Actor.create({
     email: email,
     username: username || email.split('@')[0],
     isOnline: false,
-    place: place._id
+    places: []
   })
   let token = createToken(actor);
-  console.log(place, actor, token);
-  res.json({ place, actor, token });
+  console.log(actor, token);
+  res.json({ actor, token });
   refreshSystemState();
 }));
 
@@ -248,7 +232,7 @@ router.delete('/actor/:userId', asyncHandler(async (req, res, next) => {
   let actor = await Actor.findById(userId).lean();
   await Promise.all([
     Actor.deleteOne({_id:userId}),
-    Place.deleteOne({_id: actor.place})
+    Place.deleteMany({_id: { $in:actor.places } })
   ]);
   res.sendStatus(200);
   refreshCurrentShowState();
@@ -383,6 +367,35 @@ router.put('/charactername', asyncHandler(async (req, res, next) => {
   refreshSystemState();
 }));
 
+/* POST create a place */
+router.post('/place', asyncHandler(async (req, res, next) => {
+  if(req.userKind !== 'Admin' && req.userKind !== 'Actor'){
+    return res.sendStatus(403);
+  }
+  let {
+    actorId,
+    placeName,
+    characterName,
+    flavorText,
+    audioPath,
+    assetKey,
+    phase
+  } = req.body;
+  const newPlace = await Place.create({
+    placeName,
+    characterName,
+    flavorText,
+    audioPath,
+    assetKey,
+    phase
+  });
+  console.log('HMM', newPlace._id, typeof newPlace._id)
+  await Actor.findByIdAndUpdate(actorId, { $push: { places: newPlace._id } });
+  res.sendStatus(200);
+  refreshCurrentShowState();
+  refreshSystemState();
+}));
+
 /* PUT update a place's info */
 router.put('/place', asyncHandler(async (req, res, next) => {
   if(req.userKind !== 'Admin' && req.userKind !== 'Actor'){
@@ -394,14 +407,16 @@ router.put('/place', asyncHandler(async (req, res, next) => {
     characterName,
     flavorText,
     audioPath,
-    assetKey
+    assetKey,
+    phase
   } = req.body;
   await Place.updateOne({ _id:placeId },{ $set: {
     placeName,
     characterName,
     flavorText,
     audioPath,
-    assetKey
+    assetKey,
+    phase
   } });
   res.sendStatus(200);
   refreshCurrentShowState();
@@ -442,18 +457,22 @@ router.put('/place/filter', asyncHandler(async (req, res, next) => {
   refreshSystemState();
 }));
 
-/* PUT update a place's availability status */
-router.put('/place/available', asyncHandler(async (req, res, next) => {
+/* PUT update a actor's availability status */
+router.put('/actor/available', asyncHandler(async (req, res, next) => {
   if(req.userKind !== 'Admin' && req.userKind !== 'Actor'){
     return res.sendStatus(403);
   }
   let {
-    placeId,
+    actorId,
     isAvailable
   } = req.body;
-  await Place.updateOne({ _id:placeId },{ $set: {
-    isAvailable
-  }});
+  let actor = await Actor.findById(actorId);
+  await Promise.all([
+    Actor.findByIdAndUpdate(actorId, { isAvailable }),
+    Place.updateMany({ _id: { $in: actor.places } },{ $set: {
+      isAvailable
+    }})
+  ]);
   if(!isAvailable) {
     let place = await Place.findById(placeId).populate([
       {
@@ -489,6 +508,24 @@ router.put('/place/available', asyncHandler(async (req, res, next) => {
       }
     }
   }
+  res.sendStatus(200);
+  refreshCurrentShowState();
+  refreshSystemState();
+}));
+
+/* DELETE a place */
+router.delete('/place', asyncHandler(async (req, res, next) => {
+  if(req.userKind !== 'Admin' && req.userKind !== 'Actor'){
+    return res.sendStatus(403);
+  }
+  let {
+    actorId,
+    placeId
+  } = req.body;
+  await Promise.all([
+    Place.findByIdAndDelete(placeId),
+    Actor.findByIdAndUpdate(actorId, { places: { $pull: placeId } }),
+  ]);
   res.sendStatus(200);
   refreshCurrentShowState();
   refreshSystemState();

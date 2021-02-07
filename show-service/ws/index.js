@@ -148,7 +148,7 @@ wssActor.on('connection', async function connection(ws, request, client) {
 
   if (!actor.isOnline) {
     await Promise.all([
-      Actor.updateOne({ _id: ws.userId}, {isOnline: true, currentBrowser: ws.browser}),
+      Actor.updateOne({ _id: ws.userId}, {isOnline: true, isAvailable: false, currentBrowser: ws.browser}),
       Place.updateOne({ _id: actor.place }, { isAvailable: false, currentFilter: null })
     ]);
   }
