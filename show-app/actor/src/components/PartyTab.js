@@ -24,30 +24,31 @@ class PartyTab extends React.Component {
       kickParty
     } = actions,
     {
-      myPlace,
+      user,
+      myCurrentPlace,
       currentParty
     } = system;
     return (
       <div className="partytab-component">
-        { myPlace.isAvailable && <Button onClick={ () => setReadyFlag(myPlace._id, false)}>I'M NOT READY, HIDE ME!</Button>}
+        { user.isAvailable && <Button onClick={ () => setReadyFlag(user._id, false)}>I'M NOT READY, HIDE ME!</Button>}
         { 
           currentParty && (
             <>
               <Typography style={{backgroundColor: currentParty.color, textShadow:'0px 0px 5px black'}}>{ `Current Party: ${currentParty.name}` }</Typography>
-              <Button onClick={() => kickParty(currentParty._id, myPlace._id)}>Kick</Button>
+              <Button onClick={() => kickParty(currentParty._id, myCurrentPlace._id)}>Kick</Button>
             </>
           )
         }
         <Typography>Party Queue</Typography>
         <MenuList>
           {
-            myPlace.partyQueue.map(party => (
-              <MenuItem style={{backgroundColor: party.color, textShadow:'0px 0px 5px black'}} key={party._id} onClick={() => acceptParty(party._id, myPlace._id)}>
+            myCurrentPlace && myCurrentPlace.partyQueue.map(party => (
+              <MenuItem style={{backgroundColor: party.color, textShadow:'0px 0px 5px black'}} key={party._id} onClick={() => acceptParty(party._id, myCurrentPlace._id)}>
                 {party.name}
                 <IconButton onClick={e => { previewParty(party._id); e.stopPropagation();}}>
                   <RemoveRedEyeIcon />
                 </IconButton>
-                <IconButton onClick={e => { kickParty(party._id, myPlace._id); e.stopPropagation();}}>
+                <IconButton onClick={e => { kickParty(party._id, myCurrentPlace._id); e.stopPropagation();}}>
                   <ClearIcon />
                 </IconButton>
               </MenuItem>

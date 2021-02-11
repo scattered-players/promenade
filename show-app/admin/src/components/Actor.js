@@ -42,14 +42,14 @@ class Actor extends React.Component {
       newAudioPath: '',
       newAssetKey: ASSET_KEYS[0],
       isShowingCreatePlaceDialog: false,
-      newPlacePhase: ''
+      newPlacePhase: props.freeplayPhases.length ? props.freeplayPhases[0]._id : ''
     };
 
     this.createPlace = this.createPlace.bind(this);
   }
 
   createPlace() {
-    const { actor, actions, phases } = this.props;
+    const { actor, actions, freeplayPhases } = this.props;
     const { createPlace } = actions;
     const {
       newCharacterName,
@@ -66,7 +66,7 @@ class Actor extends React.Component {
         newFlavorText: '',
         newAudioPath: '',
         newAssetKey: '',
-        newPlacePhase: ''
+        newPlacePhase: freeplayPhases.length ? freeplayPhases[0]._id : ''
       }, () => {
         createPlace(actor._id, newCharacterName, newPlaceName, newFlavorText, newAudioPath, newAssetKey, newPlacePhase);
       });
@@ -74,7 +74,14 @@ class Actor extends React.Component {
   }
 
   render() {
-    const { actor, actions, phases } = this.props;
+    const {
+      actor,
+      actions: {
+        getMagicLink,
+        deletePlace
+      },
+      freeplayPhases
+    } = this.props;
 
     const audioIndicator = actor.audioError
       ? (
@@ -99,8 +106,6 @@ class Actor extends React.Component {
       ) : (
         actor.isVideoMuted ? <VideocamOffIcon /> : <VideocamIcon />
       );
-
-    const freeplayPhases = phases.filter(phase => phase.kind === 'FREEPLAY');
     
     const {
       newCharacterName,
@@ -180,6 +185,9 @@ class Actor extends React.Component {
                     primary={place.characterName}
                     secondary={place.placeName}
                   />
+                  <IconButton onClick={() => deletePlace(actor._id, place._id)}>
+                    <ClearIcon />
+                  </IconButton>
                 </ListItem>
               )
             })

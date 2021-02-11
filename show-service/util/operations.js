@@ -174,6 +174,24 @@ const refreshSystemState = _.debounce(async function() {
       }]).lean(),
       Phase.find().sort({ index: 'asc' }).lean()
     ]);
+    broadcastActor({
+      type:'RECEIVE_SYSTEM_STATE',
+      body: {
+        shows,
+        actors,
+        admins,
+        attendees,
+        guides,
+        scenes,
+        phases,
+        pullTime: (Date.now() - startTime) / 1000,
+        adminSockets: wssAdmin.clients.size,
+        actorSockets: wssActor.clients.size,
+        attendeeSockets: wssAttendee.clients.size,
+        guideSockets: wssGuide.clients.size,
+        janusCoefficient
+      }
+    });
     broadcastAdmin({
       type:'RECEIVE_SYSTEM_STATE',
       body: {

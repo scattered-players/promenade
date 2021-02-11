@@ -1,21 +1,21 @@
 import React from 'react';
 import config from 'config';
 
-import { CREATE_PLACE } from './const';
+import { DELETE_PLACE } from './const';
 
 import showSnackbar from './showSnackbar';
 
-function action(actorId, characterName, placeName, flavorText, audioPath, assetKey, phase) {
+function action(actorId, placeId) {
   return [
-    { type: CREATE_PLACE, actorId, characterName, placeName, flavorText, audioPath, assetKey, phase },
+    { type: DELETE_PLACE, actorId, placeId },
     async dispatch => {
       try{
         let response = await fetch(`${ config.SERVICE_HOST }/users/place`, {
-          method: 'POST',
+          method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ actorId, characterName, placeName, flavorText, audioPath, assetKey, phase }),
+          body: JSON.stringify({ actorId, placeId }),
           credentials: 'include'
         });
         if (!response.ok) {
@@ -24,11 +24,11 @@ function action(actorId, characterName, placeName, flavorText, audioPath, assetK
 
         dispatch(showSnackbar(
           <React.Fragment>
-            Place created!
+            Place deleted!
           </React.Fragment>
         ));
       } catch(e) {
-        dispatch(showSnackbar(`Error creating place: ${e.statusText || e.message}`));
+        dispatch(showSnackbar(`Error deleting place: ${e.statusText || e.message}`));
       }
     }
   ];

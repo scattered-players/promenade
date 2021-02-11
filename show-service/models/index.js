@@ -323,6 +323,9 @@ placeSchema.statics.getCurrentPlaceState = async function() {
             path: 'chat'
           }
         ]
+      },
+      {
+        path: 'phase'
       }
     ]
   }).lean();

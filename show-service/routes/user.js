@@ -389,7 +389,6 @@ router.post('/place', asyncHandler(async (req, res, next) => {
     assetKey,
     phase
   });
-  console.log('HMM', newPlace._id, typeof newPlace._id)
   await Actor.findByIdAndUpdate(actorId, { $push: { places: newPlace._id } });
   res.sendStatus(200);
   refreshCurrentShowState();
@@ -524,7 +523,7 @@ router.delete('/place', asyncHandler(async (req, res, next) => {
   } = req.body;
   await Promise.all([
     Place.findByIdAndDelete(placeId),
-    Actor.findByIdAndUpdate(actorId, { places: { $pull: placeId } }),
+    Actor.findByIdAndUpdate(actorId, { $pull: { places: placeId } }),
   ]);
   res.sendStatus(200);
   refreshCurrentShowState();

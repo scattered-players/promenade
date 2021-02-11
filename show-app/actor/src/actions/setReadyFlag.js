@@ -4,18 +4,18 @@ import { SET_READY_FLAG } from './const';
 
 import showSnackbar from './showSnackbar';
 
-function action(placeId, isAvailable) {
+function action(actorId, isAvailable) {
   return [
-    { type: SET_READY_FLAG, placeId, isAvailable },
+    { type: SET_READY_FLAG, actorId, isAvailable },
     async dispatch => {
       try{
-        let response = await fetch(`${ config.SERVICE_HOST }/users/place/available`, {
+        let response = await fetch(`${ config.SERVICE_HOST }/users/actor/available`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            placeId, isAvailable
+            actorId, isAvailable
           }),
           credentials: 'include'
         });

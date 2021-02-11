@@ -30,14 +30,14 @@ class InventoryTab extends React.Component {
         giveItem
       },
       system: {
-        myPlace
+        myCurrentPlace
       },
       party
     } = this.props;
     const {
       newItem
     } = this.state;
-    sendChatMessage(party._id, `${myPlace.characterName} gave ${newItem}`);
+    sendChatMessage(party._id, `${myCurrentPlace.characterName} gave ${newItem}`);
     giveItem(party._id, newItem);
     this.setState({ newItem: '' });
   }
@@ -49,11 +49,11 @@ class InventoryTab extends React.Component {
         takeItem
       },
       system: {
-        myPlace
+        myCurrentPlace
       },
       party
     } = this.props;
-    sendChatMessage(party._id, `${myPlace.characterName} took ${item.name}`);
+    sendChatMessage(party._id, `${myCurrentPlace.characterName} took ${item.name}`);
     takeItem(party._id, item._id);
   }
 

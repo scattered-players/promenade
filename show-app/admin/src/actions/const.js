@@ -67,3 +67,4 @@ export const DELETE_PHASE = 'DELETE_PHASE';
 export const SWAP_PHASES = 'SWAP_PHASES';
 export const SET_DEFAULT_PHASE = 'SET_DEFAULT_PHASE';
 export const CREATE_PLACE = 'CREATE_PLACE';
+export const DELETE_PLACE = 'DELETE_PLACE';

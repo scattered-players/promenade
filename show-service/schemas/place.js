@@ -11,7 +11,8 @@ var placeSchema = new Schema({
   audioVolume: Number,
   assetKey: String,
   currentFilter: String,
-  phases: { type: Schema.Types.ObjectId, ref: 'Phase' }
+  isAvailable: Boolean,
+  phase: { type: Schema.Types.ObjectId, ref: 'Phase' }
 });
 
 module.exports = placeSchema;

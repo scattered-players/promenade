@@ -86,6 +86,9 @@ class ActorsTab extends React.Component {
       isShowingCreateActorDialog,
       forceRefreshUser
     } = this.state;
+
+    const freeplayPhases = phases.filter(phase => phase.kind === 'FREEPLAY');
+
     return (
       <>
         <div>
@@ -118,7 +121,7 @@ class ActorsTab extends React.Component {
         </div>
         <div>
           <List dense={true}>
-            { actors.map(actor => <Actor key={actor._id} actor={actor} phases={phases} actions={actions} />) }
+            { actors.map(actor => <Actor key={actor._id} actor={actor} freeplayPhases={freeplayPhases} actions={actions} />) }
           </List>
         </div>
       </>
