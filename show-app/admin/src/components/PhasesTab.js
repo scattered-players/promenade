@@ -150,6 +150,23 @@ class PhasesTab extends React.Component {
                   </Button>
                 </div>
               }
+              {
+                (newPhaseKind === phaseKindsEnum.FREEPLAY) &&
+                <div>
+                  <TextField
+                    label="Navigation Worker Name"
+                    value={newPhaseAttributes.navWorkerName || ''}
+                    onChange={ e =>  this.setState({ newPhaseAttributes: { navWorkerName: e.target.value } })}/>
+                  <TextField
+                    label="Background Music URL"
+                    value={newPhaseAttributes.backgroundMusicUrl || ''}
+                    onChange={ e =>  this.setState({ newPhaseAttributes: { backgroundMusicUrl: e.target.value } })}/>
+                  <TextField
+                    label="Overlay Video URL"
+                    value={newPhaseAttributes.overlayVideoUrl || ''}
+                    onChange={ e =>  this.setState({ newPhaseAttributes: { overlayVideoUrl: e.target.value } })}/>
+                </div>
+              }
             </DialogContent>
             <DialogActions>
               <Button onClick={() => this.setState({isShowingCreateDialog: false}, this.createPhase)}>CREATE</Button>

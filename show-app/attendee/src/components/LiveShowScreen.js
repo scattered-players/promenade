@@ -12,18 +12,85 @@ import KickScreen from './KickScreen';
 import PartySidebar from './PartySidebar';
 import VideoRow from './VideoRow';
 
+import NavigationPlugins from 'custom/NavigationPlugins';
+const NAV_WORKER_NAMES = Object.keys(NavigationPlugins);
+
+import {
+  workerFps
+} from '../util/stats';
+
 import './liveshowscreen.scss';
 
 class LiveShowScreen extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {};
+
+    if (!config.IS_MOBILE) {
+      this.navWorkerDict = {};
+      NAV_WORKER_NAMES.map(name => {
+        const NavigationPlugin = NavigationPlugins[name];
+        if (NavigationPlugin) {
+          this.navWorkerDict[name] = new NavigationPlugin(workerFps);
+        }
+      });
+    }
+    this.updateNavScreen = this.updateNavScreen.bind(this);
+  }
+
+  updateNavScreen() {
+    const {
+      system: {
+        currentShow,
+        places,
+        myParty
+      }
+    } = this.props;
+
+    if (myParty && this.navWorkerDict && currentShow && this.navWorkerDict[currentShow.currentPhase.attributes.navWorkerName]) {
+      const {
+        selectedPlace
+      } = myParty;
+      this.navWorkerDict[currentShow.currentPhase.attributes.navWorkerName].sendMessage(JSON.parse(JSON.stringify({
+        type:'UPDATE',
+        state: {
+          places,
+          myParty,
+          selectedPlace,
+          isInTransit: !!myParty.nextPlace
+        }
+      })));
+    }
+  }
+
+  componentDidMount() {
+    this.updateNavScreen();
+  }
+
+  componentDidUpdate() {
+    this.updateNavScreen();
+  }
+
+  componentWillUnmount() {
+    if (this.navWorkerDict) {
+      NAV_WORKER_NAMES.map(name => {
+        if(this.navWorkerDict[name]){
+          this.navWorkerDict[name].destroy();
+        }
+      });
+      this.navWorkerDict = null;
+    }
+  }
+
   render() {
-    const { actions, system, navWorker } = this.props;
+    const { actions, system } = this.props;
     const {
       localStream
     } = system;
     const screenDict = {
       [phaseKindsEnum.WEB_PAGE]: WebpageScreen,
       [phaseKindsEnum.STATIC_VIDEO]: StaticVideoScreen,
-      // [showStatusEnum.FREEPLAY]: FreeplayScreen,
+      [phaseKindsEnum.FREEPLAY]: FreeplayScreen,
       [phaseKindsEnum.LIVESTREAM]: LivestreamScreen,
       [phaseKindsEnum.VIDEO_CHOICE]: VideoChoiceScreen,
       [phaseKindsEnum.KICK]: KickScreen,
@@ -34,7 +101,9 @@ class LiveShowScreen extends React.Component {
         <div className="main-area">
           {
             !config.IS_MOBILE && (
-              <CurrentScreen actions={actions} system={system} navWorker={navWorker}/>
+              [
+                <CurrentScreen key={system.currentShow.currentPhase._id} actions={actions} system={system} navWorker={this.navWorkerDict[system.currentShow.currentPhase.attributes.navWorkerName]}/>
+              ]
             )
           }
         </div>

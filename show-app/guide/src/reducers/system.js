@@ -69,6 +69,8 @@ const initialState = {
   user: null,
   bookedShows: [],
   places: [],
+  currentPlaces: [],
+  phases: [],
   currentShow: null,
   currentPlace: null,
   isInCurrentShow: false,
@@ -95,8 +97,7 @@ const initialState = {
 };
 
 function calcDervivedProperties(nextState) {
-  let { currentShow, user } = nextState;
-
+  let { currentShow, user, places } = nextState;
 
   if (user && currentShow) {
     let matchingParties = nextState.currentShow.parties.filter(party => party.guide && party.guide._id === user._id);
@@ -107,6 +108,12 @@ function calcDervivedProperties(nextState) {
   nextState.isInCurrentShow = !!nextState.myParty;
 
   if(nextState.myParty) {
+    if (places) {
+      nextState.currentPlaces = places.filter(place => place.phase._id === nextState.currentShow.currentPhase._id);
+    } else {
+      nextState.currentPlaces = [];
+    }
+
     nextState.chatMessages = nextState.myParty.chat;
     nextState.myParty.attendees = nextState.myParty.attendees.map(attendee => {
       if(attendee._id === user._id){
@@ -131,6 +138,7 @@ function calcDervivedProperties(nextState) {
     }
   } else {
     nextState.chatMessages = [];
+    nextState.currentPlaces = [];
   }
   
   if (nextState.currentPlace) {
@@ -351,11 +359,13 @@ function reducer(state = initialState, action) {
         janusCoefficient,
         currentShow,
         places,
+        phases
       } = action.body;
       nextState.janusCoefficient = janusCoefficient;
       nextState.isSettingMutes = false;
       nextState.currentShow = currentShow;
       nextState.places = places;
+      nextState.phases = phases;
       calcDervivedProperties(nextState);
       return nextState;
     }

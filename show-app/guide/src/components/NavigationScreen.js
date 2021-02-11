@@ -91,7 +91,7 @@ class NavigationScreen extends React.Component {
         toggleNavMusic
       },
       system: {
-        places,
+        currentPlaces,
         muteNavMusic,
         currentShow,
         myParty,
@@ -106,7 +106,7 @@ class NavigationScreen extends React.Component {
       showDeciderPopup
     } = this.state;
     const placeDict = {};
-    const availablePlaces = places
+    const availablePlaces = currentPlaces
       .filter(place => (myParty.nextPlace && myParty.nextPlace._id === place._id) || (!place.currentParty && !place.partyQueue.length && place.isAvailable))
       .map(place => {
         let entry = {

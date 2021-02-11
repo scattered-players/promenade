@@ -464,6 +464,8 @@ async function defaultPhases() {
         name:"Freeplay 1",
         kind:"FREEPLAY",
         attributes: {
+          navWorkerName: 'f1'
+          
         },
         index: 2,
         isDefault: false
@@ -480,6 +482,7 @@ async function defaultPhases() {
         name:"Freeplay 2",
         kind:"FREEPLAY",
         attributes: {
+          navWorkerName: 'f2'
         },
         index: 4,
         isDefault: false
@@ -514,7 +517,8 @@ async function startup() {
   })());
   promises.push(User.updateMany({}, { $set: { isOnline: false }}));
   promises.push(Party.updateMany({}, { $set: { decider: null, decisionDeadline: null, decisionTimeoutId: null, currentPlace: null, nextPlace: null, selectedPlace: null }}));
-  promises.push(Place.updateMany({}, { $set: { currentParty: null, partyQueue: [] }}));
+  promises.push(Place.updateMany({}, { $set: { currentParty: null, partyQueue: [], isAvailable: false }}));
+  promises.push(Actor.updateMany({}, { $set: { isAvailable: false }}));
   promises.push((async () => {
     let attendees = await Attendee.find({});
     await Promise.all(

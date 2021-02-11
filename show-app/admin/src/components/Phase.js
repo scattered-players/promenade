@@ -65,6 +65,15 @@ class Phase extends React.Component {
       case phaseKindsEnum.LIVESTREAM:
         phaseComponent = (<Button onClick={ () => getStreamKey(phase._id)}>Get Stream Key</Button>)
         break;
+      case phaseKindsEnum.FREEPLAY:
+        phaseComponent = (
+          <div>
+            {phase.attributes.navWorkerName && phase.attributes.navWorkerName.length && <div><strong>Nav Worker Name:</strong> {phase.attributes.navWorkerName}</div>}
+            {phase.attributes.backgroundMusicUrl && phase.attributes.backgroundMusicUrl.length && <div><strong>Overlay Video URL:</strong> {phase.attributes.backgroundMusicUrl}</div>}
+            {phase.attributes.overlayVideoUrl && phase.attributes.overlayVideoUrl.length && <div><strong>Overlay Video URL:</strong> {phase.attributes.overlayVideoUrl}</div>}
+          </div>
+          );
+        break;
     }
 
     return (

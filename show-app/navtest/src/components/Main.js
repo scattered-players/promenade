@@ -8,7 +8,8 @@ import {
   ramStats,
   workerFps
 } from '../util/stats';
-import NavigationPlugin from 'custom/NavigationPlugin';
+import NavigationPlugins from 'custom/NavigationPlugins';
+const NAV_WORKER_NAMES = Object.keys(NavigationPlugins);
 
 import './main.scss';
 
@@ -69,7 +70,13 @@ class Main extends React.Component {
     statsContainer.appendChild(mainFps.dom);
     statsContainer.appendChild(ramStats.dom);
     statsContainer.appendChild(workerFps.dom);
-    this.navWorker = new NavigationPlugin(workerFps);
+    this.navWorkerDict = {};
+    NAV_WORKER_NAMES.map(name => {
+      const NavigationPlugin = NavigationPlugins[name];
+      if (NavigationPlugin) {
+        this.navWorkerDict[name] = new NavigationPlugin(workerFps);
+      }
+    });
     this.navWorker.newCanvas(this.refs.canvas);
     this.updateNavScreen();
   }
