@@ -153,7 +153,12 @@ class WebpackBaseConfig {
             test: /^.((?!cssmodule).)*\.css$/,
             use: [
               { loader: 'style-loader' },
-              { loader: 'css-loader' }
+              {
+                loader: 'css-loader',
+                options: {
+                  url: false
+                } 
+              }
             ]
           },
           {
@@ -164,7 +169,12 @@ class WebpackBaseConfig {
             test: /^.((?!cssmodule).)*\.(sass|scss)$/,
             use: [
               { loader: 'style-loader' },
-              { loader: 'css-loader' },
+              {
+                loader: 'css-loader',
+                options: {
+                  url: false
+                } 
+              },
               {
                 loader: 'postcss-loader',
                 options: {
@@ -187,7 +197,12 @@ class WebpackBaseConfig {
             test: /^.((?!cssmodule).)*\.less$/,
             use: [
               { loader: 'style-loader' },
-              { loader: 'css-loader' },
+              {
+                loader: 'css-loader',
+                options: {
+                  url: false
+                } 
+              },
               { loader: 'less-loader' }
             ]
           },
@@ -195,7 +210,12 @@ class WebpackBaseConfig {
             test: /^.((?!cssmodule).)*\.styl$/,
             use: [
               { loader: 'style-loader' },
-              { loader: 'css-loader' },
+              {
+                loader: 'css-loader',
+                options: {
+                  url: false
+                }
+              },
               { loader: 'stylus-loader' }
             ]
           },
