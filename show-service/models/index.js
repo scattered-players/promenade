@@ -14,6 +14,7 @@ const placeSchema = require('../schemas/place');
 const phaseSchema = require('../schemas/phase');
 const showSchema = require('../schemas/show');
 const sceneSchema = require('../schemas/scene');
+const botSchema = require('../schemas/bot');
 
 const {
   startShow,
@@ -273,63 +274,122 @@ showSchema.statics.getCurrentShowState = async function() {
 }
 
 placeSchema.statics.getCurrentPlaceState = async function() {
-  let actors = await Actor.find({ isOnline: true }).populate({
-    path: 'places',
-    populate: [
-      {
-        path: 'currentParty',
-        populate: [
-          {
-            path:'attendances',
-            populate: {
-              path: 'attendee',
-              select: '-email'
+  let [bots, actors] = await Promise.all([
+    Bot.find({ isOnline: true}).populate({
+      path: 'places',
+      populate: [
+        {
+          path: 'currentParty',
+          populate: [
+            {
+              path:'attendances',
+              populate: {
+                path: 'attendee',
+                select: '-email'
+              }
+            },
+            {
+              path:'guide'
+            },
+            {
+              path: 'inventory'
+            },
+            {
+              path: 'history'
+            },
+            {
+              path: 'chat'
             }
-          },
-          {
-            path:'guide'
-          },
-          {
-            path: 'inventory'
-          },
-          {
-            path: 'history'
-          },
-          {
-            path: 'chat'
-          }
-        ]
-      },
-      {
-        path:'partyQueue',
-        populate: [
-          {
-            path:'attendances',
-            populate: {
-              path: 'attendee',
-              select: '-email'
+          ]
+        },
+        {
+          path:'partyQueue',
+          populate: [
+            {
+              path:'attendances',
+              populate: {
+                path: 'attendee',
+                select: '-email'
+              }
+            },
+            {
+              path:'guide'
+            },
+            {
+              path: 'inventory'
+            },
+            {
+              path: 'history'
+            },
+            {
+              path: 'chat'
             }
-          },
-          {
-            path:'guide'
-          },
-          {
-            path: 'inventory'
-          },
-          {
-            path: 'history'
-          },
-          {
-            path: 'chat'
-          }
-        ]
-      },
-      {
-        path: 'phase'
-      }
-    ]
-  }).lean();
+          ]
+        },
+        {
+          path: 'phase'
+        }
+      ]
+    }).lean(),
+    Actor.find({ isOnline: true }).populate({
+      path: 'places',
+      populate: [
+        {
+          path: 'currentParty',
+          populate: [
+            {
+              path:'attendances',
+              populate: {
+                path: 'attendee',
+                select: '-email'
+              }
+            },
+            {
+              path:'guide'
+            },
+            {
+              path: 'inventory'
+            },
+            {
+              path: 'history'
+            },
+            {
+              path: 'chat'
+            }
+          ]
+        },
+        {
+          path:'partyQueue',
+          populate: [
+            {
+              path:'attendances',
+              populate: {
+                path: 'attendee',
+                select: '-email'
+              }
+            },
+            {
+              path:'guide'
+            },
+            {
+              path: 'inventory'
+            },
+            {
+              path: 'history'
+            },
+            {
+              path: 'chat'
+            }
+          ]
+        },
+        {
+          path: 'phase'
+        }
+      ]
+    }).lean()
+  ]);
   let places = _.flatMap(actors, actor => actor.places);
+  places = places.concat(_.flatMap(bots, bot => bot.places));
   places.map(place => {
     if(place.currentParty){
       place.currentParty.attendees = place.currentParty.attendances.map(attendance => attendance.attendee);
@@ -486,6 +546,7 @@ var Show = mongoose.model('Show', showSchema);
 var Scene = mongoose.model('Scene', sceneSchema);
 
 var Phase = mongoose.model('Phase', phaseSchema);
+var Bot = mongoose.model('Bot', botSchema);
 
 module.exports = {
   User,
@@ -500,5 +561,6 @@ module.exports = {
   Phase,
   Place,
   Show,
-  Scene
+  Scene,
+  Bot
 };

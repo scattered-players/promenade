@@ -12,7 +12,10 @@ var placeSchema = new Schema({
   assetKey: String,
   currentFilter: String,
   isAvailable: Boolean,
-  phase: { type: Schema.Types.ObjectId, ref: 'Phase' }
+  phase: { type: Schema.Types.ObjectId, ref: 'Phase' },
+  isBot: Boolean,
+  botURL: String,
+  botTime: Number
 });
 
 module.exports = placeSchema;
