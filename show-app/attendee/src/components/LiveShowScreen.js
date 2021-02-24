@@ -96,8 +96,9 @@ class LiveShowScreen extends React.Component {
       [phaseKindsEnum.KICK]: KickScreen,
     };
     const CurrentScreen = screenDict[system.currentShow.currentPhase.kind];
+    let phaseClassName = system.currentShow.currentPhase.name.toLowerCase().replace(' ', '-') + '-phase';
     return (
-      <div className="liveshowscreen-component">
+      <div className={ "liveshowscreen-component " + phaseClassName}>
         <div className="main-area">
           {
             !config.IS_MOBILE && (

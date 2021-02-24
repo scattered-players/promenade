@@ -116,7 +116,7 @@ class PartySidebar extends React.Component {
     const screenDict = {
       [phaseKindsEnum.WEB_PAGE]: WebpageScreen,
       [phaseKindsEnum.STATIC_VIDEO]: StaticVideoScreen,
-      // [showStatusEnum.FREEPLAY]: myParty.currentPlace  ? InteractionScreen : NavigationScreen,
+      [phaseKindsEnum.FREEPLAY]: myParty.currentPlace  ? InteractionScreen : NavigationScreen,
       [phaseKindsEnum.LIVESTREAM]: LivestreamScreen,
       [phaseKindsEnum.VIDEO_CHOICE]: VideoChoiceScreen,
       [phaseKindsEnum.KICK]: KickScreen,
