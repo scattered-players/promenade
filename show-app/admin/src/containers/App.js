@@ -69,7 +69,19 @@ import {
   toggleNotifications,
   deleteHistoryEntry,
   deleteScene,
-  getStreamKey
+  getStreamKey,
+  createPhase,
+  updatePhase,
+  deletePhase,
+  swapPhases,
+  setDefaultPhase,
+  createPlace,
+  deletePlace,
+  createBot,
+  deleteBot,
+  createBotPlace,
+  deleteBotPlace,
+  toggleBot
 } from '../actions/';
 import Main from '../components/App';
 /* Populated by react-webpack-redux:reducer */
@@ -153,7 +165,19 @@ App.propTypes = {
     toggleNotifications: PropTypes.func.isRequired,
     deleteHistoryEntry: PropTypes.func.isRequired,
     deleteScene: PropTypes.func.isRequired,
-    getStreamKey: PropTypes.func.isRequired
+    getStreamKey: PropTypes.func.isRequired,
+    createPhase: PropTypes.func.isRequired,
+    updatePhase: PropTypes.func.isRequired,
+    deletePhase: PropTypes.func.isRequired,
+    swapPhases: PropTypes.func.isRequired,
+    setDefaultPhase: PropTypes.func.isRequired,
+    createPlace: PropTypes.func.isRequired,
+    deletePlace: PropTypes.func.isRequired,
+    createBot: PropTypes.func.isRequired,
+    deleteBot: PropTypes.func.isRequired,
+    createBotPlace: PropTypes.func.isRequired,
+    deleteBotPlace: PropTypes.func.isRequired,
+    toggleBot: PropTypes.func.isRequired
   }),
   stuff: PropTypes.shape({}),
   system: PropTypes.shape({}),
@@ -234,7 +258,19 @@ function mapDispatchToProps(dispatch) {
     toggleNotifications,
     deleteHistoryEntry,
     deleteScene,
-    getStreamKey
+    getStreamKey,
+    createPhase,
+    updatePhase,
+    deletePhase,
+    swapPhases,
+    setDefaultPhase,
+    createPlace,
+    deletePlace,
+    createBot,
+    deleteBot,
+    createBotPlace,
+    deleteBotPlace,
+    toggleBot
   };
   const actionMap = { actions: bindActionCreators(actions, dispatch) };
   return actionMap;

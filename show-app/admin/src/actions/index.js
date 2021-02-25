@@ -6,6 +6,18 @@ Allows to import actions like so:
 import {action1, action2} from '../actions/'
 */
 /* Populated by react-webpack-redux:action */
+import toggleBot from '../actions/toggleBot.js';
+import deleteBotPlace from '../actions/deleteBotPlace.js';
+import createBotPlace from '../actions/createBotPlace.js';
+import deleteBot from '../actions/deleteBot.js';
+import createBot from '../actions/createBot.js';
+import deletePlace from '../actions/deletePlace.js';
+import createPlace from '../actions/createPlace.js';
+import setDefaultPhase from '../actions/setDefaultPhase.js';
+import swapPhases from '../actions/swapPhases.js';
+import deletePhase from '../actions/deletePhase.js';
+import updatePhase from '../actions/updatePhase.js';
+import createPhase from '../actions/createPhase.js';
 import getStreamKey from '../actions/getStreamKey.js';
 import deleteScene from '../actions/deleteScene.js';
 import deleteHistoryEntry from '../actions/deleteHistoryEntry.js';
@@ -128,6 +140,18 @@ const actions = {
   toggleNotifications,
   deleteHistoryEntry,
   deleteScene,
-  getStreamKey
+  getStreamKey,
+  createPhase,
+  updatePhase,
+  deletePhase,
+  swapPhases,
+  setDefaultPhase,
+  createPlace,
+  deletePlace,
+  createBot,
+  deleteBot,
+  createBotPlace,
+  deleteBotPlace,
+  toggleBot
 };
 module.exports = actions;

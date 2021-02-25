@@ -17,7 +17,7 @@ class VideoRow extends React.Component {
         joinVideoRoom
       },
       system: {
-        myPlace,
+        myCurrentPlace,
         currentParty,
         audioMute,
         videoMute,
@@ -26,7 +26,7 @@ class VideoRow extends React.Component {
       }
     } = this.props;
     const janusSubdomain = 'janus' + Math.floor(currentParty.janusIndex * janusCoefficient);
-    joinVideoRoom(`wss://${janusSubdomain}.${config.JANUS_DOMAIN}:8989/`, currentParty._id, myPlace._id, audioMute, videoMute, localOutputStream);
+    joinVideoRoom(`wss://${janusSubdomain}.${config.JANUS_DOMAIN}:8989/`, currentParty._id, myCurrentPlace._id, audioMute, videoMute, localOutputStream);
   }
 
   componentWillUnmount(){

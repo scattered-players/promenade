@@ -5,13 +5,12 @@ RUN apt-get update && apt-get install -y ffmpeg
 # Create app directory
 WORKDIR /usr/src/show-service
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
+# Copy over package lists
 COPY package*.json ./
+COPY yarn.lock ./
 
 # Install dependencies needed for production
-RUN npm install --only=production
+RUN yarn install --production=true
 
 COPY . .
 
@@ -21,4 +20,4 @@ EXPOSE 9001
 EXPOSE 5000
 EXPOSE 80
 EXPOSE 443
-CMD [ "npm", "start" ]
+CMD [ "yarn", "start" ]

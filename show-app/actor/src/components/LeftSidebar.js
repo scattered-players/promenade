@@ -46,7 +46,7 @@ class LeftSidebar extends React.Component {
   render() {
     const { actions, system } = this.props,
     {
-      myPlace
+      myCurrentPlace
     } = system,
     {
       currentTab
@@ -60,7 +60,7 @@ class LeftSidebar extends React.Component {
           variant="fullWidth"
         >
           <Tab className="tab" label={ 
-            <Badge badgeContent={myPlace && myPlace.partyQueue.length} color="error">
+            <Badge badgeContent={myCurrentPlace && myCurrentPlace.partyQueue.length} color="error">
               Party
             </Badge>}
           />

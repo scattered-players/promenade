@@ -40,7 +40,7 @@ class Settings extends React.Component {
       chosenVideoInput,
       isNerdy,
       wantsNotifications,
-      myPlace,
+      myCurrentPlace,
       isMonitorOn,
       audioConstraints:{
         echoCancellation,
@@ -62,15 +62,15 @@ class Settings extends React.Component {
         </DialogTitle>
         <DialogContent>
           <Typography variant="h5">Audio/Video</Typography>
-          <TextField label="Music Volume" value={myPlace.audioVolume || 0} onChange={e => adjustVolume(myPlace._id, e.target.value)} />
+          <TextField label="Music Volume" value={myCurrentPlace.audioVolume || 0} onChange={e => adjustVolume(myCurrentPlace._id, e.target.value)} />
           <Grid container spacing={2}>
             <Grid item>
               <VolumeDownIcon />
             </Grid>
             <Grid item xs>
               <Slider
-                value={myPlace.audioVolume || 0 }
-                onChange={(e,newValue) => adjustVolume(myPlace._id, newValue)}
+                value={myCurrentPlace.audioVolume || 0 }
+                onChange={(e,newValue) => adjustVolume(myCurrentPlace._id, newValue)}
                 aria-labelledby="continuous-slider"
                 min={0}
                 max={1}

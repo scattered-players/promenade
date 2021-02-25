@@ -1,6 +1,6 @@
 .partysidebar-component {
   // border: 1px dashed #f00;
-  flex: 0 0 200px;
+  grid-area: sidebar;
   display: flex;
   flex-direction: column;
 

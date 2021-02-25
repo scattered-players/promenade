@@ -5,8 +5,10 @@ const {
   Admin,
   Attendee,
   Attendance,
+  Bot,
   Guide,
   Show,
+  Phase,
   Place,
   Party,
   User,
@@ -38,6 +40,7 @@ const {
   broadcastGuide,
   sendMessageToUser
 } = require('../ws/broadcast');
+
 
 const env = process.env.NODE_ENV || 'development';
 
@@ -144,29 +147,68 @@ const refreshSystemState = _.debounce(async function() {
       admins,
       attendees,
       guides,
-      scenes
+      bots,
+      scenes,
+      phases
     ] = await Promise.all([
       Show.getTotalState(),
       Actor.find().populate({
-        path: 'place',
+        path: 'places',
         populate: [
           {
             path: 'currentParty'
           },
           {
             path: 'partyQueue'
+          },
+          {
+            path: 'phase'
           }
         ]
       }).lean(),
       Admin.find().lean(),
       Attendee.find().lean(),
       Guide.find().lean(),
+      Bot.find().populate({
+        path: 'places',
+        populate: [
+          {
+            path: 'currentParty'
+          },
+          {
+            path: 'partyQueue'
+          },
+          {
+            path: 'phase'
+          }
+        ]
+      }).lean(),
       Scene.find().populate([{
         path: 'place'
       },{
         path: 'party'
-      }]).lean()
+      }]).lean(),
+      Phase.find().sort({ index: 'asc' }).lean()
     ]);
+    broadcastActor({
+      type:'RECEIVE_SYSTEM_STATE',
+      body: {
+        shows,
+        actors,
+        admins,
+        attendees,
+        guides,
+        bots,
+        scenes,
+        phases,
+        pullTime: (Date.now() - startTime) / 1000,
+        adminSockets: wssAdmin.clients.size,
+        actorSockets: wssActor.clients.size,
+        attendeeSockets: wssAttendee.clients.size,
+        guideSockets: wssGuide.clients.size,
+        janusCoefficient
+      }
+    });
     broadcastAdmin({
       type:'RECEIVE_SYSTEM_STATE',
       body: {
@@ -175,7 +217,9 @@ const refreshSystemState = _.debounce(async function() {
         admins,
         attendees,
         guides,
+        bots,
         scenes,
+        phases,
         pullTime: (Date.now() - startTime) / 1000,
         adminSockets: wssAdmin.clients.size,
         actorSockets: wssActor.clients.size,
@@ -199,7 +243,7 @@ const refreshCurrentShowState = _.debounce(async function () {
     return;
   } else if(isCurrentlyRefreshingCurrentShowState && !hasQueuedRefreshingCurrentShowState) {
     hasQueuedRefreshingCurrentShowState = true;
-    while(isCurrentlyRefreshingCurrentShowState){
+    while(isCurrentlyRefreshingCurrentShowState) {
       console.log('QUEUEING FOR CURRENT SHOW STATE');
       await delay(500);
     }
@@ -210,10 +254,12 @@ const refreshCurrentShowState = _.debounce(async function () {
     let startTime = Date.now();
     let [
       currentShow,
-      places
+      places,
+      phases
     ] = await Promise.all([
       Show.getCurrentShowState(),
-      Place.getCurrentPlaceState()
+      Place.getCurrentPlaceState(),
+      Phase.find().sort({ index: 'asc' }).lean()
     ]);
     broadcastAll({
       type:'RECEIVE_CURRENT_SHOW_STATE',
@@ -221,6 +267,7 @@ const refreshCurrentShowState = _.debounce(async function () {
         janusCoefficient,
         currentShow,
         places,
+        phases,
         pullTime: (Date.now() - startTime) / 1000
       }
     });
@@ -346,6 +393,27 @@ async function queueParty(party, place){
   promises.push(Place.updateOne({ _id: place._id }, { $push: { partyQueue: party._id } }));
   promises.push(clearDecider(party));
   await Promise.all(promises);
+
+  if(place.isBot) {
+    setTimeout(async () => {
+      let promises = [];
+      promises.push(Party.updateOne({ _id: party._id }, { $set: { currentPlace: place._id, nextPlace: null, selectedPlace: null }, $push: { history: place._id } }));
+      promises.push(Place.updateOne({ _id: place._id }, { $set:{ currentParty: party._id, isAvailable: false }, $pull: { partyQueue: party._id } }));
+      promises.push(Actor.updateMany({ places: { $elemMatch: { $eq: place._id } } }, { isAvailable: false }))
+      promises.push(Scene.create({ place: place._id, party: party._id, startTime: new Date() }));
+      await Promise.all(promises);
+    
+      refreshCurrentShowState();
+      refreshSystemState();
+      setTimeout(async () => {
+        await kickParty(party, place);
+        await Place.updateOne({ _id: place._id }, { $set:{ isAvailable: true } });
+    
+        refreshCurrentShowState();
+        refreshSystemState();
+      }, place.botTime * 1000);
+    }, 5000);
+  }
 }
 
 async function kickParty(party, place) {
@@ -409,11 +477,158 @@ async function blockUser(userId) {
   }, 1000);
 }
 
+async function defaultPhases() {
+  let phases = await Phase.find({}).lean();
+  if(!phases.length) {
+    phases = await Promise.all([
+      Phase.create({
+        name:"Preshow",
+        kind:"WEB_PAGE",
+        attributes: {
+          url: '/program.html'
+        },
+        index: 0,
+        isDefault: true
+      }),
+      Phase.create({
+        name:"Intro",
+        kind:"STATIC_VIDEO",
+        attributes: {
+          url: 'https://cdn.chrisuehlinger.com/yknow.mp4'
+        },
+        index: 1,
+        isDefault: false
+      }),
+      Phase.create({
+        name:"Freeplay 1",
+        kind:"FREEPLAY",
+        attributes: {
+          navWorkerName: 'f1886'
+        },
+        index: 2,
+        isDefault: false
+      }),
+      Phase.create({
+        name:"Global Event 1",
+        kind:"LIVESTREAM",
+        attributes: {
+        },
+        index: 3,
+        isDefault: false
+      }),
+      Phase.create({
+        name:"Freeplay 2",
+        kind:"FREEPLAY",
+        attributes: {
+          navWorkerName: 'f1928'
+        },
+        index: 4,
+        isDefault: false
+      }),
+      Phase.create({
+        name:"Global Event 2",
+        kind:"LIVESTREAM",
+        attributes: {
+        },
+        index: 4,
+        isDefault: false
+      }),
+      Phase.create({
+        name:"Freeplay 3",
+        kind:"FREEPLAY",
+        attributes: {
+          navWorkerName: 'f1964'
+        },
+        index: 5,
+        isDefault: false
+      }),
+      Phase.create({
+        name:"Ending",
+        kind:"VIDEO_CHOICE",
+        attributes: {
+          videoList: [
+            'https://cdn.chrisuehlinger.com/yknow.mp4'
+          ]
+        },
+        index: 6,
+        isDefault: false
+      }),
+      Phase.create({
+        name:"End",
+        kind:"KICK",
+        index: 7,
+        isDefault: false
+      })
+    ]);
+
+    let newShowDate = new Date();
+    newShowDate.setHours(newShowDate.getHours() + Math.ceil(newShowDate.getMinutes()/60));
+    newShowDate.setMinutes(0);
+
+    const [newShow, place1, place2, botplace1] = await Promise.all([
+      Show.scheduleShow(newShowDate, 1),
+      Place.create({
+        placeName: 'Place1',
+        characterName: 'Character1',
+        flavorText: '',
+        assetKey: 'FooBar',
+        phase: phases[2]._id,
+        isBot: false
+      }),
+      Place.create({
+        placeName: 'Place2',
+        characterName: 'Character2',
+        flavorText: '',
+        assetKey: 'BazQux',
+        phase: phases[4]._id,
+        isBot: false
+      }),
+      Place.create({
+        placeName: 'BotPlace1',
+        characterName: 'Character2',
+        flavorText: '',
+        assetKey: 'BazQux',
+        isAvailable: true,
+        isBot: true,
+        botURL: 'https://cdn.chrisuehlinger.com/yknow.mp4',
+        botTime: 30
+      }),
+    ]);
+    console.log('PLACE1', place1);
+    
+    await Promise.all([
+      Actor.create({
+        email: 'actor@example.com',
+        username: 'someactor',
+        places: [ place1._id, place2._id ]
+      }),
+      Bot.create({
+        username: 'somebot',
+        places: [ botplace1._id ]
+      }),
+      Guide.create({
+        email: 'guide@example.com',
+        username: 'guideperson',
+        characterName: 'Guiderman'
+      }),
+      Attendance.bookTicket('attendee@example.com', newShow._id)
+    ]);
+
+    console.log('DEFAULT PHASES CREATED');
+  }
+}
+
 async function startup() {
   let promises = [];
+  // promises.push((async () => {
+    await defaultPhases();
+    // await syncWithEventbrite();
+  // })());
   promises.push(User.updateMany({}, { $set: { isOnline: false }}));
   promises.push(Party.updateMany({}, { $set: { decider: null, decisionDeadline: null, decisionTimeoutId: null, currentPlace: null, nextPlace: null, selectedPlace: null }}));
-  promises.push(Place.updateMany({}, { $set: { currentParty: null, partyQueue: [] }}));
+  promises.push(Place.updateMany({ isBot: false }, { $set: { currentParty: null, partyQueue: [], isAvailable: false }}));
+  promises.push(Actor.updateMany({}, { $set: { isAvailable: false }}));
+  promises.push(Bot.updateMany({}, { $set: { isOnline: true, isAvailable: true }}));
   promises.push((async () => {
     let attendees = await Attendee.find({});
     await Promise.all(
@@ -431,8 +646,8 @@ async function startup() {
       actors
         .filter(actor => actor.username.startsWith('actor'))
         .map(async actor => {
-          await Place.deleteOne({ _id: actor.place });
-          await Actor.deleteOne({ _id: actor._id });
+          await Place.deleteMany({ _id: { $in:actor.places } });
+          await Actor.findByIdAndDelete(actor);
         })
     );
   })());

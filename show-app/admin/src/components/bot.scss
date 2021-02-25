@@ -1,0 +1,43 @@
+
+
+.bot-headline {
+  display: flex;
+  width: 100%;
+  white-space: nowrap;
+}
+
+li.bot-list-item {
+  display: block;
+}
+
+.bot-list-item-text {
+  max-width: 200px;
+  p, span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.bot-status-indicator {
+  /* display: inline-block; */
+  width: 10px;
+  height: 10px;
+  margin: 10px;
+  border-radius: 100px;
+  vertical-align: middle;
+}
+
+.bot-status-indicator.ready {
+  background-color: green;
+  box-shadow: 0px 0px 10px green;
+}
+
+.bot-status-indicator.not-ready {
+  background-color: yellow;
+  box-shadow: 0px 0px 10px yellow;
+}
+
+.bot-status-indicator.not-online {
+  background-color: red;
+  box-shadow: 0px 0px 10px red;
+}

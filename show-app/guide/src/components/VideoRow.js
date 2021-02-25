@@ -17,7 +17,7 @@ import VideocamIcon from '@material-ui/icons/Videocam';
 import VideocamOffIcon from '@material-ui/icons/VideocamOff';
 import SettingsIcon from '@material-ui/icons/Settings';
 
-import showStatusEnum from '../enum/showStatus';
+import phaseKindsEnum from '../enum/phasesKinds';
 
 import AttendeeVideoFeed from './AttendeeVideoFeed';
 import VideoFeed from './VideoFeed';
@@ -76,7 +76,7 @@ class VideoRow extends React.Component {
       localFeed,
       currentShow: {
         hasEndingAlert,
-        state: showState
+        currentPhase
       },
       videoInputs,
       audioInputs,
@@ -173,7 +173,7 @@ class VideoRow extends React.Component {
                   isLocalVideoMuted={isVideoMuted}
                   isLocalAudioMuted={isAudioMuted}
                   isNerdy={isNerdy}
-                  shouldMute={showState === showStatusEnum.INTRO || showState ===  showStatusEnum.ENDING}
+                  shouldMute={currentPhase.kind === phaseKindsEnum.STATIC_VIDEO || currentPhase.kind === phaseKindsEnum.VIDEO_CHOICE || currentPhase.kind === phaseKindsEnum.LIVESTREAM}
                   />
               }
             </div>
@@ -188,7 +188,7 @@ class VideoRow extends React.Component {
                     <Typography variant="body1" className="nametag">{attendee.username}</Typography>
                   </div>
                 </div>
-                { attendee.feed && <AttendeeVideoFeed actions={actions} attendee={attendee} feed={attendee.feed} isNerdy={isNerdy} isGuide={false} shouldMute={showState === showStatusEnum.INTRO || showState ===  showStatusEnum.ENDING} /> }
+                { attendee.feed && <AttendeeVideoFeed actions={actions} attendee={attendee} feed={attendee.feed} isNerdy={isNerdy} isGuide={false} shouldMute={currentPhase.kind === phaseKindsEnum.STATIC_VIDEO || currentPhase.kind === phaseKindsEnum.VIDEO_CHOICE || currentPhase.kind === phaseKindsEnum.LIVESTREAM} /> }
               </div>
             ))
         }

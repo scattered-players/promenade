@@ -71,6 +71,8 @@ const initialState = {
   user: null,
   bookedShows: [],
   places: [],
+  currentPlaces: [],
+  phases: [],
   currentShow: null,
   currentPlace: null,
   isInCurrentShow: false,
@@ -97,7 +99,7 @@ const initialState = {
 };
 
 function calcDervivedProperties(nextState) {
-  let { currentShow, bookedShows, user } = nextState;
+  let { currentShow, bookedShows, user, places } = nextState;
 
   let isInCurrentShow = currentShow && bookedShows.map(show => show._id).indexOf(currentShow._id) !== -1;
   nextState.isInCurrentShow = isInCurrentShow;
@@ -110,6 +112,12 @@ function calcDervivedProperties(nextState) {
   }
 
   if(nextState.myParty) {
+    if (places) {
+      nextState.currentPlaces = places.filter(place => place.isBot || (place.phase && place.phase._id === nextState.currentShow.currentPhase._id));
+    } else {
+      nextState.currentPlaces = [];
+    }
+
     nextState.chatMessages = nextState.myParty.chat;
     if(nextState.myParty.guide) {
       let matchingFeeds = nextState.feeds.filter(feed => feed.remoteFeed.rfdisplay.slice(6) === nextState.myParty.guide._id);
@@ -141,6 +149,7 @@ function calcDervivedProperties(nextState) {
     }
   } else {
     nextState.chatMessages = [];
+    nextState.currentPlaces = [];
   }
 
   
@@ -361,12 +370,14 @@ function reducer(state = initialState, action) {
       let {
         currentShow,
         places,
+        phases,
         janusCoefficient
       } = action.body;
       nextState.janusCoefficient = janusCoefficient;
       nextState.isSettingMutes = false;
       nextState.currentShow = currentShow;
       nextState.places = places;
+      nextState.phases = phases;
       calcDervivedProperties(nextState);
       return nextState;
     }

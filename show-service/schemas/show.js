@@ -6,10 +6,8 @@ var showSchema = new Schema({
   isEventbrite: Boolean,
   eventBriteId: String,
   parties: [{ type: Schema.Types.ObjectId, ref: 'Party' }],
-  state: String,
-  introStartTime: Number,
-  isRunning: Boolean,
-  endingType: String
+  currentPhase: { type: Schema.Types.ObjectId, ref: 'Phase' },
+  isRunning: Boolean
 });
 
 module.exports = showSchema;

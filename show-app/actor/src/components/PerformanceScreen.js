@@ -153,7 +153,7 @@ class PerformanceScreen extends React.Component {
     {
       previewedParty,
       currentParty,
-      myPlace,
+      myCurrentPlace,
       user,
       audioInputs,
       videoInputs,
@@ -178,7 +178,7 @@ class PerformanceScreen extends React.Component {
       isAudioDialOpen,
       isVideoDialOpen
     } = this.state;
-    const shouldPlayAudio = !!currentParty && myPlace.audioPath && myPlace.audioPath.length;
+    const shouldPlayAudio = !!currentParty && myCurrentPlace.audioPath && myCurrentPlace.audioPath.length;
     const elapsedMinutes = Math.floor(Math.round(elapsedTime/1000)/60);
     const elapsedSeconds = Math.round(elapsedTime/1000) % 60;
     return (
@@ -260,7 +260,7 @@ class PerformanceScreen extends React.Component {
                       <div className="preview-alert">
                         <div className="preview-message">You are currently previewing {previewedParty.name}</div>
                         <div className="preview-action">
-                          <Button onClick={() => acceptParty(previewedParty._id, myPlace._id)}>Accept Party</Button>
+                          <Button onClick={() => acceptParty(previewedParty._id, myCurrentPlace._id)}>Accept Party</Button>
                         </div>
                       </div>
                     )
@@ -284,7 +284,7 @@ class PerformanceScreen extends React.Component {
           }
         </div>
         { hasParty && localOutputStream && <VideoRow actions={actions} system={system} />}
-        { shouldPlayAudio && <BackgroundAudio audioPath={myPlace.audioPath} mixerContext={mixerContext} mixerOutput={mixerOutput} audioVolume={myPlace.audioVolume} /> }
+        { shouldPlayAudio && <BackgroundAudio audioPath={myCurrentPlace.audioPath} mixerContext={mixerContext} mixerOutput={mixerOutput} audioVolume={myCurrentPlace.audioVolume} /> }
         { isSettingsDisplayed && <Settings system={system} actions={actions} onClose={()=>this.setState({isSettingsDisplayed: false})} /> }
         { isCharacterInfoDisplayed && <CharacterInfo system={system} actions={actions} onClose={()=>this.setState({isCharacterInfoDisplayed: false})} /> }
       </div>

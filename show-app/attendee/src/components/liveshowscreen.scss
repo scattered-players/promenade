@@ -36,6 +36,9 @@
 
 
   @media (max-width: 500px), (max-height: 500px){
+    grid-template-areas:
+      "sidebar sidebar"
+      "sidebar sidebar";
     .main-area {
       display: none;
     }

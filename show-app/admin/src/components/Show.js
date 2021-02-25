@@ -30,8 +30,6 @@ import {
 
 import Party from './Party';
 
-import showStatusEnum from '../enum/showStatus';
-
 import './show.scss';
 
 class Show extends React.Component {
@@ -110,7 +108,7 @@ class Show extends React.Component {
   }
 
   render() {
-    const { actions, show, guides } = this.props;
+    const { actions, show, guides, phases } = this.props;
     const {
       changeShowStatus,
       changeShowRunning,
@@ -130,14 +128,13 @@ class Show extends React.Component {
     }, ...CUE_LIST].map(cue => cue.id);
     const dateString = format(new Date(show.date), 'M/d/yy h:mm a');
     let availableGuides = guides.filter(guide => !show.parties.reduce((acc, party) => acc || (party.guide && party.guide._id === guide._id), false));
-    console.log('AVAILABLE GUIDES', availableGuides);
     return (
       <Accordion expanded={isExpanded} onChange={(e, isExpanded) => this.setState({isExpanded})}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <div className="show-heading">
             <div className={ 'running-indicator ' + (show.isRunning ? 'running' : 'not-running')}></div>
             <Typography>{dateString}</Typography>
-            <div className="show-state">{show.state.replace('_', ' ')}</div>
+            <div className="show-state">{show.currentPhase.name.replace('_', ' ')}</div>
           </div>
         </AccordionSummary>
         <AccordionDetails className="show-details">
@@ -152,25 +149,18 @@ class Show extends React.Component {
                 <InputLabel id={`${show._id}-state-select`}>Status</InputLabel>
                 <Select
                   labelId={`${show._id}-state-select`}
-                  value={show.state}
+                  value={show.currentPhase._id}
                   onChange={e => changeShowStatus(show._id, e.target.value)}
                 >
-                  {Object.keys(showStatusEnum).map(status => <MenuItem key={status} value={status}>{status}</MenuItem>)}
+                  {phases.map(phase => <MenuItem key={phase._id} value={phase._id}>{phase.name}</MenuItem>)}
                 </Select>
               </FormControl>
               <FormControlLabel control={<Switch checked={!!show.isEventbrite} onChange={ e => updateShowInfo(show._id, show.date, e.target.checked) } />} label="Is Eventbrite Show"/>
               { !show.isEventbrite && <Button style={{backgroundColor: 'red'}} onClick={() => this.setState({showDeleteDialog: true})}>DELETE SHOW</Button> }
               <div>
-                {/* <Button onClick={ () => sendShowEmail(show._id)}>Send Login Emails</Button> */}
                 <Button onClick={ () => fetchShowEmailCsv(show._id, show.date)}>Fetch Email CSV</Button>
-                <Button onClick={ () => getStreamKey(show._id)}>Get Stream Key</Button>
                 <Button href={`${location.protocol}//${location.host}/streamtest/?streamId=${show._id}`} target="_blank">Test Stream</Button>
               </div>
-              {/* <div>
-                <FormControlLabel control={<Switch checked={!!show.hasIntroAlert} onChange={ e => sendIntroAlert(show._id, e.target.checked) } />} label="Intro Alert"/>
-                <FormControlLabel control={<Switch checked={!!show.hasEndingAlert} onChange={ e => sendEndingAlert(show._id, e.target.checked) } />} label="Ending Alert"/>
-                <Button onClick={ () => cencelAlerts(show._id)}>Cancel Alerts</Button>
-              </div> */}
             </div>
             <div>
               <TextField
@@ -181,15 +171,6 @@ class Show extends React.Component {
               />
               <Button onClick={ this.bookTicket }>Book Ticket</Button>
             </div>
-            {/* <div>
-              <TextField
-                label="Audio Cue Path"
-                value={audioPath}
-                onChange={ e => this.setState({ audioPath: e.target.value }) }
-                onKeyPress={e => (e.key === 'Enter') && this.sendAudioCue()}
-              />
-              <Button onClick={ this.sendAudioCue }>Send Audio Cue</Button>
-            </div> */}
             <div>
               <FormControl >
                 <InputLabel id={`${show._id}-cue-select`}>Cue</InputLabel>

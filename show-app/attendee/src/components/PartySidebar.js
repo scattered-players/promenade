@@ -10,18 +10,19 @@ import {
   TextField
 } from '@material-ui/core';
 
-import showStatusEnum from '../enum/showStatus';
+import phaseKindsEnum from '../enum/phasesKinds';
 
-import PreshowScreen from './PreshowScreen';
-import IntroScreen from './IntroScreen';
+import WebpageScreen from './WebpageScreen';
+import StaticVideoScreen from './StaticVideoScreen';
 import NavigationScreen from './NavigationScreen';
 import InteractionScreen from './InteractionScreen';
 import HistoryTab from './HistoryTab';
 import NotesTab from './NotesTab';
 import VideoRow from './VideoRow';
 import Settings from './Settings';
-import EndingScreen from './EndingScreen';
-import PostshowScreen from './PostshowScreen';
+import LivestreamScreen from './LivestreamScreen';
+import VideoChoiceScreen from './VideoChoiceScreen';
+import KickScreen from './KickScreen';
 
 
 import './partysidebar.scss';
@@ -113,17 +114,19 @@ class PartySidebar extends React.Component {
       currentTab
     } = this.state;
     const screenDict = {
-      [showStatusEnum.PRESHOW]: PreshowScreen,
-      [showStatusEnum.INTRO]: IntroScreen,
-      [showStatusEnum.FREEPLAY]: myParty.currentPlace  ? InteractionScreen : NavigationScreen,
-      [showStatusEnum.ENDING]: EndingScreen,
-      [showStatusEnum.HAS_ENDED]: PostshowScreen,
+      [phaseKindsEnum.WEB_PAGE]: WebpageScreen,
+      [phaseKindsEnum.STATIC_VIDEO]: StaticVideoScreen,
+      [phaseKindsEnum.FREEPLAY]: myParty.currentPlace  ? InteractionScreen : NavigationScreen,
+      [phaseKindsEnum.LIVESTREAM]: LivestreamScreen,
+      [phaseKindsEnum.VIDEO_CHOICE]: VideoChoiceScreen,
+      [phaseKindsEnum.KICK]: KickScreen,
     };
-    const CurrentScreen = screenDict[system.currentShow.state];
+    const CurrentScreen = screenDict[system.currentShow.currentPhase.kind];
     return (
       <div className="partysidebar-component">
-        { config.IS_MOBILE && system.currentShow.state === showStatusEnum.INTRO && <IntroScreen actions={actions} system={system}/> }
-        { config.IS_MOBILE && system.currentShow.state === showStatusEnum.ENDING && <EndingScreen actions={actions} system={system}/> }
+        { config.IS_MOBILE && system.currentShow.currentPhase.kind === phaseKindsEnum.STATIC_VIDEO && <StaticVideoScreen actions={actions} system={system}/> }
+        { config.IS_MOBILE && system.currentShow.currentPhase.kind === phaseKindsEnum.VIDEO_CHOICE && <VideoChoiceScreen actions={actions} system={system}/> }
+        { config.IS_MOBILE && system.currentShow.currentPhase.kind === phaseKindsEnum.LIVESTREAM && <LivestreamScreen actions={actions} system={system}/> }
         <Tabs
           className="tabs"
           value={currentTab}
@@ -141,7 +144,10 @@ class PartySidebar extends React.Component {
           config.IS_MOBILE &&
             <TabPanel value={currentTab} index={0} className="tab-panel">
               {
-                system.currentShow.state !== showStatusEnum.INTRO && system.currentShow.state !== showStatusEnum.ENDING && <CurrentScreen actions={actions} system={system}/>
+                system.currentShow.currentPhase.kind !== phaseKindsEnum.STATIC_VIDEO &&
+                system.currentShow.currentPhase.kind !== phaseKindsEnum.VIDEO_CHOICE && 
+                system.currentShow.currentPhase.kind !== phaseKindsEnum.LIVESTREAM &&
+                <CurrentScreen actions={actions} system={system}/>
               }
             </TabPanel>
         }

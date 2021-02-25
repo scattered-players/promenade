@@ -2,7 +2,7 @@ const crypto = require('crypto');
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 const router = express.Router();
-const { Show, Place, Party } = require('../models');
+const { Show, Place, Party, Phase } = require('../models');
 const {
   broadcastAudioCue,
   broadcastCue,
@@ -24,9 +24,6 @@ const {
 const {
   SITE_BASE_URL
 } = require('../secrets/credentials');
-const {
-  STREAM_SECRET
-} = require('../secrets/promenade-config');
 
 /* GET shows listing. */
 router.get('/', asyncHandler(async (req, res, next) => {
@@ -190,39 +187,50 @@ router.put('/status', asyncHandler(async (req, res, next) => {
     return res.sendStatus(403);
   }
   let { showId, state } = req.body;
-  let show = await Show.findById(showId).populate({
-    path: 'parties',
-    populate: [
+  let [
+    show,
+    newPhase
+  ] = await Promise.all([
+    Show.findById(showId).populate([
       {
-        path:'attendances',
-        populate: {
-          path: 'attendee'
-        }
+        path: 'currentPhase'
       },
       {
-        path:'decider',
-        populate: {
-          path: 'attendee'
-        }
-      },
-      {
-        path:'guide',
+        path: 'parties',
+        populate: [
+          {
+            path:'attendances',
+            populate: {
+              path: 'attendee'
+            }
+          },
+          {
+            path:'decider',
+            populate: {
+              path: 'attendee'
+            }
+          },
+          {
+            path:'guide',
+          }
+        ]
       }
-    ]
-  });
+    ]),
+    Phase.findById(state).lean()
+  ]);
   if(!show){
     throw `No show with ID "${showId}"`;
   }
 
   let promises = [];
-  if(state === 'FREEPLAY' && show.isRunning) {
+  if(newPhase.kind === 'FREEPLAY' && show.isRunning) {
     promises = promises.concat(
       show.parties.map(async party => {
         await clearDecider(party);
         await validateDecider(party);
       })
     );
-  } else if (state !== 'FREEPLAY' && show.state === 'FREEPLAY'){
+  } else if (newPhase.kind !== 'FREEPLAY' && show.currentPhase.kind === 'FREEPLAY'){
     promises.push((async () => {
       await Party.updateMany({}, { $set: { currentPlace: null, nextPlace: null, selectedPlace: null }});
       await Promise.all(show.parties.map(clearDecider))
@@ -234,10 +242,7 @@ router.put('/status', asyncHandler(async (req, res, next) => {
       }})
     );
   }
-  let $set = {state};
-  if(state === 'INTRO' && show.isRunning){
-    $set.introStartTime === Date.now();
-  }
+  let $set = { currentPhase: newPhase._id };
 
   promises.push(Show.updateOne({_id: showId}, {$set}));
   await Promise.all(promises);
@@ -290,15 +295,13 @@ router.put('/run', asyncHandler(async (req, res, next) => {
     promises.push(stopShow(currentShow));
   } else if(!currentShow.isRunning && isRunning) {
     promises.push(startShow(currentShow));
-    if(currentShow.state === 'FREEPLAY') {
+    if(currentShow.currentPhase.kind === 'FREEPLAY') {
       promises = promises.concat(
         currentShow.parties.map(async party => {
           await clearDecider(party);
           await validateDecider(party);
         })
       )
-    } else if(currentShow.state === 'INTRO'){
-      currentShowModificatons.$set.introStartTime = Date.now();
     }
   }
 

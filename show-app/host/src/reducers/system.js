@@ -46,7 +46,7 @@ const initialState = {
   user: null,
   currentShow: null,
   places: [],
-  myPlace: null,
+  myCurrentPlace: null,
   previewedPartyId: null,
   previewedParty: null,
   currentParty: null,
@@ -71,28 +71,28 @@ function calcDervivedProperties(state, nextState) {
 
   if (places) {
     let matchingPlaces = places.filter(place => place._id === user.place);
-    nextState.myPlace = matchingPlaces.length ? matchingPlaces[0] : null;
+    nextState.myCurrentPlace = matchingPlaces.length ? matchingPlaces[0] : null;
   } else {
-    nextState.myPlace = null;
+    nextState.myCurrentPlace = null;
   }
 
-  if (nextState.myPlace && nextState.myPlace.currentParty) {
-    nextState.currentParty = nextState.myPlace.currentParty;
+  if (nextState.myCurrentPlace && nextState.myCurrentPlace.currentParty) {
+    nextState.currentParty = nextState.myCurrentPlace.currentParty;
   } else {
     nextState.currentParty = null;
   }
 
   if (Notification.permission === 'granted' && nextState.wantsNotifications) {
     if (
-      (!state.myPlace && nextState.myPlace && nextState.myPlace.partyQueue.length) || 
-      (state.myPlace && nextState.myPlace && nextState.myPlace.partyQueue.length > state.myPlace.partyQueue.length)
+      (!state.myCurrentPlace && nextState.myCurrentPlace && nextState.myCurrentPlace.partyQueue.length) || 
+      (state.myCurrentPlace && nextState.myCurrentPlace && nextState.myCurrentPlace.partyQueue.length > state.myCurrentPlace.partyQueue.length)
     ) {
-      let newParty = nextState.myPlace.partyQueue.slice(-1)[0];
+      let newParty = nextState.myCurrentPlace.partyQueue.slice(-1)[0];
       new Notification(`Incoming party`, {
         body: `${newParty.name} has joined your party queue`,
         badge: 'static/touch-icon-iphone-retina.png',
         icon: 'static/touch-icon-iphone-retina.png',
-        silent: !nextState.myPlace.currentParty
+        silent: !nextState.myCurrentPlace.currentParty
       });
     }
 
@@ -102,7 +102,7 @@ function calcDervivedProperties(state, nextState) {
         body: `The ${dateString} show has entered Freeplay Mode`,
         badge: 'static/touch-icon-iphone-retina.png',
         icon: 'static/touch-icon-iphone-retina.png',
-        silent: !(nextState.myPlace && nextState.myPlace.currentParty)
+        silent: !(nextState.myCurrentPlace && nextState.myCurrentPlace.currentParty)
       });
     }
 
@@ -112,7 +112,7 @@ function calcDervivedProperties(state, nextState) {
         body: `The ${dateString} show has ended Freeplay Mode`,
         badge: 'static/touch-icon-iphone-retina.png',
         icon: 'static/touch-icon-iphone-retina.png',
-        silent: !(nextState.myPlace && nextState.myPlace.currentParty)
+        silent: !(nextState.myCurrentPlace && nextState.myCurrentPlace.currentParty)
       });
     }
   }

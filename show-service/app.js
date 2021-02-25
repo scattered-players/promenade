@@ -10,6 +10,10 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+const {
+  Phase
+} = require('./models');
+
 const { SHOW_DOMAIN_NAME } = require('./secrets/promenade-config.json');
 
 const { createToken, validateToken } = require('./util/auth');
@@ -22,6 +26,7 @@ const routes = require('./routes/index');
 const users = require('./routes/user');
 const shows = require('./routes/show');
 const parties = require('./routes/party');
+const phases = require('./routes/phase');
 const navigation = require('./routes/navigation');
 const sync = require('./routes/sync');
 
@@ -74,6 +79,7 @@ app.use('/', routes);
 app.use('/users', users);
 app.use('/shows', shows);
 app.use('/parties', parties);
+app.use('/phases', phases);
 app.use('/navigation', navigation);
 app.use('/sync', sync);
 
@@ -111,7 +117,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-async function createServer(){
+async function createServer() {
+  const nms = require('./util/stream')(app);
+  nms.run();
+
   if(app.locals.ENV_DEVELOPMENT){
     console.log('DEVELOPMENT');
     return http.createServer(app);
@@ -133,7 +142,6 @@ async function createServer(){
 (async () => {
   try {
     await startup();
-    // await syncWithEventbrite();
     const server = await createServer();
     startWebsockets(server);
     server.listen(process.env.PORT || 5000, () => {
@@ -164,12 +172,6 @@ async function defaultAdmin() {
   }
 }
 
-// if (app.get('env') === 'development') {
-  defaultAdmin();
-// }
-
-
-const nms = require('./util/stream')(app);
-nms.run();
+defaultAdmin();
 
 module.exports = app;

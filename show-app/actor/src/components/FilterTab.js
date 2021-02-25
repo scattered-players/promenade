@@ -55,7 +55,7 @@ class FilterTab extends React.Component {
       chosenAudioInput,
       chosenVideoInput,
       audioConstraints,
-      myPlace
+      myCurrentPlace
     } = system,
     {
       filtersEnabled
@@ -100,16 +100,20 @@ class FilterTab extends React.Component {
         { config.CAN_CAPTURE_STREAM &&
           <MenuList>
             {
-              FILTER_NAMES.map(name => <MenuItem key={name} selected={name===activeFilter} onClick={() => setFilterName(name)}>{name}</MenuItem>)
+              FILTER_NAMES.map(name => <MenuItem key={name} selected={name === activeFilter} onClick={() => setFilterName(name)}>{name}</MenuItem>)
             }
           </MenuList>
         }
-        <Typography>Lite Filter Options</Typography>
-          <MenuList>
-            {
-              LITE_FILTER_NAMES.map(name => <MenuItem key={name} selected={name==myPlace.currentFilter} onClick={() => setLiteFilter(myPlace._id, name)}>{name || 'None'}</MenuItem>)
-            }
-          </MenuList>
+        {
+          myCurrentPlace && <>
+            <Typography>Lite Filter Options</Typography>
+            <MenuList>
+              {
+                LITE_FILTER_NAMES.map(name => <MenuItem key={name} selected={name == myCurrentPlace.currentFilter} onClick={() => setLiteFilter(myCurrentPlace._id, name)}>{name || 'None'}</MenuItem>)
+              }
+            </MenuList>
+          </>
+        }
       </div>
     );
   }

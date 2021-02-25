@@ -19,6 +19,7 @@ import {
   SEND_CHAT_MESSAGE,
   APPEND_CHAT_MESSAGE,
   RECEIVE_CURRENT_SHOW_STATE,
+  RECEIVE_SYSTEM_STATE,
   SET_FILTER_NAME,
   GET_LOCAL_FEED_SUCCESS,
   GET_LOCAL_FEED_FAILURE,
@@ -37,6 +38,7 @@ import {
 } from '../actions/const';
 
 import config from 'config';
+import _ from 'lodash';
 import { format } from 'date-fns';
 import LITE_FILTERS from 'custom/lite-filters';
 import playAudio from '../util/audio';
@@ -58,8 +60,12 @@ const initialState = {
   chosenAudioInput: null,
   user: null,
   currentShow: null,
+  actors: [],
   places: [],
-  myPlace: null,
+  currentPlaces: [],
+  phases: [],
+  myPlaces: [],
+  myCurrentPlace: null,
   previewedPartyId: null,
   previewedParty: null,
   currentParty: null,
@@ -91,17 +97,28 @@ const initialState = {
 
 
 function calcDervivedProperties(state, nextState) {
+  if(nextState.user && nextState.actors.length) {
+    nextState.user = _.find(nextState.actors, actor => actor._id === nextState.user._id) || nextState.user;
+  }
+
   let { user, places } = nextState;
 
   if (places) {
-    let matchingPlaces = places.filter(place => place._id === user.place);
-    nextState.myPlace = matchingPlaces.length ? matchingPlaces[0] : null;
+    nextState.myPlaces = places.filter(place => user.places.reduce((acc, userPlace) => acc || userPlace === place._id, false));
+    nextState.currentPlaces = places.filter(place => place.phase._id === nextState.currentShow.currentPhase._id);
   } else {
-    nextState.myPlace = null;
+    nextState.myPlaces = [];
+    nextState.currentPlaces = [];
   }
 
-  if (nextState.myPlace && nextState.myPlace.currentParty) {
-    nextState.currentParty = nextState.myPlace.currentParty;
+  if(nextState.currentShow && nextState.myPlaces) {
+    nextState.myCurrentPlace = _.find(nextState.myPlaces, place => place.phase._id === nextState.currentShow.currentPhase._id);
+  } else {
+    nextState.myCurrentPlace = null;
+  }
+
+  if (nextState.myCurrentPlace && nextState.myCurrentPlace.currentParty) {
+    nextState.currentParty = nextState.myCurrentPlace.currentParty;
   } else {
     nextState.currentParty = null;
   }
@@ -109,10 +126,10 @@ function calcDervivedProperties(state, nextState) {
   // Handle any notifications
   if (typeof Notification !== 'undefined' && Notification.permission === 'granted' && nextState.wantsNotifications) {
     if (
-      (!state.myPlace && nextState.myPlace && nextState.myPlace.partyQueue.length) || 
-      (state.myPlace && nextState.myPlace && nextState.myPlace.partyQueue.length > state.myPlace.partyQueue.length)
+      (!state.myCurrentPlace && nextState.myCurrentPlace && nextState.myCurrentPlace.partyQueue.length) || 
+      (state.myCurrentPlace && nextState.myCurrentPlace && nextState.myCurrentPlace.partyQueue.length > state.myCurrentPlace.partyQueue.length)
     ) {
-      let newParty = nextState.myPlace.partyQueue.slice(-1)[0];
+      let newParty = nextState.myCurrentPlace.partyQueue.slice(-1)[0];
       new Notification(`Incoming party`, {
         body: `${newParty.name} has joined your party queue`,
         badge: '/favicons/actor-touch-icon-iphone-retina.png',
@@ -163,9 +180,9 @@ function calcDervivedProperties(state, nextState) {
   }
 
   // Handle changes to filters
-  if(nextState.myPlace && nextState.gotInputFeed) {
-    if (nextState.activeLiteFilterName != nextState.myPlace.currentFilter) {
-      nextState.activeLiteFilterName = nextState.myPlace.currentFilter;
+  if(nextState.myCurrentPlace && nextState.gotInputFeed) {
+    if (nextState.activeLiteFilterName != nextState.myCurrentPlace.currentFilter) {
+      nextState.activeLiteFilterName = nextState.myCurrentPlace.currentFilter;
       if(nextState.activeLiteFilter) {
         nextState.activeLiteFilter.destroy();
         nextState.activeLiteFilter = null;
@@ -391,12 +408,23 @@ function reducer(state = initialState, action) {
       let {
         janusCoefficient,
         currentShow,
-        places
+        places,
+        phases
       } = action.body;
       nextState.janusCoefficient = janusCoefficient;
       nextState.isSettingMutes = false;
       nextState.currentShow = currentShow;
       nextState.places = places;
+      nextState.phases = phases;
+      calcDervivedProperties(state, nextState);
+      return nextState;
+    }
+    
+    case RECEIVE_SYSTEM_STATE: {
+      let {
+        actors
+      } = action.body;
+      nextState.actors = actors;
       calcDervivedProperties(state, nextState);
       return nextState;
     }
@@ -430,7 +458,7 @@ function reducer(state = initialState, action) {
     }
 
     case ADJUST_VOLUME: {
-      nextState.myPlace.audioVolume = action.audioVolume;
+      nextState.myCurrentPlace.audioVolume = action.audioVolume;
       return nextState;
     }
 

@@ -42,7 +42,7 @@ class CharacterInfo extends React.Component {
         user: {
           username
         },
-        myPlace: {
+        myCurrentPlace: {
           placeName,
           characterName,
           flavorText,
@@ -65,7 +65,7 @@ class CharacterInfo extends React.Component {
     const {
       system: {
         user,
-        myPlace
+        myCurrentPlace
       },
       actions: {
         changeUsername,
@@ -83,11 +83,11 @@ class CharacterInfo extends React.Component {
       } = this.state,
       shouldUpdateUsername = (user.username !== username),
       shouldUpdatePlace = (
-        myPlace.placeName !== placeName ||
-        myPlace.characterName !== characterName ||
-        myPlace.flavorText !== flavorText ||
-        myPlace.audioPath !== audioPath ||
-        myPlace.assetKey !== assetKey
+        myCurrentPlace.placeName !== placeName ||
+        myCurrentPlace.characterName !== characterName ||
+        myCurrentPlace.flavorText !== flavorText ||
+        myCurrentPlace.audioPath !== audioPath ||
+        myCurrentPlace.assetKey !== assetKey
       );
 
     if (shouldUpdateUsername) {
@@ -95,7 +95,7 @@ class CharacterInfo extends React.Component {
     }
 
     if(shouldUpdatePlace){
-      changePlace(myPlace._id, placeName, characterName, flavorText, audioPath, assetKey);
+      changePlace(myCurrentPlace._id, placeName, characterName, flavorText, audioPath, assetKey);
     }
 
     onClose();

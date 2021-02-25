@@ -1,7 +1,0 @@
-export default {
-  PRESHOW: 'PRESHOW',
-  INTRO: 'INTRO',
-  FREEPLAY: 'FREEPLAY',
-  ENDING: 'ENDING',
-  HAS_ENDED: 'HAS_ENDED'
-}

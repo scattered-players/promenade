@@ -17,7 +17,7 @@ var partySchema = new Schema({
   name: String,
   history: [{ type: Schema.Types.ObjectId, ref: 'Place' }],
   notes: String,
-  chosenEndingURL: String
+  videoChoices: [{ phase: { type: Schema.Types.ObjectId, ref: 'Phase' }, choiceURL: String }]
 });
 
 module.exports = partySchema;

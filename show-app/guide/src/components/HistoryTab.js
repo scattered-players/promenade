@@ -1,10 +1,6 @@
 import React from 'react';
 
 import {
-  ENDING_VIDEO_CHOICES
-} from 'custom/config.json';
-
-import {
   FormControl,
   InputLabel,
   Select,
@@ -28,20 +24,25 @@ class HistoryTab extends React.Component {
     } = this.props;
     return (
       <>
-        <FormControl className="settings-dropdown">
-          <InputLabel id="ending-select-input-label">Ending</InputLabel>
-          <Select
-            labelId="ending-select-input-label"
-            value={party.chosenEndingURL || ENDING_VIDEO_CHOICES[0]}
-            onChange={e => chooseEnding(party._id, e.target.value)}
-          >
-            {
-              ENDING_VIDEO_CHOICES.map(endingUrl => {
-                return <MenuItem key={endingUrl} value={endingUrl}>{endingUrl.split('/').pop()}</MenuItem>
-              })
-            }
-          </Select>
-        </FormControl>
+      {
+        party.videoChoices.map(choice => (
+          <FormControl key={choice._id} className="settings-dropdown">
+            <InputLabel id="ending-select-input-label">{choice.phase.name}</InputLabel>
+            <Select
+              labelId="ending-select-input-label"
+              value={choice.choiceURL}
+              onChange={e => chooseEnding(party._id, choice.phase._id,  e.target.value)}
+            >
+              {
+                choice.phase.attributes.videoList.map(videoChoice => {
+                  console.log('HMM', videoChoice)
+                  return <MenuItem key={videoChoice} value={videoChoice}>{videoChoice.split('/').pop()}</MenuItem>
+                })
+              }
+            </Select>
+          </FormControl>
+        ))
+      }
         <List className="tab-panel-list">
           {
             party.history.map((place, index) => (

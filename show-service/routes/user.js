@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const asyncHandler = require('express-async-handler');
 const router = express.Router();
 const {
@@ -7,6 +8,7 @@ const {
   Actor,
   Attendee,
   Attendance,
+  Bot,
   Guide,
   Place,
   Party
@@ -207,34 +209,17 @@ router.post('/actor', asyncHandler(async (req, res, next) => {
   }
   let {
     email,
-    username,
-    placeName,
-    characterName,
-    flavorText,
-    audioPath,
-    audioVolume,
-    assetKey
+    username
   } = req.body;
-  let place = await Place.create({
-    placeName,
-    characterName,
-    currentParty: null,
-    partyQueue: [],
-    flavorText,
-    audioPath,
-    audioVolume,
-    assetKey,
-    isAvailable: false
-  });
   let actor = await Actor.create({
     email: email,
     username: username || email.split('@')[0],
     isOnline: false,
-    place: place._id
+    places: []
   })
   let token = createToken(actor);
-  console.log(place, actor, token);
-  res.json({ place, actor, token });
+  console.log(actor, token);
+  res.json({ actor, token });
   refreshSystemState();
 }));
 
@@ -248,7 +233,56 @@ router.delete('/actor/:userId', asyncHandler(async (req, res, next) => {
   let actor = await Actor.findById(userId).lean();
   await Promise.all([
     Actor.deleteOne({_id:userId}),
-    Place.deleteOne({_id: actor.place})
+    Place.deleteMany({_id: { $in:actor.places } })
+  ]);
+  res.sendStatus(200);
+  refreshCurrentShowState();
+  refreshSystemState();
+}));
+
+/* POST create new bot */
+router.post('/bot', asyncHandler(async (req, res, next) => {
+  if(req.userKind !== 'Admin') {
+    return res.sendStatus(403);
+  }
+  let {
+    username
+  } = req.body;
+  let bot = await Bot.create({
+    username: username,
+    isOnline: false,
+    places: []
+  })
+  console.log(bot);
+  res.json({ bot });
+  refreshSystemState();
+}));
+
+/* PUT toggle bot */
+router.put('/bot/:botId/toggle/:isOn', asyncHandler(async (req, res, next) => {
+  if(req.userKind !== 'Admin') {
+    return res.sendStatus(403);
+  }
+  let { botId } = req.params;
+  let isOn = (req.params.isOn === 'true');
+  let bot = await Bot.findByIdAndUpdate(botId, { $set: { isOnline: isOn, isAvailable: isOn } });
+  await Place.updateMany({_id: { $in:bot.places } }, { $set: { isAvailable: isOn }});
+  console.log(bot);
+  res.json({ bot });
+  refreshCurrentShowState();
+  refreshSystemState();
+}));
+
+/* DELETE bot */
+router.delete('/bot/:botId', asyncHandler(async (req, res, next) => {
+  if (req.userKind !== 'Admin') {
+    return res.sendStatus(403);
+  }
+  let { botId } = req.params;
+  let bot = await Bot.findById(botId).lean();
+  await Promise.all([
+    Bot.deleteOne({_id:botId}),
+    Place.deleteMany({_id: { $in:bot.places } })
   ]);
   res.sendStatus(200);
   refreshCurrentShowState();
@@ -383,6 +417,34 @@ router.put('/charactername', asyncHandler(async (req, res, next) => {
   refreshSystemState();
 }));
 
+/* POST create a place */
+router.post('/place', asyncHandler(async (req, res, next) => {
+  if(req.userKind !== 'Admin' && req.userKind !== 'Actor'){
+    return res.sendStatus(403);
+  }
+  let {
+    actorId,
+    placeName,
+    characterName,
+    flavorText,
+    audioPath,
+    assetKey,
+    phase
+  } = req.body;
+  const newPlace = await Place.create({
+    placeName,
+    characterName,
+    flavorText,
+    audioPath,
+    assetKey,
+    phase
+  });
+  await Actor.findByIdAndUpdate(actorId, { $push: { places: newPlace._id } });
+  res.sendStatus(200);
+  refreshCurrentShowState();
+  refreshSystemState();
+}));
+
 /* PUT update a place's info */
 router.put('/place', asyncHandler(async (req, res, next) => {
   if(req.userKind !== 'Admin' && req.userKind !== 'Actor'){
@@ -394,14 +456,16 @@ router.put('/place', asyncHandler(async (req, res, next) => {
     characterName,
     flavorText,
     audioPath,
-    assetKey
+    assetKey,
+    phase
   } = req.body;
   await Place.updateOne({ _id:placeId },{ $set: {
     placeName,
     characterName,
     flavorText,
     audioPath,
-    assetKey
+    assetKey,
+    phase
   } });
   res.sendStatus(200);
   refreshCurrentShowState();
@@ -442,18 +506,22 @@ router.put('/place/filter', asyncHandler(async (req, res, next) => {
   refreshSystemState();
 }));
 
-/* PUT update a place's availability status */
-router.put('/place/available', asyncHandler(async (req, res, next) => {
+/* PUT update a actor's availability status */
+router.put('/actor/available', asyncHandler(async (req, res, next) => {
   if(req.userKind !== 'Admin' && req.userKind !== 'Actor'){
     return res.sendStatus(403);
   }
   let {
-    placeId,
+    actorId,
     isAvailable
   } = req.body;
-  await Place.updateOne({ _id:placeId },{ $set: {
-    isAvailable
-  }});
+  let actor = await Actor.findById(actorId);
+  await Promise.all([
+    Actor.findByIdAndUpdate(actorId, { isAvailable }),
+    Place.updateMany({ _id: { $in: actor.places } },{ $set: {
+      isAvailable
+    }})
+  ]);
   if(!isAvailable) {
     let place = await Place.findById(placeId).populate([
       {
@@ -489,6 +557,54 @@ router.put('/place/available', asyncHandler(async (req, res, next) => {
       }
     }
   }
+  res.sendStatus(200);
+  refreshCurrentShowState();
+  refreshSystemState();
+}));
+
+/* DELETE a place */
+router.delete('/place', asyncHandler(async (req, res, next) => {
+  if(req.userKind !== 'Admin' && req.userKind !== 'Actor'){
+    return res.sendStatus(403);
+  }
+  let {
+    actorId,
+    placeId
+  } = req.body;
+  await Promise.all([
+    Place.findByIdAndDelete(placeId),
+    Actor.findByIdAndUpdate(actorId, { $pull: { places: placeId } }),
+  ]);
+  res.sendStatus(200);
+  refreshCurrentShowState();
+  refreshSystemState();
+}));
+
+/* POST create a bot place */
+router.post('/botplace', asyncHandler(async (req, res, next) => {
+  if(req.userKind !== 'Admin' && req.userKind !== 'Actor'){
+    return res.sendStatus(403);
+  }
+  let {
+    botId,
+    placeName,
+    characterName,
+    flavorText,
+    assetKey,
+    botURL,
+    botTime
+  } = req.body;
+  const newPlace = await Place.create({
+    placeName,
+    characterName,
+    flavorText,
+    assetKey,
+    phase: null,
+    isBot: true,
+    botURL,
+    botTime
+  });
+  await Bot.findByIdAndUpdate(botId, { $push: { places: newPlace._id } });
   res.sendStatus(200);
   refreshCurrentShowState();
   refreshSystemState();

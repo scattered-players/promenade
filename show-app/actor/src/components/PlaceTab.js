@@ -15,14 +15,14 @@ class PlaceTab extends React.Component {
   render() {
     const { system } = this.props,
     {
-      places,
+      currentPlaces,
     } = system;
     return (
       <div className="placetab-component">
         <Typography>Places</Typography>
         <List className="tab-panel-list">
           {
-            places.map(place => (
+            currentPlaces.map(place => (
               <ListItem key={place._id}>
                 <ListItemText
                   primary={place.placeName}

@@ -11,8 +11,10 @@ const itemSchema = require('../schemas/item');
 const messageSchema = require('../schemas/message');
 const partySchema = require('../schemas/party');
 const placeSchema = require('../schemas/place');
+const phaseSchema = require('../schemas/phase');
 const showSchema = require('../schemas/show');
 const sceneSchema = require('../schemas/scene');
+const botSchema = require('../schemas/bot');
 
 const {
   startShow,
@@ -25,6 +27,9 @@ const { DEFAULT_PARTIES, ENDING_TYPE } = require('../secrets/promenade-config.js
 
 showSchema.statics.scheduleShow = async function(showDate, numParties, isEventbrite=false,
     eventBriteId) {
+
+  let startPhase = await Phase.findOne({ isDefault: true });
+  let videoChoicePhases = await Phase.find({ kind: 'VIDEO_CHOICE'});
   let parties = [];
   for(let i = 0; i < numParties; i++){
     let newParty = new Party({
@@ -44,7 +49,7 @@ showSchema.statics.scheduleShow = async function(showDate, numParties, isEventbr
       decisionDeadline: null,
       decisionTimeoutId: null,
       notes: '',
-      chosenEndingURL: null
+      videoChoices: videoChoicePhases.map(phase => ({ phase: phase._id, choiceURL: phase.attributes.videoList[0]}))
     });
     parties.push(newParty);
     await Promise.all(DEFAULT_PARTIES[i].items.map(async name => {
@@ -60,9 +65,8 @@ showSchema.statics.scheduleShow = async function(showDate, numParties, isEventbr
     date: showDate,
     isEventbrite,
     parties: parties.map(party => party._id),
-    state: 'PRESHOW',
+    currentPhase: startPhase,
     isRunning: false,
-    places: [],
     eventBriteId: eventBriteId,
     endingType: ENDING_TYPE
   });
@@ -115,44 +119,55 @@ attendanceSchema.statics.deleteTicket = async function(attendeeEmail, showId) {
 
 showSchema.statics.getTotalState = async function(){
   let shows = await this.find()
-  .populate({
-    path: 'parties',
-    populate: [
-      {
-        path:'attendances',
-        populate: {
-          path: 'attendee'
+  .populate([
+    {
+      path: 'currentPhase'
+    },
+    {
+      path: 'parties',
+      populate: [
+        {
+          path:'attendances',
+          populate: {
+            path: 'attendee'
+          }
+        },
+        {
+          path:'decider',
+          populate: {
+            path: 'attendee'
+          }
+        },
+        {
+          path:'guide'
+        },
+        {
+          path:'currentPlace'
+        },
+        {
+          path:'nextPlace'
+        },
+        {
+          path:'selectedPlace'
+        },
+        {
+          path:'history'
+        },
+        {
+          path: 'inventory'
+        },
+        {
+          path: 'chat'
+        },
+        {
+          path:'videoChoices',
+          populate: {
+            path: 'phase'
+          }
         }
-      },
-      {
-        path:'decider',
-        populate: {
-          path: 'attendee'
-        }
-      },
-      {
-        path:'guide'
-      },
-      {
-        path:'currentPlace'
-      },
-      {
-        path:'nextPlace'
-      },
-      {
-        path:'selectedPlace'
-      },
-      {
-        path:'history'
-      },
-      {
-        path: 'inventory'
-      },
-      {
-        path: 'chat'
-      }
-    ]
-  })
+      ]
+    }
+  ])
   .lean();
   shows.map(show => {
     show.parties.map(party => {
@@ -195,46 +210,57 @@ showSchema.statics.deleteShow = async function(showId){
 
 showSchema.statics.getCurrentShowState = async function() {
   let show = await this.findOne({ isRunning: true })
-    .populate({
-      path: 'parties',
-      populate: [
-        {
-          path:'attendances',
-          populate: {
-            path: 'attendee',
-            select: '-email'
+    .populate([
+      {
+        path: 'currentPhase'
+      },
+      {
+        path: 'parties',
+        populate: [
+          {
+            path:'attendances',
+            populate: {
+              path: 'attendee',
+              select: '-email'
+            }
+          },
+          {
+            path:'decider',
+            populate: {
+              path: 'attendee',
+              select: '-email'
+            }
+          },
+          {
+            path:'guide'
+          },
+          {
+            path:'currentPlace'
+          },
+          {
+            path:'nextPlace'
+          },
+          {
+            path:'selectedPlace'
+          },
+          {
+            path:'history'
+          },
+          {
+            path: 'inventory'
+          },
+          {
+            path: 'chat'
+          },
+          {
+            path:'videoChoices',
+            populate: {
+              path: 'phase'
+            }
           }
-        },
-        {
-          path:'decider',
-          populate: {
-            path: 'attendee',
-            select: '-email'
-          }
-        },
-        {
-          path:'guide'
-        },
-        {
-          path:'currentPlace'
-        },
-        {
-          path:'nextPlace'
-        },
-        {
-          path:'selectedPlace'
-        },
-        {
-          path:'history'
-        },
-        {
-          path: 'inventory'
-        },
-        {
-          path: 'chat'
-        }
-      ]
-    })
+        ]
+      }
+    ])
     .lean();
 
   if(show){
@@ -248,60 +274,122 @@ showSchema.statics.getCurrentShowState = async function() {
 }
 
 placeSchema.statics.getCurrentPlaceState = async function() {
-  let actors = await Actor.find({ isOnline: true }).populate({
-    path: 'place',
-    populate: [
-      {
-        path: 'currentParty',
-        populate: [
-          {
-            path:'attendances',
-            populate: {
-              path: 'attendee',
-              select: '-email'
+  let [bots, actors] = await Promise.all([
+    Bot.find({ isOnline: true}).populate({
+      path: 'places',
+      populate: [
+        {
+          path: 'currentParty',
+          populate: [
+            {
+              path:'attendances',
+              populate: {
+                path: 'attendee',
+                select: '-email'
+              }
+            },
+            {
+              path:'guide'
+            },
+            {
+              path: 'inventory'
+            },
+            {
+              path: 'history'
+            },
+            {
+              path: 'chat'
             }
-          },
-          {
-            path:'guide'
-          },
-          {
-            path: 'inventory'
-          },
-          {
-            path: 'history'
-          },
-          {
-            path: 'chat'
-          }
-        ]
-      },
-      {
-        path:'partyQueue',
-        populate: [
-          {
-            path:'attendances',
-            populate: {
-              path: 'attendee',
-              select: '-email'
+          ]
+        },
+        {
+          path:'partyQueue',
+          populate: [
+            {
+              path:'attendances',
+              populate: {
+                path: 'attendee',
+                select: '-email'
+              }
+            },
+            {
+              path:'guide'
+            },
+            {
+              path: 'inventory'
+            },
+            {
+              path: 'history'
+            },
+            {
+              path: 'chat'
             }
-          },
-          {
-            path:'guide'
-          },
-          {
-            path: 'inventory'
-          },
-          {
-            path: 'history'
-          },
-          {
-            path: 'chat'
-          }
-        ]
-      }
-    ]
-  }).lean();
-  let places = actors.map(actor => actor.place);
+          ]
+        },
+        {
+          path: 'phase'
+        }
+      ]
+    }).lean(),
+    Actor.find({ isOnline: true }).populate({
+      path: 'places',
+      populate: [
+        {
+          path: 'currentParty',
+          populate: [
+            {
+              path:'attendances',
+              populate: {
+                path: 'attendee',
+                select: '-email'
+              }
+            },
+            {
+              path:'guide'
+            },
+            {
+              path: 'inventory'
+            },
+            {
+              path: 'history'
+            },
+            {
+              path: 'chat'
+            }
+          ]
+        },
+        {
+          path:'partyQueue',
+          populate: [
+            {
+              path:'attendances',
+              populate: {
+                path: 'attendee',
+                select: '-email'
+              }
+            },
+            {
+              path:'guide'
+            },
+            {
+              path: 'inventory'
+            },
+            {
+              path: 'history'
+            },
+            {
+              path: 'chat'
+            }
+          ]
+        },
+        {
+          path: 'phase'
+        }
+      ]
+    }).lean()
+  ]);
+  let places = _.flatMap(actors, actor => actor.places);
+  places = places.concat(_.flatMap(bots, bot => bot.places));
   places.map(place => {
     if(place.currentParty){
       place.currentParty.attendees = place.currentParty.attendances.map(attendance => attendance.attendee);
@@ -325,46 +413,57 @@ attendeeSchema.methods.getShows = async function() {
 
 showSchema.methods.getCurrentState = async function(scrubEmails=true) {
   let show = await this
-    .populate({
-      path: 'parties',
-      populate: [
-        {
-          path:'attendances',
-          populate: {
-            path: 'attendee',
-            select: scrubEmails ? undefined : '-email'
+    .populate([
+      {
+        path: 'currentPhase'
+      },
+      {
+        path: 'parties',
+        populate: [
+          {
+            path:'attendances',
+            populate: {
+              path: 'attendee',
+              select: scrubEmails ? undefined : '-email'
+            }
+          },
+          {
+            path:'decider',
+            populate: {
+              path: 'attendee',
+              select: scrubEmails ? undefined : '-email'
+            }
+          },
+          {
+            path:'guide'
+          },
+          {
+            path:'currentPlace'
+          },
+          {
+            path:'nextPlace'
+          },
+          {
+            path:'selectedPlace'
+          },
+          {
+            path:'history'
+          },
+          {
+            path: 'inventory'
+          },
+          {
+            path: 'chat'
+          },
+          {
+            path:'videoChoices',
+            populate: {
+              path: 'phase'
+            }
           }
-        },
-        {
-          path:'decider',
-          populate: {
-            path: 'attendee',
-            select: scrubEmails ? undefined : '-email'
-          }
-        },
-        {
-          path:'guide'
-        },
-        {
-          path:'currentPlace'
-        },
-        {
-          path:'nextPlace'
-        },
-        {
-          path:'selectedPlace'
-        },
-        {
-          path:'history'
-        },
-        {
-          path: 'inventory'
-        },
-        {
-          path: 'chat'
-        }
-      ]
-    })
+        ]
+      }
+    ])
     .execPopulate();
   
   show.parties.map(party => {
@@ -446,6 +545,9 @@ var Place = mongoose.model('Place', placeSchema);
 var Show = mongoose.model('Show', showSchema);
 var Scene = mongoose.model('Scene', sceneSchema);
 
+var Phase = mongoose.model('Phase', phaseSchema);
+var Bot = mongoose.model('Bot', botSchema);
+
 module.exports = {
   User,
   Actor,
@@ -456,7 +558,9 @@ module.exports = {
   Item,
   Message,
   Party,
+  Phase,
   Place,
   Show,
-  Scene
+  Scene,
+  Bot
 };

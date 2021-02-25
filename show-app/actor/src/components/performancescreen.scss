@@ -5,7 +5,7 @@
   justify-content: stretch;
   align-items: stretch;
   flex-wrap: nowrap;
-  height: 100vh;
+  height: 100%;
 }
 
 .hmm {
@@ -133,7 +133,7 @@
 @media (max-width: 500px), (max-height: 500px){
   .performancescreen-component {
     .main-area {
-      height: calc(100% - 50px)
+      height: 100%;
     }
     .local-feed-wrapper {
       .local-button-row {

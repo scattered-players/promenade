@@ -53,8 +53,7 @@ class MobileLayout extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     const {
       system: {
-        currentParty,
-        myPlace
+        currentParty
       }
     } = this.props;
     const {
@@ -75,7 +74,7 @@ class MobileLayout extends React.Component {
       party
     } = this.props,
     {
-      myPlace,
+      myCurrentPlace,
       previewedParty,
       currentParty,
       localInputStream,
@@ -96,7 +95,7 @@ class MobileLayout extends React.Component {
         >
           
           <Tab className="tab" label={ 
-            <Badge badgeContent={myPlace && myPlace.partyQueue.length} color="error">
+            <Badge badgeContent={myCurrentPlace && myCurrentPlace.partyQueue.length} color="error">
               Party
             </Badge>} 
           />

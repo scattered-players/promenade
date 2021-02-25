@@ -28,6 +28,7 @@ class TodayTab extends React.Component {
     const { actions, system } = this.props;
     const {
       guides,
+      phases,
       wantsNotifications
     } = system;
     const {
@@ -45,7 +46,7 @@ class TodayTab extends React.Component {
           {
             todaysShows.length
             ? (
-              todaysShows.map(show => <Show actions={actions} show={show} guides={guides} key={show._id}/>)
+              todaysShows.map(show => <Show actions={actions} show={show} guides={guides} phases={phases} key={show._id}/>)
             ) : (
               <Typography variant="h3">No shows schduled for today</Typography>
             )

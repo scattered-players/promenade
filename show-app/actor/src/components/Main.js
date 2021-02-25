@@ -1,4 +1,6 @@
-import React from 'react';import config from 'config';
+import React from 'react';
+import config from 'config';
+import { format } from 'date-fns';
 
 import {
   Button,
@@ -10,6 +12,9 @@ import {
   Typography
 } from '@material-ui/core';
 
+import CloudDoneIcon from '@material-ui/icons/CloudDone';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import CloudOffIcon from '@material-ui/icons/CloudOff';
 
 import HeadlessLayout from './HeadlessLayout';
 import PerformanceScreen from './PerformanceScreen';
@@ -20,6 +25,7 @@ import {
   ramStats,
   workerFps
 } from '../util/stats';
+
 
 import './main.scss';
 
@@ -119,40 +125,78 @@ class Main extends React.Component {
   }
 
   render() {
-    const { actions, system, snackbar } = this.props;
+    const {
+      actions,
+      system, 
+      socketStatus,
+      snackbar
+    } = this.props;
     const {
       setReadyFlag
     } = actions;
     const {
-      myPlace,
+      user,
+      myCurrentPlace,
       previewedParty,
       currentParty,
+      currentShow,
       localInputStream,
       localOutputStream,
       isGettingInputFeed,
       isNerdy
     } = system;
-    let shouldShowReadyDialog = !!(!currentParty && myPlace && !myPlace.isAvailable);
+    let shouldShowReadyDialog = !!(!currentParty && myCurrentPlace && !myCurrentPlace.isAvailable);
+    let shouldShowMobileScreen = ((config.CAN_CAPTURE_STREAM && localInputStream) || (!config.CAN_CAPTURE_STREAM && localOutputStream)) && config.IS_MOBILE && !isGettingInputFeed;
     let shouldShowPerformanceScreen = ((config.CAN_CAPTURE_STREAM && localInputStream) || (!config.CAN_CAPTURE_STREAM && localOutputStream)) && !config.IS_MOBILE && !isGettingInputFeed;
 
     let placeStuff = null;
-    if(myPlace){
-      if(config.IS_HEADLESS){
-        placeStuff = (
-          <HeadlessLayout system={system} actions={actions} party={currentParty || previewedParty} />
-        )
-      } else if (!isGettingInputFeed) {
-        placeStuff = (
-          <>
-            { config.IS_MOBILE && <MobileLayout actions={actions} system={system} party={currentParty || previewedParty} /> }
-            {shouldShowPerformanceScreen && <PerformanceScreen actions={actions} system={system} hasParty={!!currentParty} isPreviewing={!!previewedParty}/> }
-          </>
-        );
-      }
+    if(config.IS_HEADLESS){
+      placeStuff = (
+        <HeadlessLayout system={system} actions={actions} party={currentParty || previewedParty} />
+      )
+    } else if (!isGettingInputFeed) {
+      placeStuff = (
+        <>
+          { shouldShowMobileScreen && <MobileLayout actions={actions} system={system} party={currentParty || previewedParty} /> }
+          {shouldShowPerformanceScreen && <PerformanceScreen actions={actions} system={system} hasParty={!!currentParty} isPreviewing={!!previewedParty}/> }
+        </>
+      );
     }
+
+    const connectionIconDict = {
+      [socketStatusEnum.NOT_CONNECTED]: <CloudOffIcon />,
+      [socketStatusEnum.CONNECTING]: <CloudUploadIcon />,
+      [socketStatusEnum.CONNECTED]: <CloudDoneIcon />,
+    };
+
+    let statusColor = 'tomato';
+    let statusText = '';
+    if(socketStatus.connectionStatus === socketStatusEnum.CONNECTED) {
+      if(currentShow) {
+        statusText = `Show: ${format(new Date(currentShow.date), 'h:mm a')} -> ${currentShow.currentPhase.name}`;
+        if(myCurrentPlace) {
+          statusText += ` -> ${myCurrentPlace.characterName} @ ${myCurrentPlace.placeName}`;
+          statusColor = 'limegreen';
+        } else {
+          statusText += ` -> NO ACTIVE CHARACTER`;
+          statusColor = 'yellow';
+        }
+      } else {
+        statusText = 'No shows active';
+        statusColor = 'yellow';
+      }
+    } else {
+      statusText = socketStatus.connectionStatus === socketStatusEnum.CONNECTING ? 'Connecting...' : 'Disconnected';
+      statusColor = 'tomato';
+    }
+
     return (
       <>
         <div className="actor-app">
+          <div className="diagnostics-bar" style={{backgroundColor: statusColor}}>
+            {connectionIconDict[socketStatus.connectionStatus]}
+            <span>{statusText}</span>
+          </div>
           <div ref="statsContainer" className={'stats-container' + (isNerdy ? ' show-stats' : ' hide-stats')}></div>
           { !!previewedParty && !config.IS_MOBILE && <div className="preview-banner">PREVIEW</div> }
           { placeStuff }
@@ -165,7 +209,7 @@ class Main extends React.Component {
               </Typography>
             </DialogContent>
             <DialogActions>
-              <Button onClick={() => setReadyFlag(myPlace._id, true)}>Ready</Button>
+              <Button onClick={() => setReadyFlag(user._id, true)}>Ready</Button>
             </DialogActions>
           </Dialog>
           { shouldShowReadyDialog }

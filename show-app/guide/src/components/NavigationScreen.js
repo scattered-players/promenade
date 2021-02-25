@@ -1,10 +1,8 @@
 import React from 'react';
 import config from 'config';
 import {
-  NAV_OVERLAY_VIDEO,
   NAV_ARRIVAL_SOUND,
   NAV_DEPARTURE_SOUND,
-  NAV_BACKGROUND_MUSIC,
   TRANSIT_TEXT
 } from 'custom/config.json';
 import {
@@ -91,7 +89,7 @@ class NavigationScreen extends React.Component {
         toggleNavMusic
       },
       system: {
-        places,
+        currentPlaces,
         muteNavMusic,
         currentShow,
         myParty,
@@ -106,7 +104,7 @@ class NavigationScreen extends React.Component {
       showDeciderPopup
     } = this.state;
     const placeDict = {};
-    const availablePlaces = places
+    const availablePlaces = currentPlaces
       .filter(place => (myParty.nextPlace && myParty.nextPlace._id === place._id) || (!place.currentParty && !place.partyQueue.length && place.isAvailable))
       .map(place => {
         let entry = {
@@ -138,7 +136,7 @@ class NavigationScreen extends React.Component {
 
     return (
       <div className="navigationscreen-component">
-        { NAV_BACKGROUND_MUSIC && !config.IS_MOBILE && <audio src={NAV_BACKGROUND_MUSIC} crossOrigin="anonymous" autoPlay muted={muteNavMusic} loop /> }
+        { currentShow.currentPhase.attributes.backgroundMusicUrl && currentShow.currentPhase.attributes.backgroundMusicUrl.length && !config.IS_MOBILE && <audio src={currentShow.currentPhase.attributes.backgroundMusicUrl} crossOrigin="anonymous" autoPlay muted={muteNavMusic} loop /> }
         <div className="place-menu">
           <Typography className="place-menu-heading">CHOOSE A PLACE TO GO</Typography>
           <div className="go-button-wrapper">
@@ -179,7 +177,7 @@ class NavigationScreen extends React.Component {
           </div>
         { !config.IS_MOBILE && 
           <div className="navigation-wrapper">
-            { config.CAN_PLAY_WEBM && NAV_OVERLAY_VIDEO && <video src={NAV_OVERLAY_VIDEO} autoPlay muted playsInline loop/> }
+          { config.CAN_PLAY_WEBM && currentShow.currentPhase.attributes.overlayVideoUrl && currentShow.currentPhase.attributes.overlayVideoUrl.length && <video src={currentShow.currentPhase.attributes.overlayVideoUrl} autoPlay muted playsInline loop/> }
             <canvas className="navigation-canvas" ref="canvas"></canvas>
             { deciderPopup }
             { !!myParty.nextPlace && <div className="transit-marker">{TRANSIT_TEXT}</div>}

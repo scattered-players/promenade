@@ -23,7 +23,6 @@ import {
   ramStats,
   workerFps
 } from '../util/stats';
-import NavigationPlugin from 'custom/NavigationPlugin';
 
 import './main.scss';
 
@@ -34,12 +33,7 @@ class Main extends React.Component {
       hasInteracted: true
     };
 
-    if(!config.IS_MOBILE){
-      this.navWorker = new NavigationPlugin(workerFps);
-    }
-
     this.init = this.init.bind(this);
-    this.updateNavScreen = this.updateNavScreen.bind(this);
   }
 
   init() {
@@ -119,30 +113,6 @@ class Main extends React.Component {
     }
   }
 
-  updateNavScreen() {
-    const {
-      system: {
-        places,
-        myParty
-      }
-    } = this.props;
-
-    if (myParty && this.navWorker) {
-      const {
-        selectedPlace
-      } = myParty;
-      this.navWorker.sendMessage(JSON.parse(JSON.stringify({
-        type:'UPDATE',
-        state: {
-          places,
-          myParty,
-          selectedPlace,
-          isInTransit: !!myParty.nextPlace
-        }
-      })));
-    }
-  }
-
   componentDidMount() {
     const {
       statsContainer
@@ -151,19 +121,10 @@ class Main extends React.Component {
     statsContainer.appendChild(ramStats.dom);
     statsContainer.appendChild(workerFps.dom);
     this.init();
-    this.updateNavScreen();
   }
 
   componentDidUpdate() {
     this.init();
-    this.updateNavScreen();
-  }
-
-  componentWillUnmount() {
-    if (this.navWorker) {
-      this.navWorker.destroy();
-      this.navWorker = null;
-    }
   }
 
   render() {
@@ -191,7 +152,7 @@ class Main extends React.Component {
           isBlocked
           ? <BlockedScreen />
           : hasInteracted && places && !askingMediaConsent && !isSwitchingInputs && !isGettingMediaDevices && ((isInCurrentShow)
-            ? <LiveShowScreen actions={actions} system={system} navWorker={this.navWorker} />
+            ? <LiveShowScreen actions={actions} system={system} />
             : <BookedShowScreen bookedShows={bookedShows} actions={actions} system={system} />)
         }
         <Dialog onClose={() => this.setState({hasInteracted: true})} open={!hasInteracted && !isBlocked && !askingMediaConsent}>
