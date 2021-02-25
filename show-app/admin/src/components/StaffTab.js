@@ -7,6 +7,7 @@ import {
 import ActorsTab from './ActorsTab';
 import AdminsTab from './AdminsTab';
 import GuidesTab from './GuidesTab';
+import BotsTab from './BotsTab';
 
 import './stafftab.scss';
 
@@ -17,6 +18,8 @@ class StaffTab extends React.Component {
       <div className="stafftab-component">
         <Typography variant="h2">Actors</Typography>
         <ActorsTab {...this.props} />
+        <Typography variant="h2">Bots</Typography>
+        <BotsTab {...this.props} />
         <Typography variant="h2">Guides</Typography>
         <GuidesTab {...this.props} />
         <Typography variant="h2">Admins</Typography>

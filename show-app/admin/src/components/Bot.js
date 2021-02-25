@@ -29,9 +29,9 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import assetKeyEnum from 'custom/assetKey';
 const ASSET_KEYS = Object.keys(assetKeyEnum);
 
-import './actor.scss';
+import './bot.scss';
 
-class Actor extends React.Component {
+class Bot extends React.Component {
   constructor(props) {
     super(props);
 
@@ -39,107 +39,67 @@ class Actor extends React.Component {
       newCharacterName: '',
       newPlaceName: '',
       newFlavorText: '',
-      newAudioPath: '',
+      newBotURL: '',
+      newBotTime: 0,
       newAssetKey: ASSET_KEYS[0],
-      isShowingCreatePlaceDialog: false,
-      newPlacePhase: props.freeplayPhases.length ? props.freeplayPhases[0]._id : ''
+      isShowingCreatePlaceDialog: false
     };
 
     this.createPlace = this.createPlace.bind(this);
   }
 
   createPlace() {
-    const { actor, actions, freeplayPhases } = this.props;
-    const { createPlace } = actions;
+    const { bot, actions } = this.props;
+    const { createBotPlace } = actions;
     const {
       newCharacterName,
       newPlaceName,
       newFlavorText,
-      newAudioPath,
       newAssetKey,
-      newPlacePhase
+      newBotURL,
+      newBotTime
     } = this.state;
-    if (newCharacterName !== '' && newPlaceName !== '' && newAssetKey !== '' && newPlacePhase !== '') {
+    if (newCharacterName !== '' && newPlaceName !== '' && newAssetKey !== '' && newBotURL !== '') {
       this.setState({
         newCharacterName: '',
         newPlaceName: '',
         newFlavorText: '',
-        newAudioPath: '',
-        newAssetKey: '',
-        newPlacePhase: freeplayPhases.length ? freeplayPhases[0]._id : ''
+        newBotURL: '',
+        newBotTime: 0,
+        newAssetKey: ''
       }, () => {
-        createPlace(actor._id, newCharacterName, newPlaceName, newFlavorText, newAudioPath, newAssetKey, newPlacePhase);
+        createBotPlace(bot._id, newCharacterName, newPlaceName, newFlavorText, newAssetKey, newBotURL, newBotTime);
       });
     }
   }
 
   render() {
     const {
-      actor,
+      bot,
       actions: {
-        getMagicLink,
-        deletePlace
-      },
-      freeplayPhases
+        toggleBot,
+        deleteBot,
+        deleteBotPlace
+      }
     } = this.props;
-
-    const audioIndicator = actor.audioError
-      ? (
-        <Tooltip title={`AUDIO ERROR: ${actor.audioError}`}>
-          <span>
-            <Badge badgeContent="!" color="error" />
-            <MicOffIcon />
-          </span>
-        </Tooltip>
-      ) : (
-        actor.isAudioMuted ? <MicOffIcon /> : <MicIcon />
-      );
-
-    const videoIndicator = actor.videoError
-      ? (
-        <Tooltip title={`VIDEO ERROR: ${actor.videoError}`}>
-          <span>
-            <Badge badgeContent="!" color="error" />
-            <VideocamOffIcon />
-          </span>
-        </Tooltip>
-      ) : (
-        actor.isVideoMuted ? <VideocamOffIcon /> : <VideocamIcon />
-      );
-    
     const {
       newCharacterName,
       newPlaceName,
       newFlavorText,
-      newAudioPath,
       newAssetKey,
-      newPlacePhase,
+      newBotURL,
+      newBotTime,
       isShowingCreatePlaceDialog
     } = this.state;
     return (
-      <ListItem className="actor-list-item" alignItems="flex-start">
-        <div className="actor-headline">
-          <div className={'actor-status-indicator ' + (actor.isOnline ? (actor.isAvailable ? 'ready' : 'not-ready') : 'not-online')}></div>
+      <ListItem className="bot-list-item" alignItems="flex-start">
+        <div className="bot-headline">
+          <div className={'actor-status-indicator ' + (bot.isOnline ? (bot.isAvailable ? 'ready' : 'not-ready') : 'not-online')} onClick={() => toggleBot(bot._id, !bot.isOnline)}></div>
           <ListItemText
-            primary={actor.username}
-            className="actor-list-item-text"
+            primary={bot.username}
+            className="bot-list-item-text"
           />
-          <div className="attendee-icons">
-            <div className="attendee-icon-wrapper">
-              {audioIndicator}
-            </div>
-            <div className="attendee-icon-wrapper">
-              {videoIndicator}
-            </div>
-            <div className="attendee-icon-wrapper">
-              <IconButton onClick={() => forceRefreshUser(actor._id)}>
-                <RefreshIcon />
-              </IconButton>
-            </div>
-          </div>
-          <Button onClick={() => getMagicLink(actor._id)}>Get Link</Button>
-          <Typography variant="body1">{actor.currentBrowser}</Typography>
-          <IconButton onClick={() => deleteActor(actor._id)}>
+          <IconButton onClick={() => deleteBot(bot._id)}>
             <ClearIcon />
           </IconButton>
           <Button onClick={ () => this.setState({isShowingCreatePlaceDialog: true}) }>Create Place</Button>
@@ -149,7 +109,8 @@ class Actor extends React.Component {
             <TextField label="Character Name" value={newCharacterName} onChange={ e => this.setState({ newCharacterName: e.target.value }) }/>
             <TextField label="Place Name" value={newPlaceName} onChange={ e => this.setState({ newPlaceName: e.target.value }) }/>
             <TextField label="Flavor Text" value={newFlavorText} onChange={ e => this.setState({ newFlavorText: e.target.value }) }/>
-            <TextField label="Audio Path" value={newAudioPath} onChange={ e => this.setState({ newAudioPath: e.target.value }) }/>
+            <TextField label="Bot Video URL" value={newBotURL} onChange={ e => this.setState({ newBotURL: e.target.value }) }/>
+            <TextField label="Bot Video Duration" type="number" value={newBotTime} onChange={ e => this.setState({ newBotTime: e.target.value }) }/>
             <FormControl >
               <InputLabel id={`asset-key-select`}>Asset Name</InputLabel>
               <Select
@@ -160,16 +121,6 @@ class Actor extends React.Component {
                 {ASSET_KEYS.map(assetKey => <MenuItem key={assetKey} value={assetKey}>{assetKey}</MenuItem>)}
               </Select>
             </FormControl>
-            <FormControl >
-              <InputLabel id={`phase-select`}>Phase</InputLabel>
-              <Select
-                labelId={`phase-select`}
-                value={newPlacePhase}
-                onChange={e => this.setState({ newPlacePhase: e.target.value })}
-              >
-                {freeplayPhases.map(phase => <MenuItem key={phase._id} value={phase._id}>{phase.name}</MenuItem>)}
-              </Select>
-            </FormControl>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => this.setState({isShowingCreatePlaceDialog: false}, this.createPlace)}>CREATE</Button>
@@ -178,22 +129,21 @@ class Actor extends React.Component {
         </Dialog>
         <List dense={true}>
           {
-            actor.places.map(place => {
+            bot.places.map(place => {
               return (
                 <ListItem key={place._id} alignItems="flex-start">
-                  <ListItemText
+                  <ListItemText 
                     style={{ flexGrow: 0}}
                     primary={place.characterName}
                     secondary={place.placeName}
                   />
-                  <IconButton onClick={() => deletePlace(actor._id, place._id)}>
+                  <IconButton onClick={() => deleteBotPlace(bot._id, place._id)}>
                     <ClearIcon />
                   </IconButton>
                 </ListItem>
               )
             })
           }
-
         </List>
         {/* {
         !!actor.place.currentParty &&
@@ -230,12 +180,12 @@ class Actor extends React.Component {
         </div>
       } */}
       </ListItem>
-    )
+    );
   }
 }
 
-Actor.displayName = 'Actor';
-Actor.propTypes = {};
-Actor.defaultProps = {};
+Bot.displayName = 'Bot';
+Bot.propTypes = {};
+Bot.defaultProps = {};
 
-export default Actor;
+export default Bot;

@@ -37,6 +37,7 @@ class InteractionScreen extends React.Component {
       <div className="interactionscreen-component">
         <Typography className="character-nametag">{currentPlace && currentPlace.characterName}</Typography>
         { actorFeed && <VideoFeed feed={actorFeed} isLocal={false} hasOverlay={false} isNerdy={isNerdy}/> }
+        { currentPlace.isBot && <video src={currentPlace.botURL} autoPlay muted playsInline />}
       </div>
     );
   }

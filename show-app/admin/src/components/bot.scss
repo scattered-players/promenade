@@ -1,12 +1,16 @@
-.actor-component {
-  border: 1px dashed #f00;
+
+
+.bot-headline {
+  display: flex;
+  width: 100%;
+  white-space: nowrap;
 }
 
-li.actor-list-item {
+li.bot-list-item {
   display: block;
 }
 
-.actor-list-item-text {
+.bot-list-item-text {
   max-width: 200px;
   p, span {
     overflow: hidden;
@@ -14,7 +18,7 @@ li.actor-list-item {
   }
 }
 
-.actor-status-indicator {
+.bot-status-indicator {
   /* display: inline-block; */
   width: 10px;
   height: 10px;
@@ -23,17 +27,17 @@ li.actor-list-item {
   vertical-align: middle;
 }
 
-.actor-status-indicator.ready {
+.bot-status-indicator.ready {
   background-color: green;
   box-shadow: 0px 0px 10px green;
 }
 
-.actor-status-indicator.not-ready {
+.bot-status-indicator.not-ready {
   background-color: yellow;
   box-shadow: 0px 0px 10px yellow;
 }
 
-.actor-status-indicator.not-online {
+.bot-status-indicator.not-online {
   background-color: red;
   box-shadow: 0px 0px 10px red;
 }

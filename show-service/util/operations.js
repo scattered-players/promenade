@@ -147,6 +147,7 @@ const refreshSystemState = _.debounce(async function() {
       admins,
       attendees,
       guides,
+      bots,
       scenes,
       phases
     ] = await Promise.all([
@@ -168,6 +169,20 @@ const refreshSystemState = _.debounce(async function() {
       Admin.find().lean(),
       Attendee.find().lean(),
       Guide.find().lean(),
+      Bot.find().populate({
+        path: 'places',
+        populate: [
+          {
+            path: 'currentParty'
+          },
+          {
+            path: 'partyQueue'
+          },
+          {
+            path: 'phase'
+          }
+        ]
+      }).lean(),
       Scene.find().populate([{
         path: 'place'
       },{
@@ -183,6 +198,7 @@ const refreshSystemState = _.debounce(async function() {
         admins,
         attendees,
         guides,
+        bots,
         scenes,
         phases,
         pullTime: (Date.now() - startTime) / 1000,
@@ -201,6 +217,7 @@ const refreshSystemState = _.debounce(async function() {
         admins,
         attendees,
         guides,
+        bots,
         scenes,
         phases,
         pullTime: (Date.now() - startTime) / 1000,

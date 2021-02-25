@@ -8,6 +8,7 @@ const {
   Actor,
   Attendee,
   Attendance,
+  Bot,
   Guide,
   Place,
   Party
@@ -233,6 +234,55 @@ router.delete('/actor/:userId', asyncHandler(async (req, res, next) => {
   await Promise.all([
     Actor.deleteOne({_id:userId}),
     Place.deleteMany({_id: { $in:actor.places } })
+  ]);
+  res.sendStatus(200);
+  refreshCurrentShowState();
+  refreshSystemState();
+}));
+
+/* POST create new bot */
+router.post('/bot', asyncHandler(async (req, res, next) => {
+  if(req.userKind !== 'Admin') {
+    return res.sendStatus(403);
+  }
+  let {
+    username
+  } = req.body;
+  let bot = await Bot.create({
+    username: username,
+    isOnline: false,
+    places: []
+  })
+  console.log(bot);
+  res.json({ bot });
+  refreshSystemState();
+}));
+
+/* PUT toggle bot */
+router.put('/bot/:botId/toggle/:isOn', asyncHandler(async (req, res, next) => {
+  if(req.userKind !== 'Admin') {
+    return res.sendStatus(403);
+  }
+  let { botId } = req.params;
+  let isOn = (req.params.isOn === 'true');
+  let bot = await Bot.findByIdAndUpdate(botId, { $set: { isOnline: isOn, isAvailable: isOn } });
+  await Place.updateMany({_id: { $in:bot.places } }, { $set: { isAvailable: isOn }});
+  console.log(bot);
+  res.json({ bot });
+  refreshCurrentShowState();
+  refreshSystemState();
+}));
+
+/* DELETE bot */
+router.delete('/bot/:botId', asyncHandler(async (req, res, next) => {
+  if (req.userKind !== 'Admin') {
+    return res.sendStatus(403);
+  }
+  let { botId } = req.params;
+  let bot = await Bot.findById(botId).lean();
+  await Promise.all([
+    Bot.deleteOne({_id:botId}),
+    Place.deleteMany({_id: { $in:bot.places } })
   ]);
   res.sendStatus(200);
   refreshCurrentShowState();
@@ -525,6 +575,36 @@ router.delete('/place', asyncHandler(async (req, res, next) => {
     Place.findByIdAndDelete(placeId),
     Actor.findByIdAndUpdate(actorId, { $pull: { places: placeId } }),
   ]);
+  res.sendStatus(200);
+  refreshCurrentShowState();
+  refreshSystemState();
+}));
+
+/* POST create a bot place */
+router.post('/botplace', asyncHandler(async (req, res, next) => {
+  if(req.userKind !== 'Admin' && req.userKind !== 'Actor'){
+    return res.sendStatus(403);
+  }
+  let {
+    botId,
+    placeName,
+    characterName,
+    flavorText,
+    assetKey,
+    botURL,
+    botTime
+  } = req.body;
+  const newPlace = await Place.create({
+    placeName,
+    characterName,
+    flavorText,
+    assetKey,
+    phase: null,
+    isBot: true,
+    botURL,
+    botTime
+  });
+  await Bot.findByIdAndUpdate(botId, { $push: { places: newPlace._id } });
   res.sendStatus(200);
   refreshCurrentShowState();
   refreshSystemState();
