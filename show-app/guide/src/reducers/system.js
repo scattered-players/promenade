@@ -109,7 +109,7 @@ function calcDervivedProperties(nextState) {
 
   if(nextState.myParty) {
     if (places) {
-      nextState.currentPlaces = places.filter(place => place.phase._id === nextState.currentShow.currentPhase._id);
+      nextState.currentPlaces = places.filter(place => place.isBot || (place.phase && place.phase._id === nextState.currentShow.currentPhase._id));
     } else {
       nextState.currentPlaces = [];
     }
