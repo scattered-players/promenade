@@ -4,6 +4,7 @@ import config from 'config';
 
 import lostContactWithShowService from './lostContactWithShowService';
 import contactShowServiceSuccess from './contactShowServiceSuccess';
+import reportError from './reportError';
 
 function action() {
   return [
@@ -18,7 +19,16 @@ function action() {
   
       socket.onmessage = function(e) {
         let message = JSON.parse(e.data);
-        dispatch(message);
+        try {
+          dispatch(message);
+        } catch(error){
+          dispatch(reportError({
+            type: 'REACT_ERROR',
+            message: error.message || error,
+            stack: error.stack
+          }));
+          throw e;
+        }
       };
   
       socket.onerror = function(e) {

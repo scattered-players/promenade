@@ -57,7 +57,7 @@ class ErrorEntry extends React.Component {
       <ListItem className="errorentry-component">
         { errorContent }
         <div className="error-metadata">
-          <Chip label={error ? error.type.replace(/_/g, ' ') : 'ARGH'} />
+          <Chip label={(error && error.type) ? error.type.replace(/_/g, ' ') : 'ARGH'} />
           <div className="error-timestamp">{dateString}</div>
         </div>
       </ListItem>

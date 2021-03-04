@@ -105,7 +105,7 @@ function calcDervivedProperties(state, nextState) {
 
   if (places) {
     nextState.myPlaces = places.filter(place => user.places.reduce((acc, userPlace) => acc || userPlace === place._id, false));
-    nextState.currentPlaces = places.filter(place => place.phase._id === nextState.currentShow.currentPhase._id);
+    nextState.currentPlaces = places.filter(place => place.phase && place.phase._id === nextState.currentShow.currentPhase._id);
   } else {
     nextState.myPlaces = [];
     nextState.currentPlaces = [];
