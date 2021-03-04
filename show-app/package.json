@@ -1,6 +1,6 @@
 {
   "name": "@scatteredplayers/promenade",
-  "version": "2.0.0-alpha.2",
+  "version": "2.0.0-alpha.3",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -54,7 +54,7 @@
     "eslint-plugin-react": "^6.0.0",
     "exports-loader": "^2.0.0",
     "file-loader": "^6.0.0",
-    "html-webpack-plugin": "next",
+    "html-webpack-plugin": "^5.2.0",
     "janus-gateway": "https://github.com/meetecho/janus-gateway.git",
     "null-loader": "^0.1.1",
     "postcss": "^8.0.9",
