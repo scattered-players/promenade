@@ -47,7 +47,7 @@ class LiveShowScreen extends React.Component {
       }
     } = this.props;
 
-    if (myParty && this.navWorkerDict && currentShow && this.navWorkerDict[currentShow.currentPhase.attributes.navWorkerName]) {
+    if (myParty && this.navWorkerDict && currentShow && currentShow.currentPhase.attributes && this.navWorkerDict[currentShow.currentPhase.attributes.navWorkerName]) {
       const {
         selectedPlace
       } = myParty;
@@ -103,7 +103,7 @@ class LiveShowScreen extends React.Component {
           {
             !config.IS_MOBILE && (
               [
-                <CurrentScreen key={system.currentShow.currentPhase._id} actions={actions} system={system} navWorker={this.navWorkerDict[system.currentShow.currentPhase.attributes.navWorkerName]}/>
+                <CurrentScreen key={system.currentShow.currentPhase._id} actions={actions} system={system} navWorker={system.currentShow.currentPhase.attributes && this.navWorkerDict[system.currentShow.currentPhase.attributes.navWorkerName]}/>
               ]
             )
           }

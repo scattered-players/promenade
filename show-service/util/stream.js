@@ -35,7 +35,7 @@ module.exports = (app) => {
     },
     auth: {
       play: false,
-      publish: true,
+      publish: false,
       secret: STREAM_SECRET
     }
   };
