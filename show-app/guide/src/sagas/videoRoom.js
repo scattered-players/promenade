@@ -204,7 +204,7 @@ function publishOwnFeed(emitter, pluginHandle, useAudio, useVideo, localStream) 
           audio: useAudio,
           video: useVideo,
           data: true,
-          bitrate: 64000
+          // bitrate: 512000
         },
         jsep
       });

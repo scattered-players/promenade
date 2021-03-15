@@ -1,0 +1,23 @@
+.megaphonescreen-component {
+  // border: 1px dashed #f00;
+  position: relative;
+  min-height: 0;
+  height: 100%;
+
+  .character-nametag {
+    position: absolute;
+    background: rgba(0,0,0,0.3);
+  }
+  .video-wrapper, video {
+    max-width: 100%;
+    height: 100%;
+  }
+
+
+  @media (max-width: 500px), (max-height: 500px){
+    .video-wrapper, video {
+      max-width: 100%;
+      max-height: calc(100vh - 50px);
+    }
+  }
+}

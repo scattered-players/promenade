@@ -57,40 +57,40 @@
       // object-fit: cover;
     }
   }
+}
 
-  .local-button-row {
-    position: absolute;
-    bottom: 0;
-    left: -5px;
-    z-index:3;
-    display: flex;
-    align-items: flex-end;
-    // overflow: hidden;
+.local-button-row {
+  position: absolute;
+  bottom: 0;
+  left: -5px;
+  z-index:3;
+  display: flex;
+  align-items: flex-end;
+  // overflow: hidden;
 
-    .settings-toggle, .megaphone-toggle {
-      width: 56px;
-      height: 56px;
+  .settings-toggle, .megaphone-toggle {
+    width: 56px;
+    height: 56px;
+  }
+
+  .dial-wrapper-wrapper {
+    position: relative;
+    width: 56px;
+    .dial-wrapper {
+      position: absolute;
+      bottom:0;
+      left: 0;
+    }
+    .MuiSpeedDial-root > .MuiFab-root {
+      background: transparent;
+      box-shadow: none;
+    }
+    .MuiSpeedDialAction-staticTooltip {
+      white-space: nowrap;
     }
 
-    .dial-wrapper-wrapper {
-      position: relative;
-      width: 56px;
-      .dial-wrapper {
-        position: absolute;
-        bottom:0;
-        left: 0;
-      }
-      .MuiSpeedDial-root > .MuiFab-root {
-        background: transparent;
-        box-shadow: none;
-      }
-      .MuiSpeedDialAction-staticTooltip {
-        white-space: nowrap;
-      }
-
-      .selected-device {
-        border: 2px solid dodgerblue;
-      }
+    .selected-device {
+      border: 2px solid dodgerblue;
     }
   }
 }

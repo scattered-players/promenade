@@ -82,7 +82,8 @@ class VideoRow extends React.Component {
       chosenAudioInput,
       chosenVideoInput,
       mediaPermissions,
-      isNerdy
+      isNerdy,
+      isGuideMegaphone
     } = system;
     const {
       isAudioMuted,
@@ -98,7 +99,7 @@ class VideoRow extends React.Component {
     return (
       <div className="video-row">
         {
-          user && myParty && myParty.guide && myParty.guide.isOnline && (
+          user && myParty && myParty.guide && myParty.guide.isOnline && !isGuideMegaphone && (
             <div className="video-feed-wrapper">
               <div className="nametag-wrapper-wrapper">
                 <div className="nametag-wrapper">

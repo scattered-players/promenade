@@ -3,6 +3,7 @@ import config from 'config';
 
 import NavigationScreen from './NavigationScreen';
 import InteractionScreen from './InteractionScreen';
+import MegaphoneScreen from './MegaphoneScreen';
 
 import './freeplayscreen.scss';
 
@@ -26,7 +27,9 @@ class FreeplayScreen extends React.Component {
     return !config.IS_MOBILE && (
       myParty.currentPlace 
         ? <InteractionScreen actions={actions} system={system} />
-        : <NavigationScreen actions={actions} system={system} navWorker={navWorker} />
+        : (system.isGuideMegaphone 
+          ? <MegaphoneScreen actions={actions} system={system} /> 
+          : <NavigationScreen actions={actions} system={system} navWorker={navWorker} />)
     );
   }
 }

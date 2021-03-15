@@ -43,11 +43,11 @@
     opacity: 0;
     display: none;
   }
-}
 
-@media (max-width: 500px), (max-height: 500px){
-  .video-wrapper, video {
-    max-width: 100%;
-    max-height: calc(100vh - 50px);
+  @media (max-width: 500px), (max-height: 500px){
+    .video-wrapper, video {
+      max-width: 100%;
+      max-height: calc(100vh - 50px);
+    }
   }
 }

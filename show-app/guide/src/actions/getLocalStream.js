@@ -20,11 +20,11 @@ function action(audioDeviceId, videoDeviceId) {
               video: (videoDeviceId && videoDeviceId !== 'NONE') ? {
                 deviceId: videoDeviceId,
                 height: {
-                  ideal: 240
+                  ideal: 720
                 },
-                frameRate: {
-                  ideal: 10
-                }
+                // frameRate: {
+                //   ideal: 10
+                // }
               } : false,
               audio: (audioDeviceId && audioDeviceId !== 'NONE') ? {
                 deviceId: audioDeviceId,

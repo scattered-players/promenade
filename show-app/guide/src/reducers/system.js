@@ -94,7 +94,8 @@ const initialState = {
   activeLiteFilter: null,
   activeLiteFilterName: null,
   shouldShowVisualCues: (localStorage.getItem('shouldShowVisualCues') !== 'false'),
-  janusCoefficient: 0
+  janusCoefficient: 0,
+  isGuideMegaphone: false
 };
 
 function calcDervivedProperties(nextState) {
@@ -137,9 +138,12 @@ function calcDervivedProperties(nextState) {
     if(nextState.myParty.currentPlace) {
       nextState.currentPlace = nextState.myParty.currentPlace
     }
+
+    nextState.isGuideMegaphone = nextState.myParty.guide && nextState.myParty.guide.isOnline && nextState.myParty.guide.isMegaphone;
   } else {
     nextState.chatMessages = [];
     nextState.currentPlaces = [];
+    nextState.isGuideMegaphone = false;
   }
   
   if (nextState.currentPlace) {
