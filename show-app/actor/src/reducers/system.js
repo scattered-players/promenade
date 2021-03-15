@@ -112,7 +112,7 @@ function calcDervivedProperties(state, nextState) {
   }
 
   if(nextState.currentShow && nextState.myPlaces) {
-    nextState.myCurrentPlace = _.find(nextState.myPlaces, place => place.phase._id === nextState.currentShow.currentPhase._id);
+    nextState.myCurrentPlace = _.find(nextState.myPlaces, place => place.phase && place.phase._id === nextState.currentShow.currentPhase._id);
   } else {
     nextState.myCurrentPlace = null;
   }

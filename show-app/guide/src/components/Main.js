@@ -80,7 +80,7 @@ class Main extends React.Component {
       getInputDevices();
     }
 
-    console.log('HUH?', videoInputs, audioInputs, chosenAudioInput, chosenVideoInput);
+    console.log('HUH?', isSwitchingInputs, isSettingMutes, JSON.stringify(user), (user && user.isAudioMuted && chosenAudioInput !== 'NONE'),  (user && user.isVideoMuted && chosenVideoInput !== 'NONE'), videoInputs, audioInputs, chosenAudioInput, chosenVideoInput);
     if (!isSwitchingInputs && (videoInputs.length && audioInputs.length) && chosenAudioInput === undefined && chosenVideoInput === undefined) {
       let audioInput = localStorage.getItem('chosenAudioInput');
       let videoInput = localStorage.getItem('chosenVideoInput');
@@ -101,13 +101,13 @@ class Main extends React.Component {
         }
       }
       
-      console.log('HMM?', videoInput.length, audioInput.length);
+      console.log('CHOSEN DEVICES', videoInput.length, audioInput.length);
       // if (audioInput && videoInput){
         getLocalStream(audioInput, videoInput);
       // }
     } else if (!isSwitchingInputs && !isSettingMutes && user && ((user.isAudioMuted && chosenAudioInput !== 'NONE') || (user.isVideoMuted && chosenVideoInput !== 'NONE'))) {
-      let audioInput = user.isAudioMuted ? 'NONE' : chosenAudioInput;
-      let videoInput = user.isVideoMuted ? 'NONE' : chosenVideoInput;
+      let audioInput = user.isAudioMuted ? 'NONE' : chosenAudioInput || localStorage.getItem('chosenAudioInput');
+      let videoInput = user.isVideoMuted ? 'NONE' : chosenVideoInput || localStorage.getItem('chosenVideoInput');
       console.log('CORRECTING MUTES', user.isAudioMuted, user.isVideoMuted, chosenAudioInput, chosenVideoInput);
       getLocalStream(audioInput, videoInput);
     }

@@ -27,7 +27,7 @@ function action() {
             message: error.message || error,
             stack: error.stack
           }));
-          throw e;
+          throw error;
         }
       };
   

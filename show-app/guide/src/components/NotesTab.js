@@ -32,6 +32,7 @@ class NotesTab extends React.Component {
         currentNotes: notes
       };
     }
+    return {};
   }
 
   saveNotes(){

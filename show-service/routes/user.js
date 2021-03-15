@@ -615,7 +615,7 @@ const MUTE_PERIOD = (env === 'development') ? 5 * 1000 : 30 * 1000;
 router.put('/mutes', asyncHandler(async (req, res, next) => {
   let { userId, isAudioMuted, isVideoMuted } = req.body;
   let $set = {};
-  if(req.userKind === 'Admin' || req.userKind == 'Actor' || req.userKind == 'Guide'){
+  if(req.userKind === 'Admin' || req.userKind == 'Actor' || (req.userKind == 'Guide' && userId !== req.userId)){
     if(isAudioMuted){
       $set.isAudioMuted = isAudioMuted;
       $set.audioMuteDeadline = Date.now() + MUTE_PERIOD;
@@ -624,8 +624,9 @@ router.put('/mutes', asyncHandler(async (req, res, next) => {
       $set.isVideoMuted = isVideoMuted;
       $set.videoMuteDeadline = Date.now() + MUTE_PERIOD;
     }
+    await Attendee.updateOne({ _id:userId},{ $set });
   } else if(userId === req.userId) {
-    let user = await Attendee.findById(userId).lean();
+    let user = await User.findById(userId).lean();
 
     console.log('MUTES ALLOWED!', user);
     if(!user.audioMuteDeadline || Date.now() > user.audioMuteDeadline){
@@ -636,10 +637,10 @@ router.put('/mutes', asyncHandler(async (req, res, next) => {
       $set.isVideoMuted = isVideoMuted;
       console.log('VIDEO MUTE', isVideoMuted);
     }
+    await (user.kind === 'Attendee' ? Attendee : Guide).updateOne({ _id:userId},{ $set });
   } else{
     console.log('MUTES DENIED!');
   }
-  await Attendee.updateOne({ _id:userId},{ $set });
   res.sendStatus(200);
   refreshCurrentShowState();
   refreshSystemState();
