@@ -16,6 +16,7 @@ import MicOffIcon from '@material-ui/icons/MicOff';
 import VideocamIcon from '@material-ui/icons/Videocam';
 import VideocamOffIcon from '@material-ui/icons/VideocamOff';
 import SettingsIcon from '@material-ui/icons/Settings';
+import MegaphoneIcon from '@material-ui/icons/RssFeed';
 
 import phaseKindsEnum from '../enum/phasesKinds';
 
@@ -68,6 +69,7 @@ class VideoRow extends React.Component {
     } = this.props;
     const {
       setLocalMutes,
+      toggleMegaphone,
       getLocalStream
     } = actions;
     const {
@@ -110,6 +112,9 @@ class VideoRow extends React.Component {
                 <div className="button-row-backdrop"></div>
                 <IconButton className="settings-toggle" color="inherit" onClick={() =>  this.setState({isSettingsDisplayed: true}) }>
                   <SettingsIcon fontSize="small" style={{ color: 'black' }} />
+                </IconButton>
+                <IconButton className="megaphone-toggle" color="inherit" onClick={() => toggleMegaphone(user._id, !user.isMegaphone) }>
+                  { user.isMegaphone ? <MegaphoneIcon fontSize="small" color="primary" /> : <MegaphoneIcon fontSize="small" style={{ color: 'black' }} /> }
                 </IconButton>
                 <div className="dial-wrapper-wrapper">
                   <div className="dial-wrapper">

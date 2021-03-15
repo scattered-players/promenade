@@ -42,7 +42,8 @@ import {
   FORCE_REFRESH,
   JANUS_SESSION_CREATED,
   RECEIVE_AUDIO_CUE,
-  RECEIVE_CUE
+  RECEIVE_CUE,
+  TOGGLE_MEGAPHONE
 } from '../actions/const';
 
 import LITE_FILTERS from 'custom/lite-filters';
@@ -401,6 +402,11 @@ function reducer(state = initialState, action) {
     case TOGGLE_VISUAL_CUES: {
       nextState.shouldShowVisualCues = action.shouldShowVisualCues;
       localStorage.setItem('shouldShowVisualCues', action.shouldShowVisualCues);
+      return nextState;
+    }
+
+    case TOGGLE_MEGAPHONE: {
+      nextState.user.isMegaphone = action.isMegaphone;
       return nextState;
     }
 

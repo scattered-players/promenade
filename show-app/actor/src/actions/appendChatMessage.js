@@ -23,7 +23,7 @@ function action(partyId, message) {
           throw response;
         }
 
-        dispatch(showSnackbar('Message Send!'));
+        dispatch(showSnackbar('Message Sent!'));
       } catch(e) {
         dispatch(showSnackbar(`Error sending message: ${e.statusText || e.message}`));
       }

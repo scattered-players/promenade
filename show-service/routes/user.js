@@ -303,11 +303,31 @@ router.post('/guide', asyncHandler(async (req, res, next) => {
     email: email,
     username: username || email.split('@')[0],
     isOnline: false,
+    isMegaphone: false,
     characterName
   })
   let token = createToken(guide);
   console.log(guide, token);
   res.json({ guide, token });
+  refreshSystemState();
+}));
+
+/* PUT set a guide's megaphone */
+router.put('/guide/megaphone', asyncHandler(async (req, res, next) => {
+  if(req.userKind !== 'Admin' && req.userKind !== 'Guide') {
+    return res.sendStatus(403);
+  }
+  let {
+    userId,
+    isMegaphone
+  } = req.body;
+  await Guide.findByIdAndUpdate(userId, {
+    $set: {
+      isMegaphone
+    }
+  });
+  res.sendStatus(200);
+  refreshCurrentShowState();
   refreshSystemState();
 }));
 

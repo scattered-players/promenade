@@ -82,7 +82,8 @@ import {
   forceRefreshUser,
   receiveCue,
   toggleVisualCues,
-  setCharacterName
+  setCharacterName,
+  toggleMegaphone
 } from '../actions/';
 import Main from '../components/App';
 /* Populated by react-webpack-redux:reducer */
@@ -180,7 +181,8 @@ App.propTypes = {
     forceRefreshUser: PropTypes.func.isRequired,
     receiveCue: PropTypes.func.isRequired,
     toggleVisualCues: PropTypes.func.isRequired,
-    setCharacterName: PropTypes.func.isRequired
+    setCharacterName: PropTypes.func.isRequired,
+    toggleMegaphone: PropTypes.func.isRequired
   }),
   stuff: PropTypes.shape({}),
   system: PropTypes.shape({}),
@@ -276,7 +278,8 @@ function mapDispatchToProps(dispatch) {
     forceRefreshUser,
     receiveCue,
     toggleVisualCues,
-    setCharacterName
+    setCharacterName,
+    toggleMegaphone
   };
   const actionMap = { actions: bindActionCreators(actions, dispatch) };
   return actionMap;

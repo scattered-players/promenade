@@ -1,21 +1,22 @@
 import config from 'config';
 
-import { APPEND_CHAT_MESSAGE } from './const';
+import { TOGGLE_MEGAPHONE } from './const';
 
 import showSnackbar from './showSnackbar';
 
-function action(partyId, message) {
+function action(userId, isMegaphone) {
   return [
-    { type: APPEND_CHAT_MESSAGE, partyId, message },
+    { type: TOGGLE_MEGAPHONE, userId, isMegaphone },
     async dispatch => {
       try{
-        let response = await fetch(`${ config.SERVICE_HOST }/party/${partyId}/sendMessage`, {
+        let response = await fetch(`${ config.SERVICE_HOST }/users/guide/megaphone`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            content: message
+            userId,
+            isMegaphone
           }),
           credentials: 'include'
         });
@@ -23,9 +24,9 @@ function action(partyId, message) {
           throw response;
         }
 
-        dispatch(showSnackbar('Message Sent!'));
+        dispatch(showSnackbar('Megaphone Toggled!'));
       } catch(e) {
-        dispatch(showSnackbar(`Error sending message: ${e.statusText || e.message}`));
+        dispatch(showSnackbar(`Error toggling megaphone: ${e.statusText || e.message}`));
       }
     }
   ];
