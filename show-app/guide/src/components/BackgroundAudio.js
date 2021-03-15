@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
   Button,
   Dialog,
@@ -7,7 +6,6 @@ import {
   DialogActions,
   Typography
 } from '@material-ui/core';
-
 import './backgroundaudio.scss';
 
 class BackgroundAudio extends React.Component {
@@ -35,7 +33,7 @@ class BackgroundAudio extends React.Component {
   }
 
   async playAudio() {
-    console.log('ATTEMPTING TO PLAY AUDIO');
+    console.log('ATTEMPTING TO PLAY INTRO');
     try {
       const {
         audioPath,
@@ -77,6 +75,7 @@ class BackgroundAudio extends React.Component {
       this.musicSource = null;
     }
   }
+
 
   render() {
     const {

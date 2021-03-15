@@ -5,7 +5,8 @@ var guideSchema = new Schema({
   characterName: String,
   isAudioMuted: Boolean,
   isVideoMuted: Boolean,
-  isMegaphone: Boolean
+  isMegaphone: Boolean,
+  audioPath: String
 }, {
     discriminatorKey: 'kind'
 });

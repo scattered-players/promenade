@@ -64,8 +64,20 @@ function action(audioDeviceId, videoDeviceId) {
         if(permissions.mediaError) {
           dispatch(showSnackbar(`Error getting media stream: ${permissions.mediaError}`));
         }
+        let mixerContext = new AudioContext(),
+          audioSource,
+          mixerOutput = mixerContext.createMediaStreamDestination(),
+          mixerOutputStream = mixerOutput.stream;
+        if(!permissions.mediaError && stream.getAudioTracks().length) {
+          audioSource = mixerContext.createMediaStreamSource(stream);
+          audioSource.connect(mixerOutput);
+        } else {
+          console.error('OHNO NO AUDIO', stream.getAudioTracks().length)
+        }
 
-        dispatch(getLocalStreamSuccess(stream, permissions));
+        let outputStream = new MediaStream([...mixerOutputStream.getAudioTracks(), ...stream.getVideoTracks()])
+
+        dispatch(getLocalStreamSuccess(stream, outputStream, mixerContext, audioSource, mixerOutput, mixerOutputStream, permissions));
       } catch(e) {
         dispatch(getLocalStreamFailure(e.message));
         dispatch(showSnackbar(`Error getting media stream: ${e.message}`));

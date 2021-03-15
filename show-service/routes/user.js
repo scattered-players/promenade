@@ -425,13 +425,14 @@ router.put('/username', asyncHandler(async (req, res, next) => {
   refreshSystemState();
 }));
 
-/* PUT set a guide's character name */
-router.put('/charactername', asyncHandler(async (req, res, next) => {
-  let { userId, characterName } = req.body;
+/* PUT set a guide's info */
+router.put('/guide', asyncHandler(async (req, res, next) => {
+  let { userId, characterName, audioPath } = req.body;
   if(req.userKind !== 'Admin' && userId !== req.userId){
     return res.sendStatus(403);
   }
-  await Guide.updateOne({ _id: userId }, { $set: { characterName } });
+  await Guide.findByIdAndUpdate(userId, { $set: { characterName, audioPath } });
+  console.log('EY!', audioPath);
   res.sendStatus(200);
   refreshCurrentShowState();
   refreshSystemState();

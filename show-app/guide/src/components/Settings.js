@@ -22,7 +22,8 @@ class Settings extends React.Component {
     super();
     this.state = {
       username: '',
-      characterName: ''
+      characterName: '',
+      audioPath: ''
     };
     this.updateSettings = this.updateSettings.bind(this);
   }
@@ -31,13 +32,15 @@ class Settings extends React.Component {
       system:{
         user: {
           username,
-          characterName
+          characterName,
+          audioPath
         }
       }
     } = this.props;
     this.setState({
       username,
-      characterName
+      characterName,
+      audioPath
     })
   }
 
@@ -48,17 +51,18 @@ class Settings extends React.Component {
       },
       actions: {
         changeUsername,
-        setCharacterName
+        setGuideInfo
       },
       onClose
     } = this.props;
+    console.log('SIP')
 
     if(user.username !== this.state.username){
       changeUsername(user._id, this.state.username);
     }
 
-    if(user.characterName !== this.state.characterName){
-      setCharacterName(user._id, this.state.characterName);
+    if(user.characterName !== this.state.characterName || user.audioPath !== this.state.audioPath){
+      setGuideInfo(user._id, this.state.characterName, this.state.audioPath);
     }
 
     onClose();
@@ -85,7 +89,8 @@ class Settings extends React.Component {
     } = actions,
     {
       username,
-      characterName
+      characterName,
+      audioPath
     } = this.state;
     return (
       <Dialog onClose={onClose} open={true} >
@@ -93,6 +98,7 @@ class Settings extends React.Component {
         <DialogContent>
           <TextField label="username" value={username} onChange={e => this.setState({username: e.target.value})} />
           <TextField label="character name" value={characterName} onChange={e => this.setState({characterName: e.target.value})} />
+          <TextField label="audio path" value={audioPath || ''} onChange={e => this.setState({audioPath: e.target.value})} />
           <FormControl className="settings-dropdown">
             <InputLabel id="microphone-select-input-label">Microphone</InputLabel>
             <Select

@@ -205,9 +205,24 @@ function reducer(state = initialState, action) {
     }
     
     case GET_LOCAL_STREAM_SUCCESS: {
-      nextState.localStream = action.stream;
+      nextState.inputStream = action.stream;
+      nextState.localStream = action.outputStream;
       nextState.mediaPermissions = action.permissions;
       nextState.isSwitchingInputs = false;
+      if(nextState.mixerContext){
+        nextState.mixerContext.close()
+      }
+      nextState.mixerContext = action.mixerContext;
+      if(nextState.audioSource){
+        nextState.audioSource.disconnect();
+      }
+      nextState.audioSource = action.audioSource;
+      if(nextState.mixerOutput){
+        nextState.mixerOutput.disconnect();
+      }
+      nextState.mixerOutput = action.mixerOutput;
+      nextState.mixerOutputStream = action.mixerOutputStream;
+      calcDervivedProperties(nextState);
       return nextState;
     }
     
